@@ -1,0 +1,53 @@
+[user]
+    email = araki.ryo@rs.tus.ac.jp
+    name = ryo-ARAKI
+
+[core]
+    editor = vim
+    #pager = delta
+    autocrlf = input
+    quotepath = false
+
+[color]
+    ui = true
+
+[pull]
+    ff = only
+
+[push]
+    default = simple
+
+[init]
+    defaultBranch = main
+
+[fetch]
+    prune = true
+    pruneTags = true
+
+[merge]
+    conflictstyle = zdiff3
+
+[credential]
+    helper = cache --timeout=3600
+
+[rerere]
+    enabled = true
+    autoupdate = true
+
+# delta configurations
+[delta]
+    features = unobtrusive-line-numbers decorations
+    syntax-theme = Dracula
+    navigate = true
+
+[delta "unobtrusive-line-numbers"]
+    line-numbers = true
+    line-numbers-zero-style = "#444444"
+    line-numbers-left-format = "{nm:>5}"
+    line-numbers-right-format = "{np:>5}│"
+
+[delta "decorations"]
+    commit-decoration-style = bold yellow box ul
+    file-style = bold yellow ul
+    file-decoration-style = none
+    hunk-header-decoration-style = cyan box ul

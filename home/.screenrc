@@ -1,0 +1,27 @@
+# ~/.screenrc
+
+# Character code
+defutf8 on
+defencoding utf8
+encoding utf8 utf8
+
+# Basic behavior
+startup_message off
+vbell off
+autodetach on
+
+# Keep the existing prefix for compatibility
+escape ^Zz
+
+# Scrollback and terminal behavior
+defscrollback 50000
+termcapinfo xterm* ti@:te@
+altscreen on
+
+# Color
+defbce on
+# Keep xterm-256color because screen-256color breaks diff rendering here.
+term xterm-256color
+
+# Status line
+hardstatus alwayslastline "%{= kW}%-w%{= BW}%n %t%{-}%+w %= %H | Load:%l "

@@ -1,0 +1,22 @@
+# ~/.bashrc_remote
+# Keep Bash minimal on remote hosts and hand off interactive use to Fish.
+
+if [ -f /etc/bashrc ]; then
+    . /etc/bashrc
+fi
+
+export LC_ALL=en_US.UTF-8
+
+# Optional remote-specific environment.
+# export PATH="/path/to/bin${PATH:+:$PATH}"
+# export LD_LIBRARY_PATH="/path/to/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+# export MODULEPATH="/path/to/modulefiles${MODULEPATH:+:$MODULEPATH}"
+
+case $- in
+    *i*) ;;
+      *) return ;;
+esac
+
+if command -v fish >/dev/null 2>&1; then
+    exec fish
+fi

@@ -80,21 +80,25 @@ class LoadManifestTests(unittest.TestCase):
             ):
                 load_manifest(manifest_path, layer="base")
 
-    def test_load_manifest_raises_value_error_for_duplicate_targets(self) -> None:
+    def test_load_manifest_preserves_duplicate_targets_in_order(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             manifest_path = Path(tmp) / "base.tsv"
             manifest_path.write_text(
                 textwrap.dedent(
                     """\
                     home/.bashrc\t~/.bashrc\t0644\talways
-                    home/.bashrc_alt\t~/.bashrc\t0644\talways
+                    home/.bashrc_remote\t~/.bashrc\t0644\tremote
                     """
                 ),
                 encoding="utf-8",
             )
 
-            with self.assertRaisesRegex(
-                ValueError,
-                rf"duplicate target in {re.escape(str(manifest_path))}: ~/.bashrc",
-            ):
-                load_manifest(manifest_path, layer="base")
+            entries = load_manifest(manifest_path, layer="base")
+
+        self.assertEqual(
+            entries,
+            [
+                ManifestEntry("base", "home/.bashrc", "~/.bashrc", "0644", "always"),
+                ManifestEntry("base", "home/.bashrc_remote", "~/.bashrc", "0644", "remote"),
+            ],
+        )

@@ -1,0 +1,43 @@
+[global_config]
+  focus = mouse
+  window_state = fullscreen
+  broadcast_default = off
+  enabled_plugins = TerminatorThemes, ActivityWatch, InactivityWatch
+  always_split_with_profile = True
+[keybindings]
+  split_horiz = <Primary><Shift>d
+  split_vert = <Primary>d
+  search = <Primary>f
+  paste = <Primary>v
+[profiles]
+  [[default]]
+    background_color = "#23262e"
+    background_darkness = 0.75
+    background_type = transparent
+    cursor_blink = False
+    cursor_fg_color = "#23262e"
+    cursor_bg_color = "#ffffff"
+    font = Ricty Diminished 13
+    foreground_color = "#ffffff"
+    scrollback_lines = 10000
+    palette = "#2e3436:#ff007a:#84ff39:#f3d56e:#7cb7ff:#c74ded:#00e8c6:#d3d7cf:#555753:#ff007a:#84ff39:#f3d56e:#7cb7ff:#c74ded:#00e8c6:#eeeeec"
+    use_system_font = False
+    bold_is_bright = True
+    copy_on_selection = True
+    title_transmit_bg_color = "#a51d2d"
+    title_receive_bg_color = "#1a5fb4"
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+      profile = default
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
+  [[ActivityWatch]]
+    hush_period = 30.0
+  [[InactivityWatch]]
+    inactive_period = 30.0
+    watch_interval = 1000
