@@ -21,17 +21,5 @@ function fish_should_add_to_history
         end
     end
 
-    set -l noisy_patterns \
-        '^\s*(?:builtin\s+)?(?:ls|pwd|cd|clear|history|dirh|prevd|nextd|cdh)\b' \
-        '^\s*(?:builtin\s+)?(?:z|zo)\b' \
-        '^\s*(?:command\s+)?eza\b' \
-        '^\s*(?:command\s+)?(?:evince|eog|vlc|mupdf)\b'
-
-    for pattern in $noisy_patterns
-        if string match -qr -- $pattern $commandline
-            return 1
-        end
-    end
-
     return 0
 end
