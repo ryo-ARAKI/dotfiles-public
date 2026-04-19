@@ -38,6 +38,38 @@ class ApplyEntryTests(unittest.TestCase):
             self.assertEqual(target.read_text(encoding="utf-8"), "new\n")
             self.assertEqual(target.stat().st_mode & 0o777, 0o644)
 
+    def test_install_reprompts_until_valid_response(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            base_repo = root / "base"
+            home = root / "home"
+            target = home / ".bashrc"
+
+            (base_repo / "manifest").mkdir(parents=True)
+            (base_repo / "home").mkdir(parents=True)
+            home.mkdir()
+
+            (base_repo / "manifest" / "base.tsv").write_text(
+                "home/.bashrc\t~/.bashrc\t0644\talways\n",
+                encoding="utf-8",
+            )
+            (base_repo / "home" / ".bashrc").write_text("new\n", encoding="utf-8")
+            target.write_text("old\n", encoding="utf-8")
+
+            install_module = load_install_module()
+
+            with (
+                patch.object(install_module, "ROOT", base_repo),
+                patch.object(install_module.Path, "home", return_value=home),
+                patch.dict("os.environ", {"HOME": str(home)}, clear=False),
+                patch("sys.argv", ["install"]),
+                patch("builtins.input", side_effect=["", "y"]) as prompt,
+            ):
+                self.assertEqual(install_module.main(), 0)
+
+            self.assertEqual(prompt.call_count, 2)
+            self.assertEqual(target.read_text(encoding="utf-8"), "new\n")
+
     def test_install_uses_private_repo_root_for_private_entries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

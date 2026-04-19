@@ -42,14 +42,22 @@ def main() -> int:
         print(f"{entry.layer}: {entry.source} -> {entry.target}")
         if args.dry_run:
             continue
+        apply_current = True
         if not args.yes:
-            answer = input("Apply this change? [y]es/[n]o/[q]uit/[a]ll: ").strip().lower()
-            if answer == "q":
-                return 1
-            if answer == "n":
-                continue
-            if answer == "a":
-                args.yes = True
+            while True:
+                answer = input("Apply this change? [y]es/[n]o/[q]uit/[a]ll: ").strip().lower()
+                if answer == "y":
+                    break
+                if answer == "n":
+                    apply_current = False
+                    break
+                if answer == "q":
+                    return 1
+                if answer == "a":
+                    args.yes = True
+                    break
+        if not apply_current:
+            continue
         repo_root = private_root if entry.layer == "private" else ROOT
         apply_entry(entry, repo_root=repo_root or ROOT, backup_root=backup_root)
     return 0
