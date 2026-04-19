@@ -74,7 +74,7 @@ class ApplyEntryTests(unittest.TestCase):
                 patch.object(install_module, "ROOT", base_repo),
                 patch.object(install_module.Path, "home", return_value=home),
                 patch.dict("os.environ", {"HOME": str(home)}, clear=False),
-                patch("sys.argv", ["install", "--private", str(private_repo)]),
+                patch("sys.argv", ["install", "--yes", "--private", str(private_repo)]),
             ):
                 self.assertEqual(install_module.main(), 0)
 

@@ -20,6 +20,8 @@ def main() -> int:
     parser.add_argument("--context", choices=("local", "remote"))
     parser.add_argument("--private")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--only")
+    parser.add_argument("--yes", action="store_true")
     args = parser.parse_args()
 
     context = detect_context(args.context, dict(os.environ))
@@ -29,13 +31,27 @@ def main() -> int:
         private_root = Path(args.private).expanduser()
         entries += load_manifest(private_root / "manifest" / "private.tsv", "private")
     plan = build_plan(entries, context=context)
+    filtered_plan = {
+        target: entry
+        for target, entry in plan.items()
+        if not args.only or args.only in target or args.only in entry.source
+    }
 
     backup_root = Path.home() / ".dotfiles-backup" / datetime.now().strftime("%Y%m%d-%H%M%S")
-    for entry in plan.values():
+    for entry in filtered_plan.values():
         print(f"{entry.layer}: {entry.source} -> {entry.target}")
-        if not args.dry_run:
-            repo_root = private_root if entry.layer == "private" else ROOT
-            apply_entry(entry, repo_root=repo_root or ROOT, backup_root=backup_root)
+        if args.dry_run:
+            continue
+        if not args.yes:
+            answer = input("Apply this change? [y]es/[n]o/[q]uit/[a]ll: ").strip().lower()
+            if answer == "q":
+                return 1
+            if answer == "n":
+                continue
+            if answer == "a":
+                args.yes = True
+        repo_root = private_root if entry.layer == "private" else ROOT
+        apply_entry(entry, repo_root=repo_root or ROOT, backup_root=backup_root)
     return 0
 
 
