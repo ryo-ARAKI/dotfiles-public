@@ -16,6 +16,18 @@ class BuildPlanTests(unittest.TestCase):
         self.assertEqual(plan["~/.bashrc"].source, "home/.bashrc_remote")
         self.assertEqual(plan["~/.bashrc"].layer, "private")
 
+    def test_host_overrides_private_and_base_for_same_target(self) -> None:
+        entries = [
+            ManifestEntry("base", "home/.bashrc", "~/.bashrc", "0644", "always"),
+            ManifestEntry("private", "home/.bashrc_private", "~/.bashrc", "0644", "always"),
+            ManifestEntry("host", "home/.bashrc_host", "~/.bashrc", "0644", "always"),
+        ]
+
+        plan = build_plan(entries, context="local")
+
+        self.assertEqual(plan["~/.bashrc"].source, "home/.bashrc_host")
+        self.assertEqual(plan["~/.bashrc"].layer, "host")
+
     def test_when_filtering_removes_non_matching_entries(self) -> None:
         entries = [
             ManifestEntry("base", "home/.bashrc", "~/.bashrc", "0644", "always"),

@@ -79,3 +79,22 @@ class LoadManifestTests(unittest.TestCase):
                 rf"Malformed manifest row in {re.escape(str(manifest_path))} at line 1: expected 4 tab-separated columns, got 3",
             ):
                 load_manifest(manifest_path, layer="base")
+
+    def test_load_manifest_raises_value_error_for_duplicate_targets(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "base.tsv"
+            manifest_path.write_text(
+                textwrap.dedent(
+                    """\
+                    home/.bashrc\t~/.bashrc\t0644\talways
+                    home/.bashrc_alt\t~/.bashrc\t0644\talways
+                    """
+                ),
+                encoding="utf-8",
+            )
+
+            with self.assertRaisesRegex(
+                ValueError,
+                rf"duplicate target in {re.escape(str(manifest_path))}: ~/.bashrc",
+            ):
+                load_manifest(manifest_path, layer="base")
