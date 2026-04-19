@@ -54,11 +54,14 @@ Current implementation status:
 │   ├── .bashrc_remote
 │   ├── .profile
 │   ├── .gitconfig
+│   ├── .latexmkrc
 │   ├── .vimrc
 │   ├── .screenrc
 │   └── .tmux.conf
 ├── config/
+│   ├── fcitx5/
 │   ├── fish/
+│   ├── gh/
 │   ├── terminator/
 │   ├── Projecteur/
 │   └── xbindkeys/
@@ -78,6 +81,13 @@ The rough split is:
 - `manifest/`: source-to-target mapping rules
 - `dotfiles_installer/`: installer logic
 - `tests/`: `unittest` coverage for manifest parsing, planning, context detection, apply logic, and CLI behavior
+
+Notable tracked config beyond the original shell files includes:
+
+- `home/.latexmkrc` for LaTeX build defaults
+- `config/fish/fish_plugins` for `fisher` plugin declarations
+- `config/fcitx5/config` for local IME behavior
+- `config/gh/config.yml` for GitHub CLI defaults and aliases
 
 ## Manifest Format
 
