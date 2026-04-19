@@ -194,50 +194,50 @@ Dry runs do not write anything. They report what would be applied and show overr
 ### Dry-run local with private overlay
 
 ```bash
-./install --dry-run --context local --private /home/ryo/github/dotfiles-private
+./install --dry-run --context local --private ~/github/dotfiles-private
 ```
 
 ### Dry-run remote with private overlay
 
 ```bash
-./install --dry-run --context remote --private /home/ryo/github/dotfiles-private
+./install --dry-run --context remote --private ~/github/dotfiles-private
 ```
 
 ### Dry-run remote with private and host overlays
 
 ```bash
 ./install --dry-run --context remote \
-  --private /home/ryo/github/dotfiles-private \
-  --hosts /home/ryo/github/dotfiles-hosts \
+  --private ~/github/dotfiles-private \
+  --hosts ~/github/dotfiles-hosts \
   --host-name h200
 ```
 
 ### Apply interactively on a remote machine
 
 ```bash
-./install --context remote --private /home/ryo/github/dotfiles-private
+./install --context remote --private ~/github/dotfiles-private
 ```
 
 ### Apply interactively with private and host overlays
 
 ```bash
 ./install --context remote \
-  --private /home/ryo/github/dotfiles-private \
-  --hosts /home/ryo/github/dotfiles-hosts
+  --private ~/github/dotfiles-private \
+  --hosts ~/github/dotfiles-hosts
 ```
 
 ### Apply without prompting
 
 ```bash
-./install --yes --context remote --private /home/ryo/github/dotfiles-private
+./install --yes --context remote --private ~/github/dotfiles-private
 ```
 
 ### Apply without prompting with private and host overlays
 
 ```bash
 ./install --yes --context remote \
-  --private /home/ryo/github/dotfiles-private \
-  --hosts /home/ryo/github/dotfiles-hosts
+  --private ~/github/dotfiles-private \
+  --hosts ~/github/dotfiles-hosts
 ```
 
 ### Limit the run to one file family
@@ -293,7 +293,7 @@ If a file should no longer be public:
 4. verify with:
 
 ```bash
-./install --dry-run --context local --private /home/ryo/github/dotfiles-private
+./install --dry-run --context local --private ~/github/dotfiles-private
 ```
 
 ## Public vs Private vs Host-Specific
@@ -328,24 +328,26 @@ The current operational target set is:
 - `Reshiram`
 - `Zekrom`
 
-Today, these hosts share the same base and private layers. Host-specific manifests exist as placeholders in `dotfiles-hosts`, but the CLI does not yet consume them automatically.
-Today, these hosts currently share the same committed host overlay content as well, but the CLI can now consume host-specific manifests when they are added.
+Today, these hosts share the same base and private layers by default.
+Host-specific manifests in `dotfiles-hosts` are opt-in and are only loaded when `--hosts` is provided.
 
 For now, the recommended remote workflow is:
 
 1. log into the remote machine
-2. clone or update `dotfiles-public`
-3. clone or update `dotfiles-private`
-4. clone or update `dotfiles-hosts`
+2. clone or update `dotfiles-public` under `~/github/dotfiles-public`
+3. clone or update `dotfiles-private` under `~/github/dotfiles-private`
+4. clone or update `dotfiles-hosts` under `~/github/dotfiles-hosts`
 5. run:
 
 ```bash
 ./install --dry-run --context remote \
-  --private /path/to/dotfiles-private \
-  --hosts /path/to/dotfiles-hosts
+  --private ~/github/dotfiles-private \
+  --hosts ~/github/dotfiles-hosts \
+  --host-name "$(hostname)"
 ./install --context remote \
-  --private /path/to/dotfiles-private \
-  --hosts /path/to/dotfiles-hosts
+  --private ~/github/dotfiles-private \
+  --hosts ~/github/dotfiles-hosts \
+  --host-name "$(hostname)"
 ```
 
 ## Verification
@@ -360,8 +362,8 @@ Useful spot checks:
 
 ```bash
 ./install --dry-run --context local
-./install --dry-run --context remote --private /home/ryo/github/dotfiles-private
-./install --dry-run --context remote --private /home/ryo/github/dotfiles-private --hosts /home/ryo/github/dotfiles-hosts --host-name h200
+./install --dry-run --context remote --private ~/github/dotfiles-private
+./install --dry-run --context remote --private ~/github/dotfiles-private --hosts ~/github/dotfiles-hosts --host-name h200
 ```
 
 ## Safety Notes
