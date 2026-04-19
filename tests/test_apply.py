@@ -19,6 +19,20 @@ def load_install_module() -> object:
     return module
 
 
+def write_codex_fragments(base_repo: Path, private_repo: Path | None = None) -> None:
+    (base_repo / "config" / "codex").mkdir(parents=True, exist_ok=True)
+    (base_repo / "config" / "codex" / "config.public.toml").write_text(
+        'model = "gpt-5.4"\n',
+        encoding="utf-8",
+    )
+    if private_repo is not None:
+        (private_repo / "config" / "codex").mkdir(parents=True, exist_ok=True)
+        (private_repo / "config" / "codex" / "config.private.toml").write_text(
+            '\n[projects."/tmp/private-project"]\ntrust_level = "trusted"\n',
+            encoding="utf-8",
+        )
+
+
 class ApplyEntryTests(unittest.TestCase):
     def test_apply_entry_creates_backup_and_writes_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -55,6 +69,7 @@ class ApplyEntryTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (base_repo / "home" / ".bashrc").write_text("new\n", encoding="utf-8")
+            write_codex_fragments(base_repo)
             target.write_text("old\n", encoding="utf-8")
 
             install_module = load_install_module()
@@ -87,6 +102,7 @@ class ApplyEntryTests(unittest.TestCase):
                 encoding="utf-8",
             )
             (base_repo / "home" / ".bashrc").write_text("new\nline\n", encoding="utf-8")
+            write_codex_fragments(base_repo)
 
             install_module = load_install_module()
             stdout = io.StringIO()
@@ -105,7 +121,8 @@ class ApplyEntryTests(unittest.TestCase):
             self.assertIn("New file: ~/.bashrc", output)
             self.assertIn("--- /dev/null", output)
             self.assertIn("+++ home/.bashrc", output)
-            self.assertIn("Summary: applied=1 skipped=0 nochange=0 overridden=0", output)
+            self.assertIn("applied: codex: config/codex/config.public.toml -> ~/.codex/config.toml", output)
+            self.assertIn("Summary: applied=2 skipped=0 nochange=0 overridden=0", output)
             self.assertEqual(prompt.call_count, 1)
             self.assertEqual(target.read_text(encoding="utf-8"), "new\nline\n")
 
@@ -135,6 +152,7 @@ class ApplyEntryTests(unittest.TestCase):
             (base_repo / "home" / ".bashrc").write_text("base\n", encoding="utf-8")
             (base_repo / "home" / ".vimrc").write_text("wrong\n", encoding="utf-8")
             (private_repo / "home" / ".vimrc").write_text("private\n", encoding="utf-8")
+            write_codex_fragments(base_repo, private_repo)
 
             base_target.write_text("old base\n", encoding="utf-8")
             private_target.write_text("old private\n", encoding="utf-8")
@@ -176,6 +194,7 @@ class ApplyEntryTests(unittest.TestCase):
             )
             (base_repo / "home" / ".vimrc").write_text("base\n", encoding="utf-8")
             (hosts_repo / "home" / ".vimrc").write_text("host\n", encoding="utf-8")
+            write_codex_fragments(base_repo)
             target.write_text("old\n", encoding="utf-8")
 
             install_module = load_install_module()

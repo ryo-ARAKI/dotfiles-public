@@ -1,0 +1,60 @@
+# Safe to publish in a gist.
+# This file is the shared source of truth for non-secret, machine-independent defaults.
+# Keep local paths, connector-specific IDs, and other host-specific overrides in config.private.toml.
+# Do not edit config.toml directly; regenerate it through ./install.
+
+# Shared model defaults.
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "high"
+model_verbosity = "medium"
+
+# Shared execution defaults.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+personality = "pragmatic"
+web_search = "live"
+service_tier = "fast"
+project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
+
+# Shared TUI defaults.
+[tui]
+#alternate_screen = false
+notifications = ["agent-turn-complete", "approval-requested"]
+notification_method = "auto"
+status_line = [
+  "project-root",
+  "git-branch",
+  "fast-mode",
+  "context-usage",
+  "five-hour-limit",
+]
+terminal_title = ["spinner", "project", "git-branch", "task-progress"]
+
+[notice.model_migrations]
+"gpt-5.3-codex" = "gpt-5.4"
+
+# Shared plugin defaults.
+[plugins."github@openai-curated"]
+enabled = true
+
+# Shared feature flags.
+[features]
+memories = true
+
+# Shared memories defaults.
+[memories]
+generate_memories = true
+use_memories = true
+no_memories_if_mcp_or_web_search = true
+
+# Shared profile presets.
+[profiles.fast]
+model_reasoning_effort = "low"
+plan_mode_reasoning_effort = "medium"
+service_tier = "fast"
+
+[profiles.deep]
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "xhigh"
+service_tier = "fast"

@@ -20,6 +20,10 @@ def summarize_overridden_line(entry: ManifestEntry) -> str:
     return f"overridden: {entry.layer}: {entry.source} -> {entry.target}"
 
 
+def summarize_generated_line(label: str, source: str, target: str, *, status: str) -> str:
+    return f"{status}: {label}: {source} -> {target}"
+
+
 def render_text_diff(target_label: str, source_label: str, current_text: str | None, source_text: str) -> str:
     if current_text is None:
         current_lines: list[str] = []

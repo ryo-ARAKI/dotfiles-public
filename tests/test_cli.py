@@ -6,6 +6,85 @@ from pathlib import Path
 
 
 class InstallCliTests(unittest.TestCase):
+    def test_install_generates_codex_config_from_public_fragment(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp) / "home"
+            home.mkdir()
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            result = subprocess.run(
+                ["./install", "--yes", "--context", "local"],
+                cwd=repo_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            config_path = home / ".codex" / "config.toml"
+            self.assertTrue(config_path.exists())
+            expected = (repo_root / "config" / "codex" / "config.public.toml").read_text(encoding="utf-8")
+            self.assertEqual(config_path.read_text(encoding="utf-8"), expected)
+
+    def test_install_generates_codex_config_from_public_and_private_fragments(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            private_repo = temp_root / "private"
+            home = temp_root / "home"
+            private_repo.mkdir()
+            (private_repo / "manifest").mkdir()
+            (private_repo / "config" / "codex").mkdir(parents=True)
+            home.mkdir()
+
+            (private_repo / "manifest" / "private.tsv").write_text("", encoding="utf-8")
+            (private_repo / "config" / "codex" / "config.private.toml").write_text(
+                '\n[projects."/tmp/private-project"]\ntrust_level = "trusted"\n',
+                encoding="utf-8",
+            )
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            result = subprocess.run(
+                ["./install", "--yes", "--context", "local", "--private", str(private_repo)],
+                cwd=repo_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            config_path = home / ".codex" / "config.toml"
+            self.assertTrue(config_path.exists())
+            public_fragment = (repo_root / "config" / "codex" / "config.public.toml").read_text(encoding="utf-8")
+            private_fragment = (private_repo / "config" / "codex" / "config.private.toml").read_text(encoding="utf-8")
+            self.assertEqual(config_path.read_text(encoding="utf-8"), f"{public_fragment}\n\n{private_fragment}")
+
+    def test_dry_run_reports_codex_config_generation_without_writing(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            home = Path(tmp) / "home"
+            home.mkdir()
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            result = subprocess.run(
+                ["./install", "--dry-run", "--context", "local"],
+                cwd=repo_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertIn("would apply: codex: config/codex/config.public.toml -> ~/.codex/config.toml", result.stdout)
+            self.assertFalse((home / ".codex" / "config.toml").exists())
+
     def test_only_filter_limits_output(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as tmp:

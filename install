@@ -6,11 +6,18 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
+try:
+    import tomllib
+except ModuleNotFoundError:  # pragma: no cover - Python < 3.11
+    tomllib = None
+
 ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from dotfiles_installer.apply import apply_entry
+from dotfiles_installer.codex_config import apply_codex_config
+from dotfiles_installer.codex_config import plan_codex_config
 from dotfiles_installer.context import detect_context
 from dotfiles_installer.manifest import ManifestEntry
 from dotfiles_installer.manifest import load_manifest
@@ -18,6 +25,7 @@ from dotfiles_installer.planner import build_plan_report
 from dotfiles_installer.reporting import (
     read_text_if_exists,
     render_text_diff,
+    summarize_generated_line,
     summarize_overridden_line,
     summarize_plan_line,
     summarize_run,
@@ -32,6 +40,18 @@ def _matches_only(entry: ManifestEntry, only: str | None) -> bool:
 
 def _resolve_host_name(explicit: str | None) -> str:
     return explicit or socket.gethostname()
+
+
+def _matches_codex_only(only: str | None) -> bool:
+    if not only:
+        return True
+    candidates = (
+        "config/codex/config.public.toml",
+        "config/codex/config.private.toml",
+        "~/.codex/config.toml",
+        "codex",
+    )
+    return any(only in candidate for candidate in candidates)
 
 
 def _resolve_repo_root(
@@ -112,6 +132,16 @@ def main() -> int:
         if not host_manifest.exists():
             parser.error(f"Host manifest not found: {host_manifest}")
         entries += load_manifest(host_manifest, "host")
+    codex_plan = None
+    if _matches_codex_only(args.only):
+        try:
+            codex_plan = plan_codex_config(ROOT, private_root)
+        except ValueError as exc:
+            parser.error(str(exc))
+        except Exception as exc:
+            if tomllib is not None and isinstance(exc, tomllib.TOMLDecodeError):
+                parser.error(f"Generated Codex config is not valid TOML: {exc}")
+            raise
     report = build_plan_report(entries, context=context)
     filtered_plan = {
         target: entry
@@ -157,6 +187,20 @@ def main() -> int:
             continue
         apply_entry(entry, repo_root=repo_root, backup_root=backup_root)
         applied += 1
+    if codex_plan is not None:
+        codex_status = apply_codex_config(codex_plan, backup_root=backup_root, dry_run=args.dry_run)
+        print(
+            summarize_generated_line(
+                "codex",
+                codex_plan.source_label,
+                codex_plan.target_label,
+                status=codex_status.replace("_", " "),
+            )
+        )
+        if codex_status == "applied":
+            applied += 1
+        if codex_status == "nochange":
+            nochange += 1
     for entry in filtered_overridden:
         if args.dry_run:
             print(summarize_overridden_line(entry))
