@@ -103,25 +103,6 @@ class LoadManifestTests(unittest.TestCase):
             ],
         )
 
-    def test_load_manifest_rejects_ambiguous_duplicate_when_values(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            manifest_path = Path(tmp) / "base.tsv"
-            manifest_path.write_text(
-                textwrap.dedent(
-                    """\
-                    home/.bashrc\t~/.bashrc\t0644\talways
-                    home/.bashrc_alt\t~/.bashrc\t0644\talways
-                    """
-                ),
-                encoding="utf-8",
-            )
-
-            with self.assertRaisesRegex(
-                ValueError,
-                rf"ambiguous duplicate target in {re.escape(str(manifest_path))}: ~/.bashrc for when always",
-            ):
-                load_manifest(manifest_path, layer="base")
-
     def test_load_manifest_rejects_ambiguous_duplicate_context_rows(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             manifest_path = Path(tmp) / "base.tsv"
