@@ -12,8 +12,7 @@ class InstallCliTests(unittest.TestCase):
             check=False,
         )
         self.assertEqual(result.returncode, 0)
-        self.assertIn(".vimrc", result.stdout)
-        self.assertNotIn(".gitconfig", result.stdout)
+        self.assertEqual(result.stdout.strip().splitlines(), ["base: home/.vimrc -> ~/.vimrc"])
 
 
 if __name__ == "__main__":
