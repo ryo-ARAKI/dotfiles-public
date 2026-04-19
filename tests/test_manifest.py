@@ -1,5 +1,6 @@
 import tempfile
 import textwrap
+import re
 import unittest
 from pathlib import Path
 
@@ -33,5 +34,48 @@ class LoadManifestTests(unittest.TestCase):
                     "0644",
                     "always",
                 ),
+                ],
+        )
+
+    def test_load_manifest_skips_blank_and_comment_lines(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "base.tsv"
+            manifest_path.write_text(
+                textwrap.dedent(
+                    """\
+                    # comment
+
+                    home/.bashrc\t~/.bashrc\t0644\talways
+                       # indented comment
+                    config/fish/config.fish\t~/.config/fish/config.fish\t0644\talways
+                    """
+                ),
+                encoding="utf-8",
+            )
+
+            entries = load_manifest(manifest_path, layer="base")
+
+        self.assertEqual(
+            entries,
+            [
+                ManifestEntry("base", "home/.bashrc", "~/.bashrc", "0644", "always"),
+                ManifestEntry(
+                    "base",
+                    "config/fish/config.fish",
+                    "~/.config/fish/config.fish",
+                    "0644",
+                    "always",
+                ),
             ],
         )
+
+    def test_load_manifest_raises_value_error_for_malformed_rows(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            manifest_path = Path(tmp) / "base.tsv"
+            manifest_path.write_text("home/.bashrc\t~/.bashrc\t0644\n", encoding="utf-8")
+
+            with self.assertRaisesRegex(
+                ValueError,
+                rf"Malformed manifest row in {re.escape(str(manifest_path))} at line 1: expected 4 tab-separated columns, got 3",
+            ):
+                load_manifest(manifest_path, layer="base")
