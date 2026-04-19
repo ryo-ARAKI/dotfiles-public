@@ -1,11 +1,40 @@
 #!/usr/bin/env python3
-
-from pathlib import Path
+import argparse
+import os
 import sys
+from datetime import datetime
+from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from dotfiles_installer.apply import apply_entry
+from dotfiles_installer.context import detect_context
+from dotfiles_installer.manifest import load_manifest
+from dotfiles_installer.planner import build_plan
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--context", choices=("local", "remote"))
+    parser.add_argument("--private")
+    parser.add_argument("--dry-run", action="store_true")
+    args = parser.parse_args()
+
+    context = detect_context(args.context, dict(os.environ))
+    entries = load_manifest(ROOT / "manifest" / "base.tsv", "base")
+    if args.private:
+        entries += load_manifest(Path(args.private) / "manifest" / "private.tsv", "private")
+    plan = build_plan(entries, context=context)
+
+    backup_root = Path.home() / ".dotfiles-backup" / datetime.now().strftime("%Y%m%d-%H%M%S")
+    for entry in plan.values():
+        print(f"{entry.layer}: {entry.source} -> {entry.target}")
+        if not args.dry_run:
+            apply_entry(entry, repo_root=ROOT, backup_root=backup_root)
+    return 0
+
+
 if __name__ == "__main__":
-    raise SystemExit(0)
+    raise SystemExit(main())
