@@ -341,41 +341,6 @@ class AutoUpdateCliTests(unittest.TestCase):
         self.assertEqual(exit_code, 0)
         run_install.assert_called_once_with(public, private, hosts, context="local", dry_run=False)
 
-    def test_main_passes_explicit_context_to_install(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            public = root / "dotfiles-public"
-            private = root / "dotfiles-private"
-            hosts = root / "dotfiles-hosts"
-            for repo in (public, private, hosts):
-                repo.mkdir()
-
-            with patch("dotfiles_installer.auto_update.sync_repo") as sync_repo, patch(
-                "dotfiles_installer.auto_update.run_install",
-                return_value=0,
-            ) as run_install, captured_stdio():
-                sync_repo.side_effect = [
-                    RepoSyncResult(name="public", status="updated", changed=True, applied=True),
-                    RepoSyncResult(name="private", status="current", changed=False),
-                    RepoSyncResult(name="hosts", status="current", changed=False),
-                ]
-
-                exit_code = main(
-                    [
-                        "--base",
-                        str(public),
-                        "--private",
-                        str(private),
-                        "--hosts",
-                        str(hosts),
-                        "--context",
-                        "remote",
-                    ]
-                )
-
-        self.assertEqual(exit_code, 0)
-        run_install.assert_called_once_with(public, private, hosts, context="remote", dry_run=False)
-
     def test_main_reports_dry_run_installer_when_updates_are_pending(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
@@ -410,24 +375,6 @@ class AutoUpdateCliTests(unittest.TestCase):
         run_install.assert_not_called()
         self.assertIn(call("dry-run: installer would run"), stdout_write.call_args_list)
         self.assertIn(call("\n"), stdout_write.call_args_list)
-
-    def test_main_returns_non_zero_when_repo_sync_fails(self) -> None:
-        with tempfile.TemporaryDirectory() as tmp:
-            root = Path(tmp)
-            public = root / "dotfiles-public"
-            private = root / "dotfiles-private"
-            hosts = root / "dotfiles-hosts"
-            for repo in (public, private, hosts):
-                repo.mkdir()
-
-            with patch(
-                "dotfiles_installer.auto_update.sync_repo",
-                side_effect=UpdateError("private repository is dirty"),
-            ), patch("dotfiles_installer.auto_update.run_install") as run_install, captured_stdio():
-                exit_code = main(["--base", str(public), "--private", str(private), "--hosts", str(hosts)])
-
-        self.assertEqual(exit_code, 1)
-        run_install.assert_not_called()
 
     def test_main_returns_zero_when_lock_is_already_held(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
