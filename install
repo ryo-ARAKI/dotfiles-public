@@ -24,15 +24,18 @@ def main() -> int:
 
     context = detect_context(args.context, dict(os.environ))
     entries = load_manifest(ROOT / "manifest" / "base.tsv", "base")
+    private_root = None
     if args.private:
-        entries += load_manifest(Path(args.private) / "manifest" / "private.tsv", "private")
+        private_root = Path(args.private).expanduser()
+        entries += load_manifest(private_root / "manifest" / "private.tsv", "private")
     plan = build_plan(entries, context=context)
 
     backup_root = Path.home() / ".dotfiles-backup" / datetime.now().strftime("%Y%m%d-%H%M%S")
     for entry in plan.values():
         print(f"{entry.layer}: {entry.source} -> {entry.target}")
         if not args.dry_run:
-            apply_entry(entry, repo_root=ROOT, backup_root=backup_root)
+            repo_root = private_root if entry.layer == "private" else ROOT
+            apply_entry(entry, repo_root=repo_root or ROOT, backup_root=backup_root)
     return 0
 
 
