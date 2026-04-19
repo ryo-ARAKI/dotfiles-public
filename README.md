@@ -296,6 +296,46 @@ If a file should no longer be public:
 ./install --dry-run --context local --private ~/github/dotfiles-private
 ```
 
+## Automatic Periodic Updates
+
+For machines that should follow merged dotfiles changes automatically, enable the user timer. The unit assumes the repositories live under `~/github/dotfiles-public`, `~/github/dotfiles-private`, and `~/github/dotfiles-hosts`.
+
+The timer also requires a matching host manifest at `dotfiles-hosts/manifest/<hostname>.tsv` on each machine that enables it. Because the service passes `--hosts` unconditionally, the update will fail if that host-specific manifest is missing.
+
+```bash
+mkdir -p ~/.config/systemd/user
+cp systemd/dotfiles-update.service ~/.config/systemd/user/
+cp systemd/dotfiles-update.timer ~/.config/systemd/user/
+systemctl --user daemon-reload
+systemctl --user enable --now dotfiles-update.timer
+systemctl --user list-timers dotfiles-update.timer
+```
+
+The `cp` step is a one-time copy. If the upstream unit files change later, copy them again or keep your own drop-in override.
+
+The timer runs `scripts/update-dotfiles` roughly every 5 minutes. The updater:
+
+- fast-forwards `dotfiles-public`, `dotfiles-private`, and `dotfiles-hosts`
+- aborts if any repository is dirty or diverged
+- runs `./install --yes --private ... --hosts ...` once if any repository changed
+
+The unit passes `--context local` by default. On remote machines, either edit the copied unit directly to use `--context remote`, or create a drop-in override with a cleared `ExecStart` line so systemd does not retain the inherited command:
+
+```ini
+[Service]
+ExecStart=
+ExecStart=%h/github/dotfiles-public/scripts/update-dotfiles --context remote --private %h/github/dotfiles-private --hosts %h/github/dotfiles-hosts
+```
+
+If the service exits early, confirm that the three repositories exist at the paths above and that they can be fast-forwarded cleanly.
+
+Useful commands:
+
+```bash
+systemctl --user start dotfiles-update.service
+journalctl --user -u dotfiles-update.service -n 50 --no-pager
+```
+
 ## Public vs Private vs Host-Specific
 
 Use this rule of thumb:

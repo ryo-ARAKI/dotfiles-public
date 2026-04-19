@@ -1,0 +1,7 @@
+[Unit]
+Description=Update dotfiles repositories and apply manifest changes
+
+[Service]
+Type=oneshot
+WorkingDirectory=%h/github/dotfiles-public
+ExecStart=%h/github/dotfiles-public/scripts/update-dotfiles --context local --private %h/github/dotfiles-private --hosts %h/github/dotfiles-hosts
