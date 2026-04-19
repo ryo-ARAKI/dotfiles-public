@@ -13,6 +13,7 @@ class ManifestEntry:
 
 def load_manifest(path: Path, layer: str) -> list[ManifestEntry]:
     entries: list[ManifestEntry] = []
+    seen_when_by_target: dict[str, set[str]] = {}
     for line_number, raw_line in enumerate(path.read_text(encoding="utf-8").splitlines(), start=1):
         if not raw_line.strip() or raw_line.lstrip().startswith("#"):
             continue
@@ -22,5 +23,9 @@ def load_manifest(path: Path, layer: str) -> list[ManifestEntry]:
                 f"Malformed manifest row in {path} at line {line_number}: expected 4 tab-separated columns, got {len(parts)}"
             )
         source, target, mode, when = parts
+        seen_whens = seen_when_by_target.setdefault(target, set())
+        if when in seen_whens:
+            raise ValueError(f"ambiguous duplicate target in {path}: {target} for when {when}")
+        seen_whens.add(when)
         entries.append(ManifestEntry(layer, source, target, mode, when))
     return entries
