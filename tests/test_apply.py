@@ -63,11 +63,11 @@ class ApplyEntryTests(unittest.TestCase):
                 patch.object(install_module.Path, "home", return_value=home),
                 patch.dict("os.environ", {"HOME": str(home)}, clear=False),
                 patch("sys.argv", ["install"]),
-                patch("builtins.input", side_effect=["", "y"]) as prompt,
+                patch("builtins.input", side_effect=["maybe", "", "y"]) as prompt,
             ):
                 self.assertEqual(install_module.main(), 0)
 
-            self.assertEqual(prompt.call_count, 2)
+            self.assertEqual(prompt.call_count, 3)
             self.assertEqual(target.read_text(encoding="utf-8"), "new\n")
 
     def test_install_uses_private_repo_root_for_private_entries(self) -> None:
