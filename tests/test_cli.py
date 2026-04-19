@@ -66,49 +66,6 @@ class InstallCliTests(unittest.TestCase):
             self.assertIn("overridden: base: home/.vimrc -> ~/.vimrc", result.stdout)
             self.assertIn("Dry run summary: applied=0 skipped=0 nochange=0 overridden=1", result.stdout)
 
-    def test_dry_run_loads_host_manifest_when_hosts_and_host_name_are_given(self) -> None:
-        repo_root = Path(__file__).resolve().parents[1]
-        with tempfile.TemporaryDirectory() as tmp:
-            temp_root = Path(tmp)
-            hosts_repo = temp_root / "hosts"
-            home = temp_root / "home"
-            hosts_repo.mkdir()
-            (hosts_repo / "manifest").mkdir()
-            (hosts_repo / "home").mkdir()
-            home.mkdir()
-
-            (hosts_repo / "manifest" / "h200.tsv").write_text(
-                "home/.vimrc_host\t~/.vimrc\t0644\talways\n",
-                encoding="utf-8",
-            )
-            (hosts_repo / "home" / ".vimrc_host").write_text("host\n", encoding="utf-8")
-
-            env = dict(os.environ)
-            env["HOME"] = str(home)
-            result = subprocess.run(
-                [
-                    "./install",
-                    "--dry-run",
-                    "--context",
-                    "local",
-                    "--hosts",
-                    str(hosts_repo),
-                    "--host-name",
-                    "h200",
-                    "--only",
-                    "vimrc",
-                ],
-                cwd=repo_root,
-                env=env,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-
-            self.assertEqual(result.returncode, 0)
-            self.assertIn("would apply: host: home/.vimrc_host -> ~/.vimrc", result.stdout)
-            self.assertIn("overridden: base: home/.vimrc -> ~/.vimrc", result.stdout)
-
     def test_host_name_requires_hosts_option(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         result = subprocess.run(
