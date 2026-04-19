@@ -5,9 +5,13 @@ if status --is-interactive
         end
 
         set -l noisy_patterns \
-            '^\s*(?:builtin\s+)?(?:ls|pwd|cd|clear|history|dirh|prevd|nextd|cdh)\b' \
+            '^\s*(?:builtin\s+)?(?:ls|pwd|clear|history|dirh|prevd|nextd|cdh)\b' \
             '^\s*(?:builtin\s+)?(?:z|zo)\b' \
             '^\s*(?:command\s+)?eza\b' \
+            '^\s*(?:command\s+)?batcat\b' \
+            '^\s*(?:command\s+)?procs\b' \
+            '^\s*(?:command\s+)?(?:file|stat|type|which)\b' \
+            '^\s*command\s+-v\b' \
             '^\s*(?:command\s+)?(?:evince|eog|vlc|mupdf)\b'
 
         for pattern in $noisy_patterns
