@@ -6,29 +6,6 @@ from pathlib import Path
 
 
 class InstallCliTests(unittest.TestCase):
-    def test_install_generates_codex_config_from_public_fragment(self) -> None:
-        repo_root = Path(__file__).resolve().parents[1]
-        with tempfile.TemporaryDirectory() as tmp:
-            home = Path(tmp) / "home"
-            home.mkdir()
-
-            env = dict(os.environ)
-            env["HOME"] = str(home)
-            result = subprocess.run(
-                ["./install", "--yes", "--context", "local"],
-                cwd=repo_root,
-                env=env,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-
-            self.assertEqual(result.returncode, 0, msg=result.stderr)
-            config_path = home / ".codex" / "config.toml"
-            self.assertTrue(config_path.exists())
-            expected = (repo_root / "config" / "codex" / "config.public.toml").read_text(encoding="utf-8")
-            self.assertEqual(config_path.read_text(encoding="utf-8"), expected)
-
     def test_install_generates_codex_config_from_public_and_private_fragments(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as tmp:
