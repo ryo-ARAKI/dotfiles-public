@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 import os
+import socket
 import sys
 from datetime import datetime
 from pathlib import Path
@@ -27,6 +28,28 @@ def _matches_only(entry: ManifestEntry, only: str | None) -> bool:
     if not only:
         return True
     return only in entry.target or only in entry.source
+
+
+def _resolve_host_name(explicit: str | None) -> str:
+    return explicit or socket.gethostname()
+
+
+def _resolve_repo_root(
+    entry: ManifestEntry,
+    *,
+    base_root: Path,
+    private_root: Path | None,
+    host_root: Path | None,
+) -> Path:
+    if entry.layer == "private":
+        if private_root is None:
+            raise ValueError("private entry requested without private root")
+        return private_root
+    if entry.layer == "host":
+        if host_root is None:
+            raise ValueError("host entry requested without host root")
+        return host_root
+    return base_root
 
 
 def _file_mode(path: Path) -> int | None:
@@ -65,17 +88,30 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--context", choices=("local", "remote"))
     parser.add_argument("--private")
+    parser.add_argument("--hosts")
+    parser.add_argument("--host-name")
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--only")
     parser.add_argument("--yes", action="store_true")
     args = parser.parse_args()
 
+    if args.host_name and not args.hosts:
+        parser.error("--host-name requires --hosts")
+
     context = detect_context(args.context, dict(os.environ))
     entries = load_manifest(ROOT / "manifest" / "base.tsv", "base")
     private_root = None
+    host_root = None
     if args.private:
         private_root = Path(args.private).expanduser()
         entries += load_manifest(private_root / "manifest" / "private.tsv", "private")
+    if args.hosts:
+        host_root = Path(args.hosts).expanduser()
+        resolved_host = _resolve_host_name(args.host_name)
+        host_manifest = host_root / "manifest" / f"{resolved_host}.tsv"
+        if not host_manifest.exists():
+            parser.error(f"Host manifest not found: {host_manifest}")
+        entries += load_manifest(host_manifest, "host")
     report = build_plan_report(entries, context=context)
     filtered_plan = {
         target: entry
@@ -93,8 +129,8 @@ def main() -> int:
     skipped = 0
     nochange = 0
     for entry in filtered_plan.values():
-        repo_root = private_root if entry.layer == "private" else ROOT
-        needs_change, preview = _render_entry_preview(entry, repo_root=repo_root or ROOT, dry_run=args.dry_run)
+        repo_root = _resolve_repo_root(entry, base_root=ROOT, private_root=private_root, host_root=host_root)
+        needs_change, preview = _render_entry_preview(entry, repo_root=repo_root, dry_run=args.dry_run)
         print(preview)
         if not needs_change:
             nochange += 1
@@ -119,7 +155,7 @@ def main() -> int:
         if not apply_current:
             skipped += 1
             continue
-        apply_entry(entry, repo_root=repo_root or ROOT, backup_root=backup_root)
+        apply_entry(entry, repo_root=repo_root, backup_root=backup_root)
         applied += 1
     for entry in filtered_overridden:
         if args.dry_run:

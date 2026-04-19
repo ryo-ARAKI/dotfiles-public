@@ -40,7 +40,7 @@ Current implementation status:
 
 - `dotfiles-public` is fully wired into `./install`
 - `dotfiles-private` is supported through `--private /path/to/dotfiles-private`
-- `dotfiles-hosts` exists as a repository and manifest home, but host overlay loading is not yet wired into the CLI
+- `dotfiles-hosts` is supported through `--hosts /path/to/dotfiles-hosts`
 
 ## Directory Layout
 
@@ -121,14 +121,15 @@ The current behavior is:
 1. Detect execution context as `local` or `remote`
 2. Load `manifest/base.tsv`
 3. Optionally load `dotfiles-private/manifest/private.tsv` when `--private` is given
-4. Resolve conflicts by layer precedence
-5. Build the final plan
-6. For each selected file:
+4. Optionally load `dotfiles-hosts/manifest/<host>.tsv` when `--hosts` is given
+5. Resolve conflicts by layer precedence
+6. Build the final plan
+7. For each selected file:
    show a short preview or diff
    ask for confirmation unless `--yes` is used
    back up the current file if it exists
    install the new file and set the requested mode
-7. Print a summary at the end
+8. Print a summary at the end
 
 ### Context Detection
 
@@ -142,6 +143,22 @@ That makes it possible to keep separate local and remote bash entry points:
 
 - local: `home/.bashrc -> ~/.bashrc`
 - remote: `home/.bashrc_remote -> ~/.bashrc`
+
+### Host Detection
+
+Host overlay loading is opt-in and only happens when `--hosts` is provided.
+
+Host manifest selection is based on:
+
+- `--host-name <name>` when explicitly supplied
+- otherwise `socket.gethostname()`
+
+That means:
+
+- `--hosts /path/to/dotfiles-hosts --host-name h200` loads `manifest/h200.tsv`
+- `--hosts /path/to/dotfiles-hosts` loads `manifest/<current-hostname>.tsv`
+
+If `--hosts` is given and the resolved host manifest does not exist, `./install` exits with an error instead of silently ignoring the host layer.
 
 ### Backup Behavior
 
@@ -186,16 +203,41 @@ Dry runs do not write anything. They report what would be applied and show overr
 ./install --dry-run --context remote --private /home/ryo/github/dotfiles-private
 ```
 
+### Dry-run remote with private and host overlays
+
+```bash
+./install --dry-run --context remote \
+  --private /home/ryo/github/dotfiles-private \
+  --hosts /home/ryo/github/dotfiles-hosts \
+  --host-name h200
+```
+
 ### Apply interactively on a remote machine
 
 ```bash
 ./install --context remote --private /home/ryo/github/dotfiles-private
 ```
 
+### Apply interactively with private and host overlays
+
+```bash
+./install --context remote \
+  --private /home/ryo/github/dotfiles-private \
+  --hosts /home/ryo/github/dotfiles-hosts
+```
+
 ### Apply without prompting
 
 ```bash
 ./install --yes --context remote --private /home/ryo/github/dotfiles-private
+```
+
+### Apply without prompting with private and host overlays
+
+```bash
+./install --yes --context remote \
+  --private /home/ryo/github/dotfiles-private \
+  --hosts /home/ryo/github/dotfiles-hosts
 ```
 
 ### Limit the run to one file family
@@ -206,6 +248,14 @@ Dry runs do not write anything. They report what would be applied and show overr
 ```
 
 `--only` matches by substring against either the manifest source path or the target path.
+
+Additional option notes:
+
+- `--private`: path to the `dotfiles-private` repository root
+- `--hosts`: path to the `dotfiles-hosts` repository root
+- `--host-name`: optional host manifest name override; defaults to the current hostname
+- `--host-name` requires `--hosts`
+- `--hosts` fails if `manifest/<resolved-host>.tsv` does not exist
 
 ## Daily Workflow
 
@@ -279,17 +329,23 @@ The current operational target set is:
 - `Zekrom`
 
 Today, these hosts share the same base and private layers. Host-specific manifests exist as placeholders in `dotfiles-hosts`, but the CLI does not yet consume them automatically.
+Today, these hosts currently share the same committed host overlay content as well, but the CLI can now consume host-specific manifests when they are added.
 
 For now, the recommended remote workflow is:
 
 1. log into the remote machine
 2. clone or update `dotfiles-public`
 3. clone or update `dotfiles-private`
-4. run:
+4. clone or update `dotfiles-hosts`
+5. run:
 
 ```bash
-./install --dry-run --context remote --private /path/to/dotfiles-private
-./install --context remote --private /path/to/dotfiles-private
+./install --dry-run --context remote \
+  --private /path/to/dotfiles-private \
+  --hosts /path/to/dotfiles-hosts
+./install --context remote \
+  --private /path/to/dotfiles-private \
+  --hosts /path/to/dotfiles-hosts
 ```
 
 ## Verification
@@ -305,6 +361,7 @@ Useful spot checks:
 ```bash
 ./install --dry-run --context local
 ./install --dry-run --context remote --private /home/ryo/github/dotfiles-private
+./install --dry-run --context remote --private /home/ryo/github/dotfiles-private --hosts /home/ryo/github/dotfiles-hosts --host-name h200
 ```
 
 ## Safety Notes
@@ -312,11 +369,10 @@ Useful spot checks:
 - Interactive runs show diffs before confirmation, but they assume text files encoded as UTF-8.
 - `--yes` skips prompts. Use it only after a dry-run you trust.
 - `docs/` is intentionally not part of the normal committed content in this repository during design/plan work.
-- `dotfiles-hosts` is part of the intended architecture, but automatic host-layer loading is not implemented yet.
+- `--hosts` is strict: if the resolved host manifest is missing, the command exits with an error.
 
 ## Current Limitations
 
-- host overlay loading is not yet connected to the installer CLI
 - diff rendering is text-oriented and not designed for binary files
 - the test suite does not yet exhaustively cover every interactive branch or mode-only diff case
 
