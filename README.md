@@ -12,6 +12,7 @@ Public base layer for personal dotfiles.
 ```
 
 Use `--only` to limit output to matching targets or source paths, and `--yes` to apply changes without prompting.
+Interactive runs show a short content diff before confirmation, and every run ends with a summary of applied, skipped, nochange, and overridden entries.
 
 ## Layer order
 

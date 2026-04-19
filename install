@@ -11,8 +11,54 @@ if str(ROOT) not in sys.path:
 
 from dotfiles_installer.apply import apply_entry
 from dotfiles_installer.context import detect_context
+from dotfiles_installer.manifest import ManifestEntry
 from dotfiles_installer.manifest import load_manifest
-from dotfiles_installer.planner import build_plan
+from dotfiles_installer.planner import build_plan_report
+from dotfiles_installer.reporting import (
+    read_text_if_exists,
+    render_text_diff,
+    summarize_overridden_line,
+    summarize_plan_line,
+    summarize_run,
+)
+
+
+def _matches_only(entry: ManifestEntry, only: str | None) -> bool:
+    if not only:
+        return True
+    return only in entry.target or only in entry.source
+
+
+def _file_mode(path: Path) -> int | None:
+    if not path.exists():
+        return None
+    return path.stat().st_mode & 0o777
+
+
+def _render_entry_preview(entry, repo_root: Path, *, dry_run: bool) -> tuple[bool, str | None]:
+    source_path = repo_root / entry.source
+    target_path = Path(entry.target).expanduser()
+    source_text = source_path.read_text(encoding="utf-8")
+    current_text = read_text_if_exists(target_path)
+    current_mode = _file_mode(target_path)
+    desired_mode = int(entry.mode, 8)
+    content_matches = current_text == source_text
+    mode_matches = current_mode == desired_mode
+    needs_change = not (content_matches and mode_matches)
+
+    if dry_run:
+        status = "nochange" if not needs_change else "would apply"
+        return needs_change, f"{status}: {summarize_plan_line(entry)}"
+
+    lines = [summarize_plan_line(entry)]
+    if not needs_change:
+        lines.append("No changes needed")
+        return needs_change, "\n".join(lines)
+
+    lines.append(render_text_diff(entry.target, entry.source, current_text, source_text))
+    if current_text is not None and content_matches and not mode_matches:
+        lines.append(f"Mode change: {current_mode:04o} -> {desired_mode:04o}")
+    return needs_change, "\n".join(lines)
 
 
 def main() -> int:
@@ -30,16 +76,29 @@ def main() -> int:
     if args.private:
         private_root = Path(args.private).expanduser()
         entries += load_manifest(private_root / "manifest" / "private.tsv", "private")
-    plan = build_plan(entries, context=context)
+    report = build_plan_report(entries, context=context)
     filtered_plan = {
         target: entry
-        for target, entry in plan.items()
-        if not args.only or args.only in target or args.only in entry.source
+        for target, entry in report.selected.items()
+        if _matches_only(entry, args.only)
     }
+    filtered_overridden: list[ManifestEntry] = []
+    for _, overridden_entries in report.overridden.items():
+        for entry in overridden_entries:
+            if _matches_only(entry, args.only):
+                filtered_overridden.append(entry)
 
     backup_root = Path.home() / ".dotfiles-backup" / datetime.now().strftime("%Y%m%d-%H%M%S")
+    applied = 0
+    skipped = 0
+    nochange = 0
     for entry in filtered_plan.values():
-        print(f"{entry.layer}: {entry.source} -> {entry.target}")
+        repo_root = private_root if entry.layer == "private" else ROOT
+        needs_change, preview = _render_entry_preview(entry, repo_root=repo_root or ROOT, dry_run=args.dry_run)
+        print(preview)
+        if not needs_change:
+            nochange += 1
+            continue
         if args.dry_run:
             continue
         apply_current = True
@@ -52,14 +111,20 @@ def main() -> int:
                     apply_current = False
                     break
                 if answer == "q":
+                    print(summarize_run(applied, skipped, nochange, len(filtered_overridden), args.dry_run))
                     return 1
                 if answer == "a":
                     args.yes = True
                     break
         if not apply_current:
+            skipped += 1
             continue
-        repo_root = private_root if entry.layer == "private" else ROOT
         apply_entry(entry, repo_root=repo_root or ROOT, backup_root=backup_root)
+        applied += 1
+    for entry in filtered_overridden:
+        if args.dry_run:
+            print(summarize_overridden_line(entry))
+    print(summarize_run(applied, skipped, nochange, len(filtered_overridden), args.dry_run))
     return 0
 
 

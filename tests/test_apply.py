@@ -1,3 +1,4 @@
+import io
 import tempfile
 import unittest
 from importlib import machinery
@@ -69,6 +70,44 @@ class ApplyEntryTests(unittest.TestCase):
 
             self.assertEqual(prompt.call_count, 3)
             self.assertEqual(target.read_text(encoding="utf-8"), "new\n")
+
+    def test_install_shows_new_file_diff_before_confirmation(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            base_repo = root / "base"
+            home = root / "home"
+            target = home / ".bashrc"
+
+            (base_repo / "manifest").mkdir(parents=True)
+            (base_repo / "home").mkdir(parents=True)
+            home.mkdir()
+
+            (base_repo / "manifest" / "base.tsv").write_text(
+                "home/.bashrc\t~/.bashrc\t0644\talways\n",
+                encoding="utf-8",
+            )
+            (base_repo / "home" / ".bashrc").write_text("new\nline\n", encoding="utf-8")
+
+            install_module = load_install_module()
+            stdout = io.StringIO()
+
+            with (
+                patch.object(install_module, "ROOT", base_repo),
+                patch.object(install_module.Path, "home", return_value=home),
+                patch.dict("os.environ", {"HOME": str(home)}, clear=False),
+                patch("sys.argv", ["install"]),
+                patch("builtins.input", side_effect=["y"]) as prompt,
+                patch("sys.stdout", stdout),
+            ):
+                self.assertEqual(install_module.main(), 0)
+
+            output = stdout.getvalue()
+            self.assertIn("New file: ~/.bashrc", output)
+            self.assertIn("--- /dev/null", output)
+            self.assertIn("+++ home/.bashrc", output)
+            self.assertIn("Summary: applied=1 skipped=0 nochange=0 overridden=0", output)
+            self.assertEqual(prompt.call_count, 1)
+            self.assertEqual(target.read_text(encoding="utf-8"), "new\nline\n")
 
     def test_install_uses_private_repo_root_for_private_entries(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
