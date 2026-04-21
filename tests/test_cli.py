@@ -36,10 +36,14 @@ class InstallCliTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             config_path = home / ".codex" / "config.toml"
+            rules_path = home / ".codex" / "rules" / "default.rules"
             self.assertTrue(config_path.exists())
+            self.assertTrue(rules_path.exists())
             public_fragment = (repo_root / "config" / "codex" / "config.public.toml").read_text(encoding="utf-8")
             private_fragment = (private_repo / "config" / "codex" / "config.private.toml").read_text(encoding="utf-8")
+            expected_rules = (repo_root / "config" / "codex" / "rules" / "default.rules").read_text(encoding="utf-8")
             self.assertEqual(config_path.read_text(encoding="utf-8"), f"{public_fragment}\n\n{private_fragment}")
+            self.assertEqual(rules_path.read_text(encoding="utf-8"), expected_rules)
 
     def test_dry_run_reports_codex_config_generation_without_writing(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
