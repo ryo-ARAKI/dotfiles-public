@@ -4,7 +4,7 @@
 # Do not edit config.toml directly; regenerate it through ./install.
 
 # Shared model defaults.
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 model_verbosity = "medium"
@@ -14,7 +14,6 @@ approval_policy = "on-request"
 sandbox_mode = "workspace-write"
 personality = "pragmatic"
 web_search = "live"
-service_tier = "fast"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
 
 # Shared TUI defaults.
@@ -25,7 +24,7 @@ notification_method = "auto"
 status_line = [
   "project-root",
   "git-branch",
-  "fast-mode",
+  "model-with-reasoning",
   "context-usage",
   "five-hour-limit",
 ]
@@ -40,6 +39,7 @@ enabled = true
 
 # Shared feature flags.
 [features]
+fast_mode = false
 memories = true
 
 # Shared memories defaults.
@@ -49,12 +49,37 @@ use_memories = true
 no_memories_if_mcp_or_web_search = true
 
 # Shared profile presets.
-[profiles.fast]
-model_reasoning_effort = "low"
-plan_mode_reasoning_effort = "medium"
+# Default profile: prioritize depth with GPT-5.5 high.
+[profiles.default]
+model = "gpt-5.5"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "high"
+
+[profiles.default.features]
+fast_mode = false
+
+# Fast profile: keep GPT-5.4 high on the fast service tier.
+[profiles.economy]
+model = "gpt-5.4"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "high"
 service_tier = "fast"
 
-[profiles.deep]
+[profiles.economy.features]
+fast_mode = true
+
+[profiles.standard]
+model = "gpt-5.5"
 model_reasoning_effort = "high"
-plan_mode_reasoning_effort = "xhigh"
-service_tier = "fast"
+plan_mode_reasoning_effort = "high"
+
+[profiles.standard.features]
+fast_mode = false
+
+[profiles.cheap]
+model = "gpt-5.4-mini"
+model_reasoning_effort = "medium"
+plan_mode_reasoning_effort = "medium"
+
+[profiles.cheap.features]
+fast_mode = false
