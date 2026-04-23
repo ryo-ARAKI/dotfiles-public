@@ -4,7 +4,7 @@
 # Do not edit config.toml directly; regenerate it through ./install.
 
 # Shared model defaults.
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 model_verbosity = "medium"
@@ -25,6 +25,7 @@ notification_method = "auto"
 status_line = [
   "project-root",
   "git-branch",
+  "model-with-reasoning",
   "fast-mode",
   "context-usage",
   "five-hour-limit",
@@ -40,6 +41,7 @@ enabled = true
 
 # Shared feature flags.
 [features]
+fast_mode = true
 memories = true
 
 # Shared memories defaults.
