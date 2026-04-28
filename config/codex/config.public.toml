@@ -25,6 +25,7 @@ notification_method = "auto"
 status_line = [
   "project-root",
   "git-branch",
+  "model-with-reasoning",
   "fast-mode",
   "context-usage",
   "five-hour-limit",
