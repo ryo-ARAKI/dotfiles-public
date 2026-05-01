@@ -4,14 +4,14 @@
 # Do not edit config.toml directly; regenerate it through ./install.
 
 # Shared model defaults.
-model = "gpt-5.4"
+model = "gpt-5.5"
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 model_verbosity = "medium"
 
 # Shared execution defaults.
 approval_policy = "on-request"
-sandbox_mode = "workspace-write"
+default_permissions = ":workspace"
 personality = "pragmatic"
 web_search = "live"
 service_tier = "fast"
@@ -19,18 +19,27 @@ project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
 
 # Shared TUI defaults.
 [tui]
-#alternate_screen = false
+# alternate_screen = "never"  # preserve terminal scrollback instead of fullscreen alt screen
 notifications = ["agent-turn-complete", "approval-requested"]
 notification_method = "auto"
+notification_condition = "unfocused"
 status_line = [
-  "project-root",
+  "project-name",
   "git-branch",
+  "run-state",
+  "task-progress",
   "model-with-reasoning",
-  "fast-mode",
-  "context-usage",
+  "context-remaining",
   "five-hour-limit",
+  "weekly-limit",
 ]
-terminal_title = ["spinner", "project", "git-branch", "task-progress"]
+terminal_title = [
+  "project-name",
+  "activity",
+  "run-state",
+  "thread-title",
+  "task-progress",
+]
 
 [notice.model_migrations]
 "gpt-5.3-codex" = "gpt-5.4"
@@ -42,6 +51,7 @@ enabled = true
 # Shared feature flags.
 [features]
 memories = true
+goals = true
 
 # Shared memories defaults.
 [memories]
