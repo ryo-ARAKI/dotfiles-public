@@ -14,6 +14,7 @@ except ModuleNotFoundError:  # pragma: no cover - Python < 3.11
 
 PUBLIC_FRAGMENT = Path("config/codex/config.public.toml")
 PRIVATE_FRAGMENT = Path("config/codex/config.private.toml")
+PRIVATE_LOCAL_FRAGMENT = Path("config/codex/config.private.local.toml")
 TARGET_PATH = Path("~/.codex/config.toml")
 TARGET_MODE = 0o644
 
@@ -38,7 +39,13 @@ def _validate_toml(text: str) -> None:
     tomllib.loads(text)
 
 
-def plan_codex_config(base_root: Path, private_root: Path | None, *, home_root: Path | None = None) -> CodexConfigPlan:
+def plan_codex_config(
+    base_root: Path,
+    private_root: Path | None,
+    *,
+    home_root: Path | None = None,
+    context: str = "local",
+) -> CodexConfigPlan:
     public_path = base_root / PUBLIC_FRAGMENT
     fragments = [_read_required_fragment(public_path)]
     source_label = str(PUBLIC_FRAGMENT)
@@ -47,6 +54,10 @@ def plan_codex_config(base_root: Path, private_root: Path | None, *, home_root: 
         private_path = private_root / PRIVATE_FRAGMENT
         fragments.append(_read_required_fragment(private_path))
         source_label = f"{source_label} + {PRIVATE_FRAGMENT}"
+        private_local_path = private_root / PRIVATE_LOCAL_FRAGMENT
+        if context == "local" and private_local_path.exists():
+            fragments.append(_read_required_fragment(private_local_path))
+            source_label = f"{source_label} + {PRIVATE_LOCAL_FRAGMENT}"
 
     content = "\n\n".join(fragment for fragment in fragments if fragment)
     _validate_toml(content)

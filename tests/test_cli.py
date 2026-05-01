@@ -22,6 +22,10 @@ class InstallCliTests(unittest.TestCase):
                 '\n[projects."/tmp/private-project"]\ntrust_level = "trusted"\n',
                 encoding="utf-8",
             )
+            (private_repo / "config" / "codex" / "config.private.local.toml").write_text(
+                '\n[plugins."ryo-workflows@ryo-private"]\nenabled = true\n',
+                encoding="utf-8",
+            )
 
             env = dict(os.environ)
             env["HOME"] = str(home)
@@ -41,9 +45,52 @@ class InstallCliTests(unittest.TestCase):
             self.assertTrue(rules_path.exists())
             public_fragment = (repo_root / "config" / "codex" / "config.public.toml").read_text(encoding="utf-8")
             private_fragment = (private_repo / "config" / "codex" / "config.private.toml").read_text(encoding="utf-8")
+            private_local_fragment = (private_repo / "config" / "codex" / "config.private.local.toml").read_text(
+                encoding="utf-8"
+            )
             expected_rules = (repo_root / "config" / "codex" / "rules" / "default.rules").read_text(encoding="utf-8")
-            self.assertEqual(config_path.read_text(encoding="utf-8"), f"{public_fragment}\n\n{private_fragment}")
+            self.assertEqual(
+                config_path.read_text(encoding="utf-8"),
+                f"{public_fragment}\n\n{private_fragment}\n\n{private_local_fragment}",
+            )
             self.assertEqual(rules_path.read_text(encoding="utf-8"), expected_rules)
+
+    def test_remote_install_excludes_private_local_codex_fragment(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            private_repo = temp_root / "private"
+            home = temp_root / "home"
+            private_repo.mkdir()
+            (private_repo / "manifest").mkdir()
+            (private_repo / "config" / "codex").mkdir(parents=True)
+            home.mkdir()
+
+            (private_repo / "manifest" / "private.tsv").write_text("", encoding="utf-8")
+            (private_repo / "config" / "codex" / "config.private.toml").write_text(
+                '\n[projects."/tmp/private-project"]\ntrust_level = "trusted"\n',
+                encoding="utf-8",
+            )
+            (private_repo / "config" / "codex" / "config.private.local.toml").write_text(
+                '\n[plugins."ryo-workflows@ryo-private"]\nenabled = true\n',
+                encoding="utf-8",
+            )
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            result = subprocess.run(
+                ["./install", "--yes", "--context", "remote", "--private", str(private_repo)],
+                cwd=repo_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            config_text = (home / ".codex" / "config.toml").read_text(encoding="utf-8")
+            self.assertIn('[projects."/tmp/private-project"]', config_text)
+            self.assertNotIn("ryo-workflows@ryo-private", config_text)
 
     def test_dry_run_reports_codex_config_generation_without_writing(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]

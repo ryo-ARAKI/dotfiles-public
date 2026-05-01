@@ -45,6 +45,29 @@ class CodexConfigTests(unittest.TestCase):
             with self.assertRaises(tomllib.TOMLDecodeError):
                 plan_codex_config(base_root, None, home_root=root / "home")
 
+    def test_plan_includes_private_local_fragment_only_for_local_context(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            base_root = root / "base"
+            private_root = root / "private"
+            (base_root / "config" / "codex").mkdir(parents=True)
+            (private_root / "config" / "codex").mkdir(parents=True)
+
+            public_text = 'model = "gpt-5.5"\n'
+            private_text = '\n[projects."/tmp/private"]\ntrust_level = "trusted"\n'
+            local_text = '\n[plugins."ryo-workflows@ryo-private"]\nenabled = true\n'
+            (base_root / "config" / "codex" / "config.public.toml").write_text(public_text, encoding="utf-8")
+            (private_root / "config" / "codex" / "config.private.toml").write_text(private_text, encoding="utf-8")
+            (private_root / "config" / "codex" / "config.private.local.toml").write_text(local_text, encoding="utf-8")
+
+            local_plan = plan_codex_config(base_root, private_root, home_root=root / "home", context="local")
+            remote_plan = plan_codex_config(base_root, private_root, home_root=root / "home", context="remote")
+
+            self.assertEqual(local_plan.content, f"{public_text}\n\n{private_text}\n\n{local_text}")
+            self.assertEqual(remote_plan.content, f"{public_text}\n\n{private_text}")
+            self.assertIn("config.private.local.toml", local_plan.source_label)
+            self.assertNotIn("config.private.local.toml", remote_plan.source_label)
+
     def test_apply_returns_nochange_when_generated_config_matches_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)

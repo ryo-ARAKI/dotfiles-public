@@ -135,7 +135,7 @@ def main() -> int:
     codex_plan = None
     if _matches_codex_only(args.only):
         try:
-            codex_plan = plan_codex_config(ROOT, private_root)
+            codex_plan = plan_codex_config(ROOT, private_root, context=context)
         except ValueError as exc:
             parser.error(str(exc))
         except Exception as exc:
