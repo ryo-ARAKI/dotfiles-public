@@ -16,6 +16,9 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from dotfiles_installer.apply import apply_entry
+from dotfiles_installer.codex_agents import COMMON_FRAGMENT as CODEX_AGENTS_COMMON_FRAGMENT
+from dotfiles_installer.codex_agents import apply_codex_agents
+from dotfiles_installer.codex_agents import plan_codex_agents
 from dotfiles_installer.codex_config import apply_codex_config
 from dotfiles_installer.codex_config import plan_codex_config
 from dotfiles_installer.context import detect_context
@@ -52,6 +55,24 @@ def _matches_codex_only(only: str | None) -> bool:
         "codex",
     )
     return any(only in candidate for candidate in candidates)
+
+
+def _matches_codex_agents_only(only: str | None) -> bool:
+    if not only:
+        return True
+    candidates = (
+        "config/codex/AGENTS.common.md",
+        "config/codex/AGENTS.local.extra.md",
+        "~/.codex/AGENTS.md",
+        "AGENTS.md",
+    )
+    return any(only in candidate for candidate in candidates)
+
+
+def _should_plan_codex_agents(private_root: Path | None, only: str | None) -> bool:
+    if private_root is None or not _matches_codex_agents_only(only):
+        return False
+    return only is not None or (private_root / CODEX_AGENTS_COMMON_FRAGMENT).exists()
 
 
 def _resolve_repo_root(
@@ -142,6 +163,12 @@ def main() -> int:
             if tomllib is not None and isinstance(exc, tomllib.TOMLDecodeError):
                 parser.error(f"Generated Codex config is not valid TOML: {exc}")
             raise
+    codex_agents_plan = None
+    if _should_plan_codex_agents(private_root, args.only):
+        try:
+            codex_agents_plan = plan_codex_agents(private_root, context=context)
+        except ValueError as exc:
+            parser.error(str(exc))
     report = build_plan_report(entries, context=context)
     filtered_plan = {
         target: entry
@@ -200,6 +227,20 @@ def main() -> int:
         if codex_status == "applied":
             applied += 1
         if codex_status == "nochange":
+            nochange += 1
+    if codex_agents_plan is not None:
+        codex_agents_status = apply_codex_agents(codex_agents_plan, backup_root=backup_root, dry_run=args.dry_run)
+        print(
+            summarize_generated_line(
+                "codex-agents",
+                codex_agents_plan.source_label,
+                codex_agents_plan.target_label,
+                status=codex_agents_status.replace("_", " "),
+            )
+        )
+        if codex_agents_status == "applied":
+            applied += 1
+        if codex_agents_status == "nochange":
             nochange += 1
     for entry in filtered_overridden:
         if args.dry_run:

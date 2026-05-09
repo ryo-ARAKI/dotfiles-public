@@ -92,6 +92,43 @@ class InstallCliTests(unittest.TestCase):
             self.assertIn('[projects."/tmp/private-project"]', config_text)
             self.assertNotIn("ryo-workflows@ryo-private", config_text)
 
+    def test_install_generates_codex_agents_from_common_and_local_fragments(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            private_repo = temp_root / "private"
+            home = temp_root / "home"
+            private_repo.mkdir()
+            (private_repo / "manifest").mkdir()
+            (private_repo / "config" / "codex").mkdir(parents=True)
+            home.mkdir()
+
+            (private_repo / "manifest" / "private.tsv").write_text("", encoding="utf-8")
+            (private_repo / "config" / "codex" / "config.private.toml").write_text("", encoding="utf-8")
+            (private_repo / "config" / "codex" / "AGENTS.common.md").write_text("# Common\n", encoding="utf-8")
+            (private_repo / "config" / "codex" / "AGENTS.local.extra.md").write_text(
+                "## Local\n",
+                encoding="utf-8",
+            )
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            result = subprocess.run(
+                ["./install", "--yes", "--context", "local", "--private", str(private_repo), "--only", "AGENTS.md"],
+                cwd=repo_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertEqual((home / ".codex" / "AGENTS.md").read_text(encoding="utf-8"), "# Common\n\n\n## Local\n")
+            self.assertIn(
+                "applied: codex-agents: config/codex/AGENTS.common.md + config/codex/AGENTS.local.extra.md -> ~/.codex/AGENTS.md",
+                result.stdout,
+            )
+
     def test_dry_run_reports_codex_config_generation_without_writing(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as tmp:
