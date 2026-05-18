@@ -5,7 +5,6 @@ Documentation=https://github.com/jahnf/Projecteur
 [Service]
 Type=simple
 Environment=QT_QPA_PLATFORM=xcb
-ExecCondition=/bin/sh -c '/usr/local/bin/projecteur -d 2>/dev/null | grep -q "Logitech Spotlight"'
 ExecStart=/usr/local/bin/projecteur
 Restart=on-failure
 RestartSec=2s
