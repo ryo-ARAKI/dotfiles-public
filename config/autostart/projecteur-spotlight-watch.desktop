@@ -2,7 +2,7 @@
 Type=Application
 Name=Projecteur Spotlight watcher
 Comment=Start Projecteur when the Logitech Spotlight receiver appears
-Exec=systemctl --user start projecteur-spotlight.path
+Exec=systemctl --user start projecteur-spotlight-watch.service
 Hidden=false
 NoDisplay=true
 X-GNOME-Autostart-enabled=true

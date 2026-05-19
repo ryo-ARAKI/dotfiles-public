@@ -22,7 +22,8 @@ config/codex/rules/default.rules	~/.codex/rules/default.rules	0644	always
 config/gh/config.yml	~/.config/gh/config.yml	0644	always
 config/terminator/config	~/.config/terminator/config	0644	always
 config/Projecteur/Projecteur.conf	~/.config/Projecteur/Projecteur.conf	0644	always
+bin/projecteur-spotlight-watch	~/.local/bin/projecteur-spotlight-watch	0755	local
 config/systemd/user/projecteur.service	~/.config/systemd/user/projecteur.service	0644	local
-config/systemd/user/projecteur-spotlight.path	~/.config/systemd/user/projecteur-spotlight.path	0644	local
+config/systemd/user/projecteur-spotlight-watch.service	~/.config/systemd/user/projecteur-spotlight-watch.service	0644	local
 config/autostart/projecteur-spotlight-watch.desktop	~/.config/autostart/projecteur-spotlight-watch.desktop	0644	local
 config/xbindkeys/.xbindkeysrc	~/.xbindkeysrc	0644	always

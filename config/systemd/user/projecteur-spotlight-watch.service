@@ -1,0 +1,8 @@
+[Unit]
+Description=Watch for Logitech Spotlight receiver connections
+
+[Service]
+Type=simple
+ExecStart=%h/.local/bin/projecteur-spotlight-watch
+Restart=on-failure
+RestartSec=5s
