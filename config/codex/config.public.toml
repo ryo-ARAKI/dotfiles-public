@@ -29,6 +29,8 @@ status_line = [
   "run-state",
   "task-progress",
   "model-with-reasoning",
+  "permissions",
+  "approval-mode",
   "context-remaining",
   "five-hour-limit",
   "weekly-limit",
