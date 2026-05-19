@@ -26,11 +26,10 @@ notification_condition = "unfocused"
 status_line = [
   "project-name",
   "git-branch",
-  "run-state",
   "task-progress",
   "model-with-reasoning",
-  "permissions",
-  "approval-mode",
+  # "permissions",
+  # "approval-mode",
   "context-remaining",
   "five-hour-limit",
   "weekly-limit",
@@ -39,8 +38,6 @@ terminal_title = [
   "project-name",
   "activity",
   "run-state",
-  "thread-title",
-  "task-progress",
 ]
 
 [notice.model_migrations]
