@@ -63,7 +63,7 @@ no_memories_if_mcp_or_web_search = true
 [profiles.quick]
 model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "medium"
-service_tier = "fast"
+service_tier = "quick"
 
 [profiles.deep]
 model_reasoning_effort = "high"
