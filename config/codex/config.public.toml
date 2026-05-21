@@ -59,7 +59,7 @@ use_memories = true
 no_memories_if_mcp_or_web_search = true
 
 # Shared profile presets.
-[profiles.fast]
+[profiles.quick]
 model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "medium"
 service_tier = "fast"
