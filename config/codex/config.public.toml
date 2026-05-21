@@ -27,6 +27,7 @@ status_line = [
   "git-branch",
   "task-progress",
   "model-with-reasoning",
+  "fast-mode",
   # "permissions",
   # "approval-mode",
   "context-remaining",
