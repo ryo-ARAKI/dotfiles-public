@@ -22,7 +22,15 @@ set autoread
 " 未保存バッファがあっても別ファイルへ移動できるようにする。
 set hidden
 " undo 履歴をファイルを閉じた後も保持する。
-set undofile
+" 作業ディレクトリに .*.un~ を散らさないよう、専用ディレクトリへ保存する。
+if has('persistent_undo')
+  let s:undo_dir = expand('~/.vim/undo')
+  if !isdirectory(s:undo_dir)
+    call mkdir(s:undo_dir, 'p', 0700)
+  endif
+  let &undodir = s:undo_dir . '//'
+  set undofile
+endif
 " undo の履歴件数を十分に確保する。
 set undolevels=1000
 " コマンドライン履歴の保存件数を増やす。
