@@ -49,7 +49,7 @@ enabled = true
 
 # Shared feature flags.
 [features]
-fast_mode = false
+fast_mode = true
 memories = true
 goals = true
 
