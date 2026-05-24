@@ -20,6 +20,8 @@ altscreen on
 
 # Color
 defbce on
+# Keep colors enabled for Codex and other TUIs launched inside screen.
+unsetenv NO_COLOR
 # Keep xterm-256color because screen-256color breaks diff rendering here.
 term xterm-256color
 
