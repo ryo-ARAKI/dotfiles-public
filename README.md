@@ -129,7 +129,13 @@ The current behavior is:
    ask for confirmation unless `--yes` is used
    back up the current file if it exists
    install the new file and set the requested mode
-8. Print a summary at the end
+8. Generate `~/.codex/config.toml` from public, private, and local-private fragments
+9. Print a summary at the end
+
+Codex profile files such as `~/.codex/quick.config.toml` and
+`~/.codex/deep.config.toml` are standalone manifest-managed files. They are not
+embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
+behavior in current releases.
 
 ### Context Detection
 

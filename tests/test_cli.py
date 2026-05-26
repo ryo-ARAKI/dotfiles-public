@@ -40,19 +40,30 @@ class InstallCliTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             config_path = home / ".codex" / "config.toml"
+            quick_profile_path = home / ".codex" / "quick.config.toml"
+            deep_profile_path = home / ".codex" / "deep.config.toml"
             rules_path = home / ".codex" / "rules" / "default.rules"
             self.assertTrue(config_path.exists())
+            self.assertTrue(quick_profile_path.exists())
+            self.assertTrue(deep_profile_path.exists())
             self.assertTrue(rules_path.exists())
             public_fragment = (repo_root / "config" / "codex" / "config.public.toml").read_text(encoding="utf-8")
             private_fragment = (private_repo / "config" / "codex" / "config.private.toml").read_text(encoding="utf-8")
             private_local_fragment = (private_repo / "config" / "codex" / "config.private.local.toml").read_text(
                 encoding="utf-8"
             )
+            quick_profile = (repo_root / "config" / "codex" / "quick.config.toml").read_text(encoding="utf-8")
+            deep_profile = (repo_root / "config" / "codex" / "deep.config.toml").read_text(encoding="utf-8")
             expected_rules = (repo_root / "config" / "codex" / "rules" / "default.rules").read_text(encoding="utf-8")
+            config_text = config_path.read_text(encoding="utf-8")
             self.assertEqual(
-                config_path.read_text(encoding="utf-8"),
+                config_text,
                 f"{public_fragment}\n\n{private_fragment}\n\n{private_local_fragment}",
             )
+            self.assertNotIn("[profiles.", config_text)
+            self.assertNotIn("profile = \"", config_text)
+            self.assertEqual(quick_profile_path.read_text(encoding="utf-8"), quick_profile)
+            self.assertEqual(deep_profile_path.read_text(encoding="utf-8"), deep_profile)
             self.assertEqual(rules_path.read_text(encoding="utf-8"), expected_rules)
 
     def test_remote_install_excludes_private_local_codex_fragment(self) -> None:
@@ -148,7 +159,17 @@ class InstallCliTests(unittest.TestCase):
 
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertIn("would apply: codex: config/codex/config.public.toml -> ~/.codex/config.toml", result.stdout)
+            self.assertIn(
+                "would apply: base: config/codex/quick.config.toml -> ~/.codex/quick.config.toml",
+                result.stdout,
+            )
+            self.assertIn(
+                "would apply: base: config/codex/deep.config.toml -> ~/.codex/deep.config.toml",
+                result.stdout,
+            )
             self.assertFalse((home / ".codex" / "config.toml").exists())
+            self.assertFalse((home / ".codex" / "quick.config.toml").exists())
+            self.assertFalse((home / ".codex" / "deep.config.toml").exists())
 
     def test_only_filter_limits_output(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
