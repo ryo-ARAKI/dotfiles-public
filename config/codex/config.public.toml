@@ -11,11 +11,15 @@ model_verbosity = "medium"
 
 # Shared execution defaults.
 approval_policy = "on-request"
-default_permissions = ":workspace"
+default_permissions = "workspace"
 personality = "pragmatic"
 web_search = "live"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
 service_tier = "fast"
+
+[permissions.workspace]
+description = "Workspace write with restricted network"
+extends = ":workspace"
 
 # Shared TUI defaults.
 [tui]
