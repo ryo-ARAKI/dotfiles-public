@@ -1,3 +1,6 @@
+import os
+import subprocess
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -11,6 +14,80 @@ class FishConfigTests(unittest.TestCase):
 
         self.assertIn("if command -v starship >/dev/null", config)
         self.assertLess(config.index("if command -v starship >/dev/null"), config.index("starship init fish | source"))
+
+    def test_codex_function_injects_gpt_oss_catalog_for_ollama_120b(self) -> None:
+        argv = self.run_codex_function("exec --oss --local-provider ollama -m gpt-oss:120b prompt")
+
+        self.assertIn("-c", argv)
+        self.assertIn(
+            'model_catalog_json="/home/ryo/.codex/model-catalogs/gpt-oss.json"',
+            argv,
+        )
+
+    def test_codex_function_does_not_duplicate_existing_model_catalog_config(self) -> None:
+        argv = self.run_codex_function(
+            'exec --oss --local-provider=ollama --model=gpt-oss:120b -c model_catalog_json=/tmp/catalog.json prompt'
+        )
+
+        self.assertEqual(argv.count("-c"), 1)
+        self.assertIn('model_catalog_json=/tmp/catalog.json', argv)
+        self.assertNotIn('model_catalog_json="/home/ryo/.codex/model-catalogs/gpt-oss.json"', argv)
+
+    def test_codex_function_does_not_duplicate_equals_model_catalog_config(self) -> None:
+        argv = self.run_codex_function(
+            "exec --oss --local-provider=ollama --model=gpt-oss:120b --config=model_catalog_json=/tmp/catalog.json prompt"
+        )
+
+        self.assertNotIn("-c", argv)
+        self.assertIn("--config=model_catalog_json=/tmp/catalog.json", argv)
+        self.assertNotIn('model_catalog_json="/home/ryo/.codex/model-catalogs/gpt-oss.json"', argv)
+
+    def test_codex_function_leaves_normal_invocations_unchanged(self) -> None:
+        argv = self.run_codex_function("--version")
+
+        self.assertNotIn("-c", argv)
+        self.assertEqual(argv[-1], "--version")
+
+    def run_codex_function(self, codex_args: str) -> list[str]:
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            home = temp_root / "home"
+            bin_dir = temp_root / "bin"
+            functions_dir = home / ".config" / "fish" / "functions"
+            wrapper = home / ".config" / "fish" / "codex-pty-wrapper.py"
+            output_path = temp_root / "argv.txt"
+            codex_function = functions_dir / "codex.fish"
+
+            functions_dir.mkdir(parents=True)
+            bin_dir.mkdir()
+            wrapper.parent.mkdir(parents=True, exist_ok=True)
+            codex_function.write_text(
+                (ROOT / "config" / "fish" / "functions" / "codex.fish").read_text(encoding="utf-8"),
+                encoding="utf-8",
+            )
+            (bin_dir / "codex").write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            (bin_dir / "codex").chmod(0o755)
+            wrapper.write_text(
+                "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\"; done > \"$CODEX_ARGV_CAPTURE\"\n",
+                encoding="utf-8",
+            )
+            wrapper.chmod(0o755)
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            env["PATH"] = f"{bin_dir}:{env['PATH']}"
+            env["CODEX_ARGV_CAPTURE"] = str(output_path)
+
+            result = subprocess.run(
+                ["fish", "-ic", f"source {codex_function}; codex {codex_args}"],
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            return output_path.read_text(encoding="utf-8").splitlines()
 
 
 if __name__ == "__main__":
