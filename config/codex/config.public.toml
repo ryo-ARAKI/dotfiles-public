@@ -52,6 +52,9 @@ terminal_title = [
 [plugins."github@openai-curated"]
 enabled = true
 
+[plugins."superpowers@openai-curated"]
+enabled = true
+
 # Shared feature flags.
 [features]
 fast_mode = true
