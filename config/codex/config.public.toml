@@ -4,8 +4,8 @@
 # Do not edit config.toml directly; regenerate it through ./install.
 
 # Shared model defaults.
-model = "gpt-5.5"
-model_reasoning_effort = "high"
+model = "gpt-5.6-sol"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "xhigh"
 model_verbosity = "medium"
 
@@ -15,7 +15,6 @@ default_permissions = "workspace"
 personality = "pragmatic"
 web_search = "live"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
-service_tier = "fast"
 
 [permissions.workspace]
 description = "Workspace write with restricted network"
