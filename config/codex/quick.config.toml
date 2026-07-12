@@ -1,3 +1,4 @@
 # Loaded by `codex --profile quick`.
 model_reasoning_effort = "low"
 plan_mode_reasoning_effort = "medium"
+model_verbosity = "low"

@@ -8,6 +8,9 @@ model = "gpt-5.6-sol"
 model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "xhigh"
 model_verbosity = "medium"
+model_reasoning_summary = "concise"
+model_auto_compact_token_limit = 300000
+model_auto_compact_token_limit_scope = "body_after_prefix"
 
 # Shared execution defaults.
 approval_policy = "on-request"
@@ -15,6 +18,7 @@ default_permissions = "workspace"
 personality = "pragmatic"
 web_search = "live"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
+tool_output_token_limit = 8000
 
 [permissions.workspace]
 description = "Workspace write with restricted network"
@@ -64,5 +68,6 @@ goals = true
 [memories]
 generate_memories = true
 use_memories = true
-no_memories_if_mcp_or_web_search = true
+disable_on_external_context = true
+min_rate_limit_remaining_percent = 35
 

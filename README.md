@@ -137,6 +137,20 @@ Codex profile files such as `~/.codex/quick.config.toml` and
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
+The default Codex profile uses `gpt-5.6-sol` with medium reasoning and medium
+verbosity for normal implementation work. The `quick` profile keeps Sol but
+drops reasoning and verbosity for small edits, verification, commit, and PR
+follow-up work. The `deep` profile uses Sol with `xhigh` reasoning for difficult
+investigation and review. There is no standalone max-reasoning profile; use a
+temporary override such as `codex -c model_reasoning_effort=max ...` only when a
+specific run needs it.
+
+Shared Codex defaults keep tool output bounded at 8000 tokens with
+`tool_output_token_limit`, enable conservative auto compaction at 300000 tokens
+after the stable prefix, and keep reasoning summaries concise. Memory generation
+remains enabled but is disabled for turns with external context and when
+rate-limit headroom is below 35 percent.
+
 ### Context Detection
 
 Context detection is based on:
