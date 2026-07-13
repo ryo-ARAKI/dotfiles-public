@@ -9,8 +9,6 @@ model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "xhigh"
 model_verbosity = "medium"
 model_reasoning_summary = "concise"
-model_auto_compact_token_limit = 300000
-model_auto_compact_token_limit_scope = "body_after_prefix"
 
 # Shared execution defaults.
 approval_policy = "on-request"

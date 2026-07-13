@@ -146,10 +146,10 @@ temporary override such as `codex -c model_reasoning_effort=max ...` only when a
 specific run needs it.
 
 Shared Codex defaults keep tool output bounded at 8000 tokens with
-`tool_output_token_limit`, enable conservative auto compaction at 300000 tokens
-after the stable prefix, and keep reasoning summaries concise. Memory generation
-remains enabled but is disabled for turns with external context and when
-rate-limit headroom is below 35 percent.
+`tool_output_token_limit` and keep reasoning summaries concise. GPT-5.6 Sol
+context-window and auto-compaction thresholds are left at Codex/model defaults.
+Memory generation remains enabled but is disabled for turns with external
+context and when rate-limit headroom is below 35 percent.
 
 ### Context Detection
 
