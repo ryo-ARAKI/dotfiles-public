@@ -8,7 +8,7 @@ from dotfiles_installer.codex_config import plan_codex_config
 
 
 class CodexConfigTests(unittest.TestCase):
-    def test_public_config_uses_auto_review_inside_workspace_boundary(self) -> None:
+    def test_public_config_uses_auto_review_with_explicit_authorization(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         config_path = repo_root / "config" / "codex" / "config.public.toml"
         config = tomllib.loads(config_path.read_text(encoding="utf-8"))
@@ -16,9 +16,13 @@ class CodexConfigTests(unittest.TestCase):
         self.assertEqual(config["approval_policy"], "on-request")
         self.assertEqual(config["approvals_reviewer"], "auto_review")
         self.assertEqual(config["default_permissions"], "workspace")
-        self.assertIn("auto_review", config)
-        self.assertIsInstance(config["auto_review"]["policy"], str)
-        self.assertTrue(config["auto_review"]["policy"].strip())
+        policy = config["auto_review"]["policy"]
+        self.assertIn("explicitly authorized", policy)
+        self.assertIn("concrete action and target", policy)
+        self.assertIn("external writes", policy)
+        self.assertIn("destructive filesystem or Git actions", policy)
+        self.assertNotIn("Do not approve destructive", policy)
+        self.assertNotIn("Leave those requests for the user", policy)
 
     def test_plan_raises_when_public_fragment_is_missing(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:

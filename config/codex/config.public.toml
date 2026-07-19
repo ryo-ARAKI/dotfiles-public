@@ -25,9 +25,11 @@ extends = ":workspace"
 
 [auto_review]
 policy = """
-Approve only non-destructive actions that are necessary for the active task and whose effects are bounded to local inspection, testing, builds, workspace edits, local Git writes, fetch, pull, or PR checkout.
+Approve actions that are necessary for the active task when their effects are bounded to the user's request and comply with applicable higher-level safety requirements.
 
-Do not approve destructive filesystem or Git actions; external writes such as pushes, PR or issue mutation, comments, uploads, or messages; purchases; package or environment installation; deployments; service reloads; live-system mutation; direct pushes to main; or compound shell commands whose effects cannot be bounded. Leave those requests for the user.
+For external writes; purchases; package or environment installation; deployments; service reloads; live-system mutation; destructive filesystem or Git actions; direct pushes; force-pushes; deletions; or history rewrites, approve only when the user has explicitly authorized the concrete action and target in the current conversation. Treat that explicit authorization as sufficient even when the action is high impact.
+
+Deny when authorization is absent, ambiguous, stale, applies to a different target, or is narrower than the proposed effects. Also deny commands whose effects cannot be bounded to the authorized action, including unnecessarily broad or opaque compound commands. Never treat authorization as permission to disclose secrets or credentials, circumvent non-overridable policy, or affect targets outside the authorized scope.
 """
 
 # Shared TUI defaults.
