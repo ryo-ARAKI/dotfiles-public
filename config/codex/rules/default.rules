@@ -1,29 +1,54 @@
-prefix_rule(pattern=["sed", "-n"], decision="allow")
+# Bounded local readers. Commands that can mutate through later arguments are
+# intentionally left to automatic review.
 prefix_rule(pattern=["rg", "-n"], decision="allow")
 prefix_rule(pattern=["rg", "--files"], decision="allow")
-prefix_rule(pattern=["cat"], decision="allow")
-prefix_rule(pattern=["ls"], decision="allow")
-prefix_rule(pattern=["pwd"], decision="allow")
-prefix_rule(pattern=["find"], decision="allow")
-prefix_rule(pattern=["jq"], decision="allow")
+prefix_rule(pattern=[["cat", "ls", "pwd", "jq", "head", "tail", "wc", "stat", "readlink", "file"]], decision="allow")
 prefix_rule(pattern=["nl", "-ba"], decision="allow")
 prefix_rule(pattern=["fc-match"], decision="allow")
-prefix_rule(pattern=["head"], decision="allow")
-prefix_rule(pattern=["tail"], decision="allow")
-prefix_rule(pattern=["wc"], decision="allow")
-prefix_rule(pattern=["stat"], decision="allow")
-prefix_rule(pattern=["readlink"], decision="allow")
-prefix_rule(pattern=["git", "status"], decision="allow")
-prefix_rule(pattern=["git", "diff"], decision="allow")
-prefix_rule(pattern=["git", "show"], decision="allow")
-prefix_rule(pattern=["git", "log"], decision="allow")
-prefix_rule(pattern=["git", "rev-parse"], decision="allow")
-prefix_rule(pattern=["git", "branch"], decision="allow")
-prefix_rule(pattern=["git", "ls-files"], decision="allow")
-prefix_rule(pattern=["git", "worktree"], decision="allow")
-prefix_rule(pattern=["codex", "--version"], decision="allow")
-prefix_rule(pattern=["codex", "--help"], decision="allow")
-prefix_rule(pattern=["codex", "doctor"], decision="allow")
+prefix_rule(pattern=["which"], decision="allow")
+prefix_rule(pattern=["pdfinfo"], decision="allow")
+
+# Bounded Git reads. Keep branch and worktree rules on explicitly read-only
+# subcommands so deletion and mutation fall through to review.
+prefix_rule(pattern=["git", ["status", "diff", "show", "log", "rev-parse", "ls-files", "ls-remote"]], decision="allow")
+prefix_rule(
+    pattern=["git", "branch", ["--list", "--show-current"]],
+    decision="allow",
+    match=["git branch --list topic-*", "git branch --show-current"],
+    not_match=["git branch -D topic", "git branch --delete topic"],
+)
+prefix_rule(
+    pattern=["git", "worktree", "list"],
+    decision="allow",
+    match=["git worktree list", "git worktree list --porcelain"],
+    not_match=["git worktree add /tmp/topic", "git worktree remove /tmp/topic"],
+)
+
+# Network reads with no remote mutation.
+prefix_rule(
+    pattern=["gh", "pr", ["list", "view", "checks", "diff"]],
+    decision="allow",
+    match=["gh pr list", "gh pr view 123 --json title", "gh pr checks 123", "gh pr diff 123"],
+    not_match=["gh pr create --title topic", "gh pr edit 123 --title topic"],
+)
+prefix_rule(
+    pattern=["gh", "issue", ["list", "view"]],
+    decision="allow",
+    match=["gh issue list --limit 20", "gh issue view 123"],
+    not_match=["gh issue create --title topic", "gh issue comment 123 --body message"],
+)
+prefix_rule(pattern=["gh", "run", ["list", "view"]], decision="allow")
+prefix_rule(pattern=["gh", "repo", "view"], decision="allow")
+prefix_rule(
+    pattern=["gh", "api", ["--method", "-X"], "GET"],
+    decision="allow",
+    match=["gh api --method GET repos/openai/codex", "gh api -X GET repos/openai/codex"],
+    not_match=["gh api --method POST repos/openai/codex/issues", "gh api repos/openai/codex"],
+)
+
+# Codex diagnostics and rule evaluation.
+prefix_rule(pattern=["codex", ["--version", "--help", "doctor"]], decision="allow")
 prefix_rule(pattern=["codex", "plugin", "list"], decision="allow")
 prefix_rule(pattern=["codex", "plugin", "marketplace", "list", "--json"], decision="allow")
 prefix_rule(pattern=["codex", "features", "list"], decision="allow")
+prefix_rule(pattern=["codex", "execpolicy", "check"], decision="allow")
