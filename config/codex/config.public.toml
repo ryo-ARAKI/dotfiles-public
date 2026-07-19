@@ -12,6 +12,7 @@ model_reasoning_summary = "concise"
 
 # Shared execution defaults.
 approval_policy = "on-request"
+approvals_reviewer = "auto_review"
 default_permissions = "workspace"
 personality = "pragmatic"
 web_search = "live"
@@ -21,6 +22,13 @@ tool_output_token_limit = 8000
 [permissions.workspace]
 description = "Workspace write with restricted network"
 extends = ":workspace"
+
+[auto_review]
+policy = """
+Approve only non-destructive actions that are necessary for the active task and whose effects are bounded to local inspection, testing, builds, workspace edits, local Git writes, fetch, pull, or PR checkout.
+
+Do not approve destructive filesystem or Git actions; external writes such as pushes, PR or issue mutation, comments, uploads, or messages; purchases; package or environment installation; deployments; service reloads; live-system mutation; direct pushes to main; or compound shell commands whose effects cannot be bounded. Leave those requests for the user.
+"""
 
 # Shared TUI defaults.
 [tui]
@@ -68,4 +76,3 @@ generate_memories = true
 use_memories = true
 disable_on_external_context = true
 min_rate_limit_remaining_percent = 35
-
