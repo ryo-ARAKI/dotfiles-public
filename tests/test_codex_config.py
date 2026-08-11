@@ -16,6 +16,9 @@ class CodexConfigTests(unittest.TestCase):
         self.assertEqual(config["approval_policy"], "on-request")
         self.assertEqual(config["approvals_reviewer"], "auto_review")
         self.assertEqual(config["default_permissions"], "workspace")
+        status_line = config["tui"]["status_line"]
+        self.assertIn("permissions", status_line)
+        self.assertIn("approval-mode", status_line)
         policy = config["auto_review"]["policy"]
         self.assertIn("explicitly authorized", policy)
         self.assertIn("concrete action and target", policy)

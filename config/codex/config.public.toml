@@ -10,7 +10,9 @@ plan_mode_reasoning_effort = "xhigh"
 model_verbosity = "medium"
 model_reasoning_summary = "concise"
 
-# Shared execution defaults.
+# Shared execution defaults. These persistent settings apply the same core
+# preset as Codex 0.147.0's --approve-for-me to every normal launch while the
+# custom auto_review policy below remains authoritative.
 approval_policy = "on-request"
 approvals_reviewer = "auto_review"
 default_permissions = "workspace"
@@ -44,8 +46,8 @@ status_line = [
   "task-progress",
   "model-with-reasoning",
   "fast-mode",
-  # "permissions",
-  # "approval-mode",
+  "permissions",
+  "approval-mode",
   "context-remaining",
   "five-hour-limit",
   "weekly-limit",
