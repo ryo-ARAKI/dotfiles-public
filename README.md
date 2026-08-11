@@ -145,6 +145,14 @@ investigation and review. There is no standalone max-reasoning profile; use a
 temporary override such as `codex -c model_reasoning_effort=max ...` only when a
 specific run needs it.
 
+Normal Codex launches use automatic approval review with the `on-request`
+approval policy and workspace permissions. These persistent settings provide
+the same core preset as Codex 0.147.0's `--approve-for-me` flag across
+interactive sessions, `codex exec`, and the `quick` and `deep` profiles, while
+the shared `auto_review.policy` supplies the stricter authorization rules. The
+flag is therefore redundant for ordinary launches using this configuration.
+The TUI status line shows both the active permission and approval modes.
+
 Shared Codex defaults keep tool output bounded at 8000 tokens with
 `tool_output_token_limit` and keep reasoning summaries concise. GPT-5.6 Sol
 context-window and auto-compaction thresholds are left at Codex/model defaults.
