@@ -133,7 +133,9 @@ The current behavior is:
 9. Print a summary at the end
 
 Codex profile files such as `~/.codex/quick.config.toml` and
-`~/.codex/deep.config.toml` are standalone manifest-managed files. They are not
+`~/.codex/deep.config.toml` are standalone manifest-managed files. The
+`~/.codex/subagent.config.toml` profile is also available for sub-agent tasks.
+They are not
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
@@ -141,9 +143,9 @@ The default Codex profile uses `gpt-5.6-sol` with medium reasoning and medium
 verbosity for normal implementation work. The `quick` profile keeps Sol but
 drops reasoning and verbosity for small edits, verification, commit, and PR
 follow-up work. The `deep` profile uses Sol with `xhigh` reasoning for difficult
-investigation and review. There is no standalone max-reasoning profile; use a
-temporary override such as `codex -c model_reasoning_effort=max ...` only when a
-specific run needs it.
+investigation and review. The `subagent` profile uses `gpt-5.6-luna` with `max`
+reasoning; launch it with `codex --profile subagent` when delegating a task to a
+sub-agent.
 
 Normal Codex launches use automatic approval review with the `on-request`
 approval policy and workspace permissions. These persistent settings provide

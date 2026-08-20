@@ -21,6 +21,7 @@ config/fish/functions/fish_user_key_bindings.fish	~/.config/fish/functions/fish_
 config/codex/rules/default.rules	~/.codex/rules/default.rules	0644	always
 config/codex/quick.config.toml	~/.codex/quick.config.toml	0644	always
 config/codex/deep.config.toml	~/.codex/deep.config.toml	0644	always
+config/codex/subagent.config.toml	~/.codex/subagent.config.toml	0644	always
 config/gh/config.yml	~/.config/gh/config.yml	0644	always
 config/terminator/config	~/.config/terminator/config	0644	always
 config/Projecteur/Projecteur.conf	~/.config/Projecteur/Projecteur.conf	0644	always
