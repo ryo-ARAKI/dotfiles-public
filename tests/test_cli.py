@@ -276,5 +276,36 @@ class InstallCliTests(unittest.TestCase):
             self.assertIn("Host manifest not found", result.stderr)
 
 
+    def test_dry_run_supports_binary_manifest_entries(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        with tempfile.TemporaryDirectory() as tmp:
+            temp_root = Path(tmp)
+            private_repo = temp_root / "private"
+            home = temp_root / "home"
+            private_repo.mkdir()
+            (private_repo / "manifest").mkdir()
+            (private_repo / "config").mkdir()
+            home.mkdir()
+
+            (private_repo / "manifest" / "private.tsv").write_text(
+                "config/icon.png\t~/.config/example/icon.png\t0644\tlocal\n",
+                encoding="utf-8",
+            )
+            (private_repo / "config" / "icon.png").write_bytes(b"\x89PNG\r\n\x1a\n\x00\xff")
+
+            env = dict(os.environ)
+            env["HOME"] = str(home)
+            result = subprocess.run(
+                ["./install", "--dry-run", "--context", "local", "--private", str(private_repo), "--only", "icon.png"],
+                cwd=repo_root,
+                env=env,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertIn("would apply: private: config/icon.png -> ~/.config/example/icon.png", result.stdout)
+
 if __name__ == "__main__":
     unittest.main()

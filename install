@@ -102,17 +102,31 @@ def _file_mode(path: Path) -> int | None:
 def _render_entry_preview(entry, repo_root: Path, *, dry_run: bool) -> tuple[bool, str | None]:
     source_path = repo_root / entry.source
     target_path = Path(entry.target).expanduser()
-    source_text = source_path.read_text(encoding="utf-8")
-    current_text = read_text_if_exists(target_path)
+    source_bytes = source_path.read_bytes()
+    current_bytes = target_path.read_bytes() if target_path.exists() else None
     current_mode = _file_mode(target_path)
     desired_mode = int(entry.mode, 8)
-    content_matches = current_text == source_text
+    content_matches = current_bytes == source_bytes
     mode_matches = current_mode == desired_mode
     needs_change = not (content_matches and mode_matches)
 
     if dry_run:
         status = "nochange" if not needs_change else "would apply"
         return needs_change, f"{status}: {summarize_plan_line(entry)}"
+
+    try:
+        source_text = source_bytes.decode("utf-8")
+        current_text = current_bytes.decode("utf-8") if current_bytes is not None else None
+    except UnicodeDecodeError:
+        lines = [summarize_plan_line(entry)]
+        if not needs_change:
+            lines.append("No changes needed")
+            return needs_change, "\n".join(lines)
+
+        lines.append(f"Binary file: {entry.target} <- {entry.source}")
+        if content_matches and not mode_matches:
+            lines.append(f"Mode change: {current_mode:04o} -> {desired_mode:04o}")
+        return needs_change, "\n".join(lines)
 
     lines = [summarize_plan_line(entry)]
     if not needs_change:
