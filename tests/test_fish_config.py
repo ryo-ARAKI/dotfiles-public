@@ -15,13 +15,13 @@ class FishConfigTests(unittest.TestCase):
         self.assertIn("if command -v starship >/dev/null", config)
         self.assertLess(config.index("if command -v starship >/dev/null"), config.index("starship init fish | source"))
 
-    def test_codex_function_does_not_inject_a_model_catalog_for_ollama_120b(self) -> None:
+    def test_codex_function_uses_ollama_launch_profile_for_ollama_120b(self) -> None:
         argv = self.run_codex_function("exec --oss --local-provider ollama -m gpt-oss:120b -C .")
 
-        self.assertNotIn("-c", argv)
-        self.assertFalse(any("model_catalog_json=" in arg for arg in argv))
+        self.assertIn("--profile", argv)
+        self.assertIn("ollama-launch", argv)
         self.assertEqual(
-            argv[1:],
+            argv[1:-2],
             ["exec", "--oss", "--local-provider", "ollama", "-m", "gpt-oss:120b", "-C", "."],
         )
 
@@ -66,6 +66,8 @@ class FishConfigTests(unittest.TestCase):
 
             functions_dir.mkdir(parents=True)
             bin_dir.mkdir()
+            (home / ".codex").mkdir()
+            (home / ".codex" / "ollama-launch.config.toml").write_text("model = \"gpt-oss:120b\"\n", encoding="utf-8")
             wrapper.parent.mkdir(parents=True, exist_ok=True)
             codex_function.write_text(
                 (ROOT / "config" / "fish" / "functions" / "codex.fish").read_text(encoding="utf-8"),
