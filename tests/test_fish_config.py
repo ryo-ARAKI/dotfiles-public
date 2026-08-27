@@ -15,13 +15,14 @@ class FishConfigTests(unittest.TestCase):
         self.assertIn("if command -v starship >/dev/null", config)
         self.assertLess(config.index("if command -v starship >/dev/null"), config.index("starship init fish | source"))
 
-    def test_codex_function_injects_gpt_oss_catalog_for_ollama_120b(self) -> None:
-        argv = self.run_codex_function("exec --oss --local-provider ollama -m gpt-oss:120b prompt")
+    def test_codex_function_does_not_inject_a_model_catalog_for_ollama_120b(self) -> None:
+        argv = self.run_codex_function("exec --oss --local-provider ollama -m gpt-oss:120b -C .")
 
-        self.assertIn("-c", argv)
-        self.assertIn(
-            'model_catalog_json="/home/ryo/.codex/model-catalogs/gpt-oss.json"',
-            argv,
+        self.assertNotIn("-c", argv)
+        self.assertFalse(any("model_catalog_json=" in arg for arg in argv))
+        self.assertEqual(
+            argv[1:],
+            ["exec", "--oss", "--local-provider", "ollama", "-m", "gpt-oss:120b", "-C", "."],
         )
 
     def test_codex_function_does_not_duplicate_existing_model_catalog_config(self) -> None:
@@ -47,6 +48,11 @@ class FishConfigTests(unittest.TestCase):
 
         self.assertNotIn("-c", argv)
         self.assertEqual(argv[-1], "--version")
+
+    def test_codex_function_preserves_openai_model_and_profile_arguments(self) -> None:
+        argv = self.run_codex_function("exec --profile deep -m gpt-5.4 prompt")
+
+        self.assertEqual(argv[1:], ["exec", "--profile", "deep", "-m", "gpt-5.4", "prompt"])
 
     def run_codex_function(self, codex_args: str) -> list[str]:
         with tempfile.TemporaryDirectory() as tmp:
