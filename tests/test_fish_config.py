@@ -32,7 +32,6 @@ class FishConfigTests(unittest.TestCase):
 
         self.assertEqual(argv.count("-c"), 1)
         self.assertIn('model_catalog_json=/tmp/catalog.json', argv)
-        self.assertNotIn('model_catalog_json="/home/ryo/.codex/model-catalogs/gpt-oss.json"', argv)
 
     def test_codex_function_does_not_duplicate_equals_model_catalog_config(self) -> None:
         argv = self.run_codex_function(
@@ -41,7 +40,6 @@ class FishConfigTests(unittest.TestCase):
 
         self.assertNotIn("-c", argv)
         self.assertIn("--config=model_catalog_json=/tmp/catalog.json", argv)
-        self.assertNotIn('model_catalog_json="/home/ryo/.codex/model-catalogs/gpt-oss.json"', argv)
 
     def test_codex_function_leaves_normal_invocations_unchanged(self) -> None:
         argv = self.run_codex_function("--version")

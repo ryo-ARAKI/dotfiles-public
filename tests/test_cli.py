@@ -190,6 +190,73 @@ class InstallCliTests(unittest.TestCase):
             ["would apply: base: home/.vimrc -> ~/.vimrc", "Dry run summary: applied=0 skipped=0 nochange=0 overridden=0"],
         )
 
+    @unittest.skipUnless(
+        os.environ.get("DOTFILES_PRIVATE_ROOT") and os.environ.get("DOTFILES_HOSTS_ROOT"),
+        "requires DOTFILES_PRIVATE_ROOT and DOTFILES_HOSTS_ROOT",
+    )
+    def test_dgx_ollama_overlay_selection_with_real_companion_roots(self) -> None:
+        repo_root = Path(__file__).resolve().parents[1]
+        private_root = Path(os.environ["DOTFILES_PRIVATE_ROOT"]).resolve()
+        hosts_root = Path(os.environ["DOTFILES_HOSTS_ROOT"]).resolve()
+
+        def run_dry(context: str, only: str) -> subprocess.CompletedProcess[str]:
+            return subprocess.run(
+                [
+                    "./install",
+                    "--dry-run",
+                    "--context",
+                    context,
+                    "--private",
+                    str(private_root),
+                    "--hosts",
+                    str(hosts_root),
+                    "--host-name",
+                    "dgx",
+                    "--only",
+                    only,
+                ],
+                cwd=repo_root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+        local_launcher = run_dry("local", "95-codex-dgx.fish")
+        self.assertEqual(local_launcher.returncode, 0, msg=local_launcher.stderr)
+        self.assertRegex(
+            local_launcher.stdout,
+            r"(?m)^(?:would apply|nochange): private: config/fish/conf\.d/95-codex-dgx\.fish -> ~/\.config/fish/conf\.d/95-codex-dgx\.fish$",
+        )
+        self.assertNotIn(": host:", local_launcher.stdout)
+
+        remote_launcher = run_dry("remote", "95-codex-dgx.fish")
+        self.assertEqual(remote_launcher.returncode, 0, msg=remote_launcher.stderr)
+        self.assertRegex(
+            remote_launcher.stdout,
+            r"(?m)^(?:would apply|nochange): host: config/fish/conf\.d/95-codex-dgx\.fish -> ~/\.config/fish/conf\.d/95-codex-dgx\.fish$",
+        )
+        self.assertNotIn(": private:", remote_launcher.stdout)
+
+        remote_hook = run_dry("remote", "codex-dgx-refresh")
+        self.assertEqual(remote_hook.returncode, 0, msg=remote_hook.stderr)
+        self.assertRegex(
+            remote_hook.stdout,
+            r"(?m)^(?:would apply|nochange): host: bin/codex-dgx-refresh -> ~/\.local/bin/codex-dgx-refresh$",
+        )
+
+        for legacy_path in (
+            "gptoss.config.toml",
+            "dgx.config.toml",
+            "model-catalogs/gpt-oss.json",
+        ):
+            with self.subTest(legacy_path=legacy_path):
+                legacy = run_dry("local", legacy_path)
+                self.assertEqual(legacy.returncode, 0, msg=legacy.stderr)
+                self.assertEqual(
+                    legacy.stdout.strip(),
+                    "Dry run summary: applied=0 skipped=0 nochange=0 overridden=0",
+                )
+
     def test_dry_run_reports_overridden_entries(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         with tempfile.TemporaryDirectory() as tmp:
