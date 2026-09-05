@@ -139,7 +139,7 @@ They are not
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
-The default Codex profile uses `gpt-5.6-terra` with medium reasoning and high
+The default Codex profile uses `gpt-6-astra` with `xhigh` reasoning and high
 planning effort for normal implementation work. The `quick` profile uses
 `gpt-5.6-luna` with low reasoning and verbosity for small edits, verification,
 commit, and PR follow-up work. The `deep` profile uses `gpt-5.6-sol` with high
@@ -157,8 +157,8 @@ flag is therefore redundant for ordinary launches using this configuration.
 The TUI status line shows both the active permission and approval modes.
 
 Shared Codex defaults keep tool output bounded at 8000 tokens with
-`tool_output_token_limit` and keep reasoning summaries concise. GPT-5.6 Sol
-context-window and auto-compaction thresholds are left at Codex/model defaults.
+`tool_output_token_limit` and keep reasoning summaries concise. Context-window
+and auto-compaction thresholds are left at Codex/model defaults.
 Memory generation remains enabled but is disabled for turns with external
 context and when rate-limit headroom is below 35 percent.
 
@@ -290,16 +290,22 @@ Additional option notes:
 
 ## Daily Workflow
 
-### Update local config and sync it into this repo
+### Update managed config and apply it locally
 
-Typical flow:
+1. edit the source in the appropriate public, private, or host repository
+2. update its manifest if you added a file
+3. run a dry-run and inspect the proposed changes
+4. run the relevant validation
+5. apply the authorized changes and compare the deployed result with the source
+6. commit when requested
 
-1. edit the actual config file under `$HOME`
-2. copy the updated content into the matching file in this repository
-3. update `manifest/base.tsv` if you added a new file
-4. run a dry-run
-5. run tests
-6. commit
+Codex writes some runtime state, including project trust, into its config and
+profile files. Before redeploying, inspect differences and copy only intended
+settings into their managed source. Keep local paths in the private layer. The
+local private `deep.config.toml` override retains trust scoped to that profile;
+keep its model settings aligned with the public `deep` profile when updating it.
+Config fragments are concatenated, so duplicate TOML keys are invalid rather
+than overrides. Use a standalone profile when overriding shared model settings.
 
 ### Add a new public file
 
