@@ -5,10 +5,12 @@
 
 # Shared model defaults.
 model = "gpt-6-astra"
-model_reasoning_effort = "xhigh"
+model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "high"
-model_verbosity = "medium"
+model_verbosity = "low"
 model_reasoning_summary = "concise"
+model_auto_compact_token_limit = 160000
+model_auto_compact_token_limit_scope = "total"
 
 # Shared execution defaults. These persistent settings apply the same core
 # preset as Codex 0.147.0's --approve-for-me to every normal launch while the
@@ -19,7 +21,7 @@ default_permissions = "workspace"
 personality = "pragmatic"
 web_search = "live"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
-tool_output_token_limit = 8000
+tool_output_token_limit = 4000
 
 [permissions.workspace]
 description = "Workspace write with restricted network"
@@ -73,6 +75,7 @@ enabled = true
 fast_mode = true
 memories = true
 goals = true
+tool_suggest = false
 
 # Shared memories defaults.
 [memories]

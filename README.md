@@ -139,8 +139,9 @@ They are not
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
-The default Codex profile uses `gpt-6-astra` with `xhigh` reasoning and high
-planning effort for normal implementation work. The `quick` profile uses
+The default Codex profile uses `gpt-6-astra` with medium reasoning, high
+planning effort, and low response verbosity for normal implementation work.
+The `quick` profile uses
 `gpt-5.6-luna` with low reasoning and verbosity for small edits, verification,
 commit, and PR follow-up work. The `deep` profile uses `gpt-5.6-sol` with high
 reasoning and `xhigh` planning for difficult investigation and review. The
@@ -156,9 +157,10 @@ the shared `auto_review.policy` supplies the stricter authorization rules. The
 flag is therefore redundant for ordinary launches using this configuration.
 The TUI status line shows both the active permission and approval modes.
 
-Shared Codex defaults keep tool output bounded at 8000 tokens with
-`tool_output_token_limit` and keep reasoning summaries concise. Context-window
-and auto-compaction thresholds are left at Codex/model defaults.
+Shared Codex defaults keep tool output history bounded at 4000 tokens, disable
+automatic plugin suggestions, and keep reasoning summaries concise. Automatic
+compaction starts at 160000 total context tokens, before the active model's
+context is nearly full. Experimental context management remains disabled.
 Memory generation remains enabled but is disabled for turns with external
 context and when rate-limit headroom is below 35 percent.
 
