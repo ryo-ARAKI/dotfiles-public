@@ -139,15 +139,15 @@ They are not
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
-The default Codex profile uses `gpt-6-astra` with medium reasoning, high
+The default Codex profile uses `gpt-5.6-luna` with maximum reasoning and
 planning effort, and low response verbosity for normal implementation work.
-The `quick` profile uses
-`gpt-5.6-luna` with low reasoning and verbosity for small edits, verification,
-commit, and PR follow-up work. The `deep` profile uses `gpt-5.6-sol` with high
-reasoning and `xhigh` planning for difficult investigation and review. The
-`subagent` profile uses `gpt-5.6-luna` with medium reasoning and planning;
-launch it with `codex --profile subagent` when delegating a bounded task to a
-sub-agent.
+The `quick` profile also uses `gpt-5.6-luna` at maximum reasoning and planning
+effort for small edits, verification, commit, and PR follow-up work. The
+`deep` profile uses `gpt-6-astra` with high reasoning and `xhigh` planning for
+difficult investigation and review. The `subagent` profile uses
+`gpt-5.6-luna` with maximum reasoning and planning; launch it with
+`codex --profile subagent` when delegating a bounded task to a sub-agent.
+The Sol series is intentionally excluded from the standard routing.
 
 Normal Codex launches use automatic approval review with the `on-request`
 approval policy and workspace permissions. These persistent settings provide

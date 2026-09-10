@@ -17,18 +17,18 @@ class CodexConfigTests(unittest.TestCase):
         deep = tomllib.loads((config_root / "deep.config.toml").read_text(encoding="utf-8"))
         subagent = tomllib.loads((config_root / "subagent.config.toml").read_text(encoding="utf-8"))
 
-        self.assertEqual(standard["model"], "gpt-6-astra")
-        self.assertEqual(standard["model_reasoning_effort"], "medium")
-        self.assertEqual(standard["plan_mode_reasoning_effort"], "high")
+        self.assertEqual(standard["model"], "gpt-5.6-luna")
+        self.assertEqual(standard["model_reasoning_effort"], "max")
+        self.assertEqual(standard["plan_mode_reasoning_effort"], "max")
         self.assertEqual(quick["model"], "gpt-5.6-luna")
-        self.assertEqual(quick["model_reasoning_effort"], "low")
-        self.assertEqual(quick["plan_mode_reasoning_effort"], "medium")
-        self.assertEqual(deep["model"], "gpt-5.6-sol")
+        self.assertEqual(quick["model_reasoning_effort"], "max")
+        self.assertEqual(quick["plan_mode_reasoning_effort"], "max")
+        self.assertEqual(deep["model"], "gpt-6-astra")
         self.assertEqual(deep["model_reasoning_effort"], "high")
         self.assertEqual(deep["plan_mode_reasoning_effort"], "xhigh")
         self.assertEqual(subagent["model"], "gpt-5.6-luna")
-        self.assertEqual(subagent["model_reasoning_effort"], "medium")
-        self.assertEqual(subagent["plan_mode_reasoning_effort"], "medium")
+        self.assertEqual(subagent["model_reasoning_effort"], "max")
+        self.assertEqual(subagent["plan_mode_reasoning_effort"], "max")
     def test_public_config_uses_auto_review_with_explicit_authorization(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         config_path = repo_root / "config" / "codex" / "config.public.toml"
