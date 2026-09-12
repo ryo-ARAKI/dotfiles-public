@@ -309,6 +309,12 @@ keep its model settings aligned with the public `deep` profile when updating it.
 Config fragments are concatenated, so duplicate TOML keys are invalid rather
 than overrides. Use a standalone profile when overriding shared model settings.
 
+The standard Codex lane uses Astra with low reasoning effort. The `quick` and
+`subagent` profiles retain Luna/max, and `deep` retains Astra/high with xhigh
+planning. Machine-wide skill routing and workflow exceptions live in the private
+`config/codex/AGENTS.common.md`; keep vendor skill caches unchanged so upstream
+updates remain available.
+
 ### Add a new public file
 
 1. decide whether the file belongs in `home/` or `config/`
