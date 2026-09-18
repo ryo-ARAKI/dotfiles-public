@@ -37,7 +37,28 @@ class CodexConfigTests(unittest.TestCase):
         self.assertEqual(config["approval_policy"], "on-request")
         self.assertEqual(config["approvals_reviewer"], "auto_review")
         self.assertEqual(config["default_permissions"], "workspace")
+        shell_policy = config["shell_environment_policy"]
+        self.assertEqual(shell_policy["inherit"], "core")
+        self.assertFalse(shell_policy["ignore_default_excludes"])
+        self.assertEqual(
+            shell_policy["filters"],
+            {"AWS_*": "exclude", "AZURE_*": "exclude"},
+        )
         status_line = config["tui"]["status_line"]
+        self.assertEqual(
+            status_line,
+            [
+                "project-name",
+                "git-branch",
+                "task-progress",
+                "model-with-reasoning",
+                "fast-mode",
+                "permissions",
+                "approval-mode",
+                "context-remaining",
+                "five-hour-limit",
+            ],
+        )
         self.assertIn("permissions", status_line)
         self.assertIn("approval-mode", status_line)
         policy = config["auto_review"]["policy"]

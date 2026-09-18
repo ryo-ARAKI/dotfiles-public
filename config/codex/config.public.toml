@@ -23,6 +23,15 @@ web_search = "live"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
 tool_output_token_limit = 4000
 
+# Keep spawned commands on a trimmed environment and remove common secret names.
+[shell_environment_policy]
+inherit = "core"
+ignore_default_excludes = false
+
+[shell_environment_policy.filters]
+"AWS_*" = "exclude"
+"AZURE_*" = "exclude"
+
 [permissions.workspace]
 description = "Workspace write with restricted network"
 extends = ":workspace"
@@ -52,7 +61,6 @@ status_line = [
   "approval-mode",
   "context-remaining",
   "five-hour-limit",
-  "weekly-limit",
 ]
 terminal_title = [
   "project-name",
