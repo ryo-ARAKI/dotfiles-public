@@ -54,13 +54,10 @@ notification_condition = "unfocused"
 status_line = [
   "project-name",
   "git-branch",
-  "task-progress",
   "model-with-reasoning",
-  "fast-mode",
-  "permissions",
-  "approval-mode",
   "context-remaining",
-  "five-hour-limit",
+  "weekly-limit",
+  "task-progress",
 ]
 terminal_title = [
   "project-name",

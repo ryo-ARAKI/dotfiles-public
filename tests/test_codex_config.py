@@ -50,17 +50,12 @@ class CodexConfigTests(unittest.TestCase):
             [
                 "project-name",
                 "git-branch",
-                "task-progress",
                 "model-with-reasoning",
-                "fast-mode",
-                "permissions",
-                "approval-mode",
                 "context-remaining",
-                "five-hour-limit",
+                "weekly-limit",
+                "task-progress",
             ],
         )
-        self.assertIn("permissions", status_line)
-        self.assertIn("approval-mode", status_line)
         policy = config["auto_review"]["policy"]
         self.assertIn("explicitly authorized", policy)
         self.assertIn("concrete action and target", policy)
