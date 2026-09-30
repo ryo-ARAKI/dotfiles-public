@@ -191,7 +191,7 @@ def plan_codex_runtime(
     existing = _loads(snapshot.decode("utf-8"), what="existing config") if snapshot is not None else {}
     preserved: set[str] = set()
     merged = _merge(managed, existing, (), preserved)
-    merged_text = content if snapshot is None else _dumps(merged)
+    merged_text = content if snapshot is None or merged == managed else _dumps(merged)
     _loads(merged_text, what="merged config")
     changed: set[str] = set()
 

@@ -75,6 +75,18 @@ class CodexRuntimeTests(unittest.TestCase):
             self.assertEqual(apply_codex_runtime(new_plan, backup_root=backup, dry_run=False), "nochange")
             self.assertEqual(len([path for path in backup.rglob("*") if path.is_file()]), 1)
 
+    def test_new_managed_config_is_stable_after_first_apply(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "config.toml"
+            managed = '# managed profile\nmodel = "managed"\n'
+            first_plan = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
+            self.assertEqual(apply_codex_runtime(first_plan, backup_root=root / "backup", dry_run=False), "applied")
+            second_plan = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
+            self.assertEqual(second_plan.content, managed)
+            self.assertEqual(apply_codex_runtime(second_plan, backup_root=root / "backup", dry_run=True), "nochange")
+            self.assertEqual(target.read_text(encoding="utf-8"), managed)
+
     def test_stale_plan_and_backup_failure_preserve_target(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
