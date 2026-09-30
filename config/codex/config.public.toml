@@ -4,14 +4,14 @@
 # Do not edit config.toml directly; regenerate it through ./install.
 
 # Shared model defaults.
-model = "gpt-5.6-luna"
-model_reasoning_effort = "max"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "max"
+service_tier = "default"
 model_verbosity = "low"
 model_reasoning_summary = "concise"
 model_auto_compact_token_limit = 160000
 model_auto_compact_token_limit_scope = "total"
-
 # Shared execution defaults. These persistent settings apply the same core
 # preset as Codex 0.147.0's --approve-for-me to every normal launch while the
 # custom auto_review policy below remains authoritative.
@@ -22,6 +22,14 @@ personality = "pragmatic"
 web_search = "live"
 project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
 tool_output_token_limit = 4000
+
+[agents]
+default_subagent_model = "gpt-6-luna"
+default_subagent_reasoning_effort = "medium"
+
+[agents.reviewer]
+config_file = "reviewer.config.toml"
+description = "Independent read-only review of requirements, changes, and validation evidence."
 
 # Keep spawned commands on a trimmed environment and remove common secret names.
 [shell_environment_policy]

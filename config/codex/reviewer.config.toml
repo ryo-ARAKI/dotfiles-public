@@ -1,0 +1,6 @@
+# Loaded by `codex --profile reviewer` and by the named reviewer agent role.
+model = "gpt-6.1-sol"
+model_reasoning_effort = "high"
+plan_mode_reasoning_effort = "high"
+default_permissions = ":read-only"
+developer_instructions = "Review the supplied requirements, diff, and verification evidence independently. Do not edit files, commit, or push. Report findings with severity, location, and evidence, then list unverified areas."
