@@ -16,19 +16,29 @@ class CodexConfigTests(unittest.TestCase):
         quick = tomllib.loads((config_root / "quick.config.toml").read_text(encoding="utf-8"))
         deep = tomllib.loads((config_root / "deep.config.toml").read_text(encoding="utf-8"))
         subagent = tomllib.loads((config_root / "subagent.config.toml").read_text(encoding="utf-8"))
+        reviewer = tomllib.loads((config_root / "reviewer.config.toml").read_text(encoding="utf-8"))
 
-        self.assertEqual(standard["model"], "gpt-5.6-luna")
-        self.assertEqual(standard["model_reasoning_effort"], "max")
+        self.assertEqual(standard["model"], "gpt-6.1-sol")
+        self.assertEqual(standard["model_reasoning_effort"], "high")
         self.assertEqual(standard["plan_mode_reasoning_effort"], "max")
-        self.assertEqual(quick["model"], "gpt-5.6-luna")
-        self.assertEqual(quick["model_reasoning_effort"], "max")
-        self.assertEqual(quick["plan_mode_reasoning_effort"], "max")
+        self.assertEqual(standard["service_tier"], "default")
+        self.assertEqual(standard["agents"]["default_subagent_model"], "gpt-6-luna")
+        self.assertEqual(standard["agents"]["default_subagent_reasoning_effort"], "medium")
+        self.assertEqual(standard["agents"]["reviewer"]["config_file"], "reviewer.config.toml")
+        self.assertEqual(quick["model"], "gpt-6-luna")
+        self.assertEqual(quick["model_reasoning_effort"], "medium")
+        self.assertEqual(quick["plan_mode_reasoning_effort"], "medium")
         self.assertEqual(deep["model"], "gpt-6-astra")
         self.assertEqual(deep["model_reasoning_effort"], "high")
         self.assertEqual(deep["plan_mode_reasoning_effort"], "xhigh")
-        self.assertEqual(subagent["model"], "gpt-5.6-luna")
-        self.assertEqual(subagent["model_reasoning_effort"], "max")
-        self.assertEqual(subagent["plan_mode_reasoning_effort"], "max")
+        self.assertEqual(subagent["model"], "gpt-6-luna")
+        self.assertEqual(subagent["model_reasoning_effort"], "medium")
+        self.assertEqual(subagent["plan_mode_reasoning_effort"], "medium")
+        self.assertEqual(reviewer["model"], "gpt-6.1-sol")
+        self.assertEqual(reviewer["model_reasoning_effort"], "high")
+        self.assertEqual(reviewer["plan_mode_reasoning_effort"], "high")
+        self.assertEqual(reviewer["default_permissions"], ":read-only")
+        self.assertNotIn("approval_policy", reviewer)
     def test_public_config_uses_auto_review_with_explicit_authorization(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         config_path = repo_root / "config" / "codex" / "config.public.toml"
@@ -98,7 +108,7 @@ class CodexConfigTests(unittest.TestCase):
                 encoding="utf-8",
             )
 
-            with self.assertRaises(tomllib.TOMLDecodeError):
+            with self.assertRaisesRegex(ValueError, "invalid or duplicate TOML key"):
                 plan_codex_config(base_root, None, home_root=root / "home")
 
     def test_plan_includes_private_local_fragment_only_for_local_context(self) -> None:

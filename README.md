@@ -132,22 +132,25 @@ The current behavior is:
 8. Generate `~/.codex/config.toml` from public, private, and local-private fragments
 9. Print a summary at the end
 
-Codex profile files such as `~/.codex/quick.config.toml` and
-`~/.codex/deep.config.toml` are standalone manifest-managed files. The
-`~/.codex/subagent.config.toml` profile is also available for sub-agent tasks.
+Codex profile files such as `~/.codex/quick.config.toml`,
+`~/.codex/deep.config.toml`, `~/.codex/subagent.config.toml`, and
+`~/.codex/reviewer.config.toml` are standalone manifest-managed files.
 They are not
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
-The default Codex profile uses `gpt-5.6-luna` with maximum reasoning and
-planning effort, and low response verbosity for normal implementation work.
-The `quick` profile also uses `gpt-5.6-luna` at maximum reasoning and planning
-effort for small edits, verification, commit, and PR follow-up work. The
+The default Codex profile uses `gpt-6.1-sol` with high reasoning and maximum
+planning effort, and the standard service tier. Spawned sub-agents default to
+`gpt-6-luna` at medium reasoning. The `quick` profile uses `gpt-6-luna` with
+medium reasoning and planning effort for bounded tasks. The
 `deep` profile uses `gpt-6-astra` with high reasoning and `xhigh` planning for
-difficult investigation and review. The `subagent` profile uses
-`gpt-5.6-luna` with maximum reasoning and planning; launch it with
-`codex --profile subagent` when delegating a bounded task to a sub-agent.
-The Sol series is intentionally excluded from the standard routing.
+difficult investigation. The `subagent` profile uses `gpt-6-luna` with medium
+reasoning and planning. The `reviewer` role and `codex --profile reviewer` use
+Sol/high with read-only review instructions. Model defaults do not grant
+permission to delegate; explicit model and reasoning overrides take precedence.
+For difficult design, numerical, or permission reviews, explicitly select
+Astra/high. Reviewers inspect the requirements, diff, and evidence independently
+and report findings without editing, committing, or pushing.
 
 Normal Codex launches use automatic approval review with the `on-request`
 approval policy and workspace permissions. These persistent settings provide
@@ -301,17 +304,23 @@ Additional option notes:
 5. apply the authorized changes and compare the deployed result with the source
 6. commit when requested
 
-Codex writes some runtime state, including project trust, into its config and
-profile files. Before redeploying, inspect differences and copy only intended
-settings into their managed source. Keep local paths in the private layer. The
-local private `deep.config.toml` override retains trust scoped to that profile;
-keep its model settings aligned with the public `deep` profile when updating it.
-Config fragments are concatenated, so duplicate TOML keys are invalid rather
-than overrides. Use a standalone profile when overriding shared model settings.
+The installer validates each selected Codex TOML before changing files and
+retains only known runtime state from that same target: plugin, MCP server, and
+marketplace entries; project trust; model migration state; and listed UI state.
+Managed values win conflicts. Omitting a retained entry does not unregister it;
+remove it through a separate explicit operation. Unknown existing keys,
+malformed TOML, duplicate keys, and type conflicts stop the run before any
+manifest write. Preview output reports file paths and status without printing
+configuration values. Local and remote targets retain only their own state.
+Private and host manifest layers still select the managed source in the order
+base, private, host. Config fragments are concatenated, so duplicate TOML keys
+remain errors rather than overrides. The local private `deep.config.toml`
+overlay keeps trust scoped to that profile.
 
-The standard, `quick`, and `subagent` Codex lanes use Luna/max, while `deep`
-retains Astra/high with xhigh planning. Machine-wide skill routing and workflow
-exceptions live in the private
+Automatic review policy is a replacement policy rather than an addition to a
+standard policy; its managed body is unchanged by this refresh. `fast_mode`
+remains enabled as a feature flag, while `service_tier = "default"` keeps the
+standard tier selected. Machine-wide skill routing and workflow exceptions live in the private
 `config/codex/AGENTS.common.md`; keep vendor skill caches unchanged so upstream
 updates remain available.
 

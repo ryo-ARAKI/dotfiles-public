@@ -79,11 +79,11 @@ class ApplyEntryTests(unittest.TestCase):
                 patch.object(install_module.Path, "home", return_value=home),
                 patch.dict("os.environ", {"HOME": str(home)}, clear=False),
                 patch("sys.argv", ["install"]),
-                patch("builtins.input", side_effect=["maybe", "", "y"]) as prompt,
+                patch("builtins.input", side_effect=["maybe", "", "y", "y"]) as prompt,
             ):
                 self.assertEqual(install_module.main(), 0)
 
-            self.assertEqual(prompt.call_count, 3)
+            self.assertEqual(prompt.call_count, 4)
             self.assertEqual(target.read_text(encoding="utf-8"), "new\n")
 
     def test_install_shows_new_file_diff_before_confirmation(self) -> None:
@@ -112,7 +112,7 @@ class ApplyEntryTests(unittest.TestCase):
                 patch.object(install_module.Path, "home", return_value=home),
                 patch.dict("os.environ", {"HOME": str(home)}, clear=False),
                 patch("sys.argv", ["install"]),
-                patch("builtins.input", side_effect=["y"]) as prompt,
+                patch("builtins.input", side_effect=["y", "y"]) as prompt,
                 patch("sys.stdout", stdout),
             ):
                 self.assertEqual(install_module.main(), 0)
@@ -123,7 +123,7 @@ class ApplyEntryTests(unittest.TestCase):
             self.assertIn("+++ home/.bashrc", output)
             self.assertIn("applied: codex: config/codex/config.public.toml -> ~/.codex/config.toml", output)
             self.assertIn("Summary: applied=2 skipped=0 nochange=0 overridden=0", output)
-            self.assertEqual(prompt.call_count, 1)
+            self.assertEqual(prompt.call_count, 2)
             self.assertEqual(target.read_text(encoding="utf-8"), "new\nline\n")
 
     def test_install_uses_private_repo_root_for_private_entries(self) -> None:
@@ -208,6 +208,43 @@ class ApplyEntryTests(unittest.TestCase):
                 self.assertEqual(install_module.main(), 0)
 
             self.assertEqual(target.read_text(encoding="utf-8"), "host\n")
+
+    def test_codex_failure_reports_applied_pending_and_backup_targets_without_error_text(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            base_repo = root / "base"
+            home = root / "home"
+            (base_repo / "manifest").mkdir(parents=True)
+            (base_repo / "home").mkdir()
+            home.mkdir()
+            (base_repo / "manifest/base.tsv").write_text(
+                "home/.bashrc\t~/.bashrc\t0644\talways\n", encoding="utf-8"
+            )
+            (base_repo / "home/.bashrc").write_text("new\n", encoding="utf-8")
+            write_codex_fragments(base_repo)
+            target_config = home / ".codex/config.toml"
+            target_config.parent.mkdir()
+            target_config.write_text('model = "old"\n', encoding="utf-8")
+            install_module = load_install_module()
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+            with (
+                patch.object(install_module, "ROOT", base_repo),
+                patch.object(install_module.Path, "home", return_value=home),
+                patch.dict("os.environ", {"HOME": str(home)}, clear=False),
+                patch("sys.argv", ["install", "--yes"]),
+                patch.object(install_module, "apply_codex_config", side_effect=OSError("synthetic-secret")),
+                patch("sys.stdout", stdout),
+                patch("sys.stderr", stderr),
+            ):
+                self.assertEqual(install_module.main(), 1)
+            self.assertEqual((home / ".bashrc").read_text(encoding="utf-8"), "new\n")
+            self.assertEqual(target_config.read_text(encoding="utf-8"), 'model = "old"\n')
+            error = stderr.getvalue()
+            self.assertIn("Previously applied targets: ~/.bashrc", error)
+            self.assertIn("Codex targets not applied: ~/.codex/config.toml", error)
+            self.assertIn("Backups:", error)
+            self.assertNotIn("synthetic-secret", error)
 
 
 if __name__ == "__main__":

@@ -21,6 +21,8 @@ from dotfiles_installer.codex_agents import apply_codex_agents
 from dotfiles_installer.codex_agents import plan_codex_agents
 from dotfiles_installer.codex_config import apply_codex_config
 from dotfiles_installer.codex_config import plan_codex_config
+from dotfiles_installer.codex_config import plan_codex_profile
+from dotfiles_installer.codex_runtime import apply_codex_runtime
 from dotfiles_installer.context import detect_context
 from dotfiles_installer.manifest import ManifestEntry
 from dotfiles_installer.manifest import load_manifest
@@ -48,10 +50,17 @@ def _resolve_host_name(explicit: str | None) -> str:
 def _matches_codex_only(only: str | None) -> bool:
     if not only:
         return True
+    profile_names = ("quick.config.toml", "deep.config.toml", "subagent.config.toml", "reviewer.config.toml")
+    if any(only in name for name in profile_names):
+        return False
     candidates = (
         "config/codex/config.public.toml",
         "config/codex/config.private.toml",
         "~/.codex/config.toml",
+        "~/.codex/quick.config.toml",
+        "~/.codex/deep.config.toml",
+        "~/.codex/subagent.config.toml",
+        "~/.codex/reviewer.config.toml",
         "codex",
     )
     return any(only in candidate for candidate in candidates)
@@ -97,6 +106,29 @@ def _file_mode(path: Path) -> int | None:
     if not path.exists():
         return None
     return path.stat().st_mode & 0o777
+
+
+def _report_codex_apply_failure(
+    target: str,
+    applied_targets: list[str],
+    pending_targets: list[str],
+    backup_root: Path,
+    error: Exception,
+) -> int:
+    print(f"Codex apply failed for {target}: {type(error).__name__}", file=sys.stderr)
+    print(
+        "Previously applied targets: " + (", ".join(applied_targets) if applied_targets else "(none)"),
+        file=sys.stderr,
+    )
+    print(
+        "Codex targets not applied: " + (", ".join(pending_targets) if pending_targets else "(none)"),
+        file=sys.stderr,
+    )
+    print(
+        f"Backups: {backup_root}",
+        file=sys.stderr,
+    )
+    return 1
 
 
 def _render_entry_preview(entry, repo_root: Path, *, dry_run: bool) -> tuple[bool, str | None]:
@@ -195,11 +227,29 @@ def main() -> int:
             if _matches_only(entry, args.only):
                 filtered_overridden.append(entry)
 
+    # Plan every selected Codex profile before any generic manifest write.
+    codex_profiles = {}
+    generic_plan = {}
+    for target, entry in filtered_plan.items():
+        target_path = Path(entry.target).expanduser()
+        if target_path.parent == Path.home() / ".codex" and target_path.name.endswith(".config.toml"):
+            repo_root = _resolve_repo_root(entry, base_root=ROOT, private_root=private_root, host_root=host_root)
+            source_path = repo_root / entry.source
+            codex_profiles[target] = (entry, plan_codex_profile(
+                source_path.read_text(encoding="utf-8"),
+                target_path=target_path,
+                source_label=f"{entry.layer}: {entry.source}",
+                target_label=entry.target,
+            ))
+        else:
+            generic_plan[target] = entry
+
     backup_root = Path.home() / ".dotfiles-backup" / datetime.now().strftime("%Y%m%d-%H%M%S")
     applied = 0
+    applied_targets: list[str] = []
     skipped = 0
     nochange = 0
-    for entry in filtered_plan.values():
+    for entry in generic_plan.values():
         repo_root = _resolve_repo_root(entry, base_root=ROOT, private_root=private_root, host_root=host_root)
         needs_change, preview = _render_entry_preview(entry, repo_root=repo_root, dry_run=args.dry_run)
         print(preview)
@@ -228,19 +278,87 @@ def main() -> int:
             continue
         apply_entry(entry, repo_root=repo_root, backup_root=backup_root)
         applied += 1
+        applied_targets.append(entry.target)
     if codex_plan is not None:
-        codex_status = apply_codex_config(codex_plan, backup_root=backup_root, dry_run=args.dry_run)
-        print(
-            summarize_generated_line(
-                "codex",
-                codex_plan.source_label,
-                codex_plan.target_label,
-                status=codex_status.replace("_", " "),
-            )
-        )
-        if codex_status == "applied":
+        try:
+            codex_status = apply_codex_config(codex_plan, backup_root=backup_root, dry_run=True)
+        except Exception as exc:
+            pending = [codex_plan.target_label, *(plan.target_label for _, plan in codex_profiles.values())]
+            if codex_agents_plan is not None:
+                pending.append(codex_agents_plan.target_label)
+            return _report_codex_apply_failure(codex_plan.target_label, applied_targets, pending, backup_root, exc)
+        if codex_status == "would_apply" and not args.dry_run:
+            if not args.yes:
+                answer = input("Apply this Codex config change? [y]es/[n]o/[q]uit: ").strip().lower()
+                if answer != "y":
+                    skipped += 1
+                    if answer == "q":
+                        print(summarize_run(applied, skipped, nochange, len(filtered_overridden), args.dry_run))
+                        return 1
+                    codex_status = "skipped"
+                else:
+                    try:
+                        codex_status = apply_codex_config(codex_plan, backup_root=backup_root, dry_run=False)
+                    except Exception as exc:
+                        pending = [codex_plan.target_label, *(plan.target_label for _, plan in codex_profiles.values())]
+                        if codex_agents_plan is not None:
+                            pending.append(codex_agents_plan.target_label)
+                        return _report_codex_apply_failure(codex_plan.target_label, applied_targets, pending, backup_root, exc)
+            else:
+                try:
+                    codex_status = apply_codex_config(codex_plan, backup_root=backup_root, dry_run=False)
+                except Exception as exc:
+                    pending = [codex_plan.target_label, *(plan.target_label for _, plan in codex_profiles.values())]
+                    if codex_agents_plan is not None:
+                        pending.append(codex_agents_plan.target_label)
+                    return _report_codex_apply_failure(codex_plan.target_label, applied_targets, pending, backup_root, exc)
+        if codex_status == "skipped":
+            pass
+        elif codex_status == "applied":
             applied += 1
-        if codex_status == "nochange":
+            applied_targets.append(codex_plan.target_label)
+        elif codex_status == "nochange":
+            nochange += 1
+        print(summarize_generated_line("codex", codex_plan.source_label, codex_plan.target_label, status=codex_status.replace("_", " ")))
+        if codex_plan.runtime_plan.changed_keys:
+            print("  managed settings changed: " + ", ".join(codex_plan.runtime_plan.changed_keys))
+        if codex_plan.runtime_plan.preserved_keys:
+            print("  existing settings retained: " + ", ".join(codex_plan.runtime_plan.preserved_keys))
+    profile_targets = list(codex_profiles.items())
+    for profile_index, (target, (profile_entry, profile_plan)) in enumerate(profile_targets):
+        try:
+            status = apply_codex_runtime(profile_plan, backup_root=backup_root, dry_run=True)
+        except Exception as exc:
+            pending = [plan.target_label for _, (_, plan) in profile_targets[profile_index:]]
+            if codex_agents_plan is not None:
+                pending.append(codex_agents_plan.target_label)
+            return _report_codex_apply_failure(profile_plan.target_label, applied_targets, pending, backup_root, exc)
+        if status == "would_apply" and not args.dry_run:
+            if not args.yes:
+                answer = input(f"Apply this Codex profile change ({profile_plan.target_label})? [y]es/[n]o/[q]uit: ").strip().lower()
+                if answer != "y":
+                    skipped += 1
+                    if answer == "q":
+                        print(summarize_run(applied, skipped, nochange, len(filtered_overridden), args.dry_run))
+                        return 1
+                    status = "skipped"
+            if status == "would_apply":
+                try:
+                    status = apply_codex_runtime(profile_plan, backup_root=backup_root, dry_run=False)
+                except Exception as exc:
+                    pending = [plan.target_label for _, (_, plan) in profile_targets[profile_index:]]
+                    if codex_agents_plan is not None:
+                        pending.append(codex_agents_plan.target_label)
+                    return _report_codex_apply_failure(profile_plan.target_label, applied_targets, pending, backup_root, exc)
+        print(summarize_generated_line(profile_entry.layer, profile_entry.source, profile_entry.target, status=status.replace("_", " ")))
+        if profile_plan.changed_keys:
+            print("  managed settings changed: " + ", ".join(profile_plan.changed_keys))
+        if profile_plan.preserved_keys:
+            print("  existing settings retained: " + ", ".join(profile_plan.preserved_keys))
+        if status == "applied":
+            applied += 1
+            applied_targets.append(profile_entry.target)
+        elif status == "nochange":
             nochange += 1
     if codex_agents_plan is not None:
         codex_agents_status = apply_codex_agents(codex_agents_plan, backup_root=backup_root, dry_run=args.dry_run)
