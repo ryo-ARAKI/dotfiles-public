@@ -5,6 +5,7 @@ if status --is-interactive
         end
 
         set -l noisy_patterns \
+            '^\s*(?:command\s+)?git\b' \
             '^\s*(?:builtin\s+)?(?:ls|pwd|clear|history|dirh|prevd|nextd|cdh)\b' \
             '^\s*(?:builtin\s+)?(?:z|zo)\b' \
             '^\s*(?:command\s+)?eza\b' \
