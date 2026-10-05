@@ -5,9 +5,38 @@ from pathlib import Path
 
 from dotfiles_installer.codex_config import apply_codex_config
 from dotfiles_installer.codex_config import plan_codex_config
+from dotfiles_installer.codex_config import plan_codex_profile
+from dotfiles_installer.codex_runtime import apply_codex_runtime
 
 
 class CodexConfigTests(unittest.TestCase):
+    def test_local_profile_reviewer_overrides_existing_auto_review_and_retains_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "home/.codex/ollama-coding.config.toml"
+            target.parent.mkdir(parents=True)
+            target.write_text(
+                'approvals_reviewer = "auto_review"\n'
+                '[notice.model_migrations]\n"old" = "new"\n', encoding="utf-8",
+            )
+            managed = 'approvals_reviewer = "user"\nmodel_provider = "ollama-local"\n'
+            def plan():
+                return plan_codex_profile(
+                    managed, target_path=target, source_label="fixture", target_label="profile",
+                )
+            before = target.read_bytes()
+            apply_codex_runtime(plan(), backup_root=root / "backup", dry_run=True)
+            self.assertEqual(target.read_bytes(), before)
+            self.assertFalse((root / "backup").exists())
+            apply_codex_runtime(plan(), backup_root=root / "backup", dry_run=False)
+            generated = tomllib.loads(target.read_text(encoding="utf-8"))
+            self.assertEqual(generated["approvals_reviewer"], "user")
+            self.assertEqual(generated["model_provider"], "ollama-local")
+            self.assertEqual(generated["notice"]["model_migrations"], {"old": "new"})
+            after = target.read_bytes()
+            apply_codex_runtime(plan(), backup_root=root / "backup", dry_run=False)
+            self.assertEqual(target.read_bytes(), after)
+
     def test_profile_lanes_balance_cost_and_quality(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
         config_root = repo_root / "config" / "codex"

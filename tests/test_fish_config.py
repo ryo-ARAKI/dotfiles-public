@@ -52,7 +52,19 @@ class FishConfigTests(unittest.TestCase):
 
         self.assertEqual(argv[1:], ["exec", "--profile", "deep", "-m", "gpt-5.4", "prompt"])
 
-    def run_codex_function(self, codex_args: str) -> list[str]:
+    def test_codex_function_preserves_explicit_ollama_profiles(self) -> None:
+        for profile in ("ollama-coding", "ollama-fast", "ollama-research"):
+            with self.subTest(profile=profile):
+                argv = self.run_codex_function(f"--profile {profile} -C .")
+                self.assertEqual(argv[1:], ["--profile", profile, "-C", "."])
+
+    def test_noninteractive_codex_preserves_explicit_ollama_profile(self) -> None:
+        argv = self.run_codex_function(
+            "exec --profile ollama-coding -m custom-local-model prompt", interactive=False,
+        )
+        self.assertEqual(argv, ["exec", "--profile", "ollama-coding", "-m", "custom-local-model", "prompt"])
+
+    def run_codex_function(self, codex_args: str, *, interactive: bool = True) -> list[str]:
         with tempfile.TemporaryDirectory() as tmp:
             temp_root = Path(tmp)
             home = temp_root / "home"
@@ -71,7 +83,8 @@ class FishConfigTests(unittest.TestCase):
                 (ROOT / "config" / "fish" / "functions" / "codex.fish").read_text(encoding="utf-8"),
                 encoding="utf-8",
             )
-            (bin_dir / "codex").write_text("#!/bin/sh\nexit 0\n", encoding="utf-8")
+            capture_script = "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\"; done > \"$CODEX_ARGV_CAPTURE\"\n"
+            (bin_dir / "codex").write_text(capture_script, encoding="utf-8")
             (bin_dir / "codex").chmod(0o755)
             wrapper.write_text(
                 "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\"; done > \"$CODEX_ARGV_CAPTURE\"\n",
@@ -85,7 +98,7 @@ class FishConfigTests(unittest.TestCase):
             env["CODEX_ARGV_CAPTURE"] = str(output_path)
 
             result = subprocess.run(
-                ["fish", "-ic", f"source {codex_function}; codex {codex_args}"],
+                ["fish", "-ic" if interactive else "-c", f"source {codex_function}; codex {codex_args}"],
                 env=env,
                 capture_output=True,
                 text=True,
