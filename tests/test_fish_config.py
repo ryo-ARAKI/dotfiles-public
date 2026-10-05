@@ -15,13 +15,11 @@ class FishConfigTests(unittest.TestCase):
         self.assertIn("if command -v starship >/dev/null", config)
         self.assertLess(config.index("if command -v starship >/dev/null"), config.index("starship init fish | source"))
 
-    def test_codex_function_uses_ollama_launch_profile_for_ollama_120b(self) -> None:
+    def test_codex_function_does_not_select_a_legacy_profile_for_ollama_120b(self) -> None:
         argv = self.run_codex_function("exec --oss --local-provider ollama -m gpt-oss:120b -C .")
 
-        self.assertIn("--profile", argv)
-        self.assertIn("ollama-launch", argv)
         self.assertEqual(
-            argv[1:-2],
+            argv[1:],
             ["exec", "--oss", "--local-provider", "ollama", "-m", "gpt-oss:120b", "-C", "."],
         )
 
@@ -57,6 +55,10 @@ class FishConfigTests(unittest.TestCase):
             with self.subTest(profile=profile):
                 argv = self.run_codex_function(f"--profile {profile} -C .")
                 self.assertEqual(argv[1:], ["--profile", profile, "-C", "."])
+
+    def test_codex_function_preserves_explicit_profile_with_gpt_oss_override(self) -> None:
+        argv = self.run_codex_function("--profile ollama-coding -m gpt-oss:120b -C .")
+        self.assertEqual(argv[1:], ["--profile", "ollama-coding", "-m", "gpt-oss:120b", "-C", "."])
 
     def test_noninteractive_codex_preserves_explicit_ollama_profile(self) -> None:
         argv = self.run_codex_function(

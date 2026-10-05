@@ -139,6 +139,18 @@ They are not
 embedded in generated `~/.codex/config.toml`, matching Codex `--profile`
 behavior in current releases.
 
+The fish wrapper forwards model and profile arguments unchanged.
+It no longer selects the legacy `ollama-launch` profile for `gpt-oss:120b`.
+Use an explicitly managed local profile, including when overriding its model:
+
+```fish
+codex --profile ollama-coding -m gpt-oss:120b
+```
+
+The local profile must set `approvals_reviewer = "user"`.
+Raw `--oss` launches continue to inherit the base automatic reviewer;
+removing legacy profile selection does not change that approval setting.
+
 The default Codex profile uses `gpt-6.1-sol` with high reasoning and maximum
 planning effort, and the standard service tier. Spawned sub-agents default to
 `gpt-6-luna` at medium reasoning. The `quick` profile uses `gpt-6-luna` with
