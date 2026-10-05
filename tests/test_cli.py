@@ -432,10 +432,7 @@ class InstallCliTests(unittest.TestCase):
 
         remote_hook = run_dry("remote", "codex-dgx-refresh")
         self.assertEqual(remote_hook.returncode, 0, msg=remote_hook.stderr)
-        self.assertRegex(
-            remote_hook.stdout,
-            r"(?m)^(?:would apply|nochange): host: bin/codex-dgx-refresh -> ~/\.local/bin/codex-dgx-refresh$",
-        )
+        self.assertNotIn("codex-dgx-refresh", remote_hook.stdout)
 
         for legacy_path in (
             "gptoss.config.toml",
