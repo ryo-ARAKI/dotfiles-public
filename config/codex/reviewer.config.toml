@@ -1,5 +1,6 @@
 # Loaded by `codex --profile reviewer` and by the named reviewer agent role.
 model = "gpt-6.1-sol"
+service_tier = "default"
 model_reasoning_effort = "high"
 plan_mode_reasoning_effort = "high"
 default_permissions = ":read-only"
