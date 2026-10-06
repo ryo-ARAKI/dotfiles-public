@@ -88,6 +88,7 @@ Notable tracked config beyond the original shell files includes:
 - `config/fish/fish_plugins` for `fisher` plugin declarations
 - `config/fcitx5/config` for local IME behavior
 - `config/gh/config.yml` for GitHub CLI defaults and aliases
+- `config/herdr/config.toml` for herdr theme, notification, and UI preferences
 
 ## Manifest Format
 
