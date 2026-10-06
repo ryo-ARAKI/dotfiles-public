@@ -12,6 +12,11 @@ export LC_ALL=en_US.UTF-8
 # export LD_LIBRARY_PATH="/path/to/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
 # export MODULEPATH="/path/to/modulefiles${MODULEPATH:+:$MODULEPATH}"
 
+# Make Node and Codex available to non-interactive SSH commands.
+if [ -d "$HOME/.nvm/versions/node/v20.19.3/bin" ]; then
+    export PATH="$HOME/.nvm/versions/node/v20.19.3/bin:$PATH"
+fi
+
 case $- in
     *i*) ;;
       *) return ;;
