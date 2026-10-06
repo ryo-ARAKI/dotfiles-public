@@ -19,7 +19,7 @@ class FishConfigTests(unittest.TestCase):
         argv = self.run_codex_function("exec --oss --local-provider ollama -m gpt-oss:120b -C .")
 
         self.assertEqual(
-            argv[1:],
+            argv,
             ["exec", "--oss", "--local-provider", "ollama", "-m", "gpt-oss:120b", "-C", "."],
         )
 
@@ -42,23 +42,22 @@ class FishConfigTests(unittest.TestCase):
     def test_codex_function_leaves_normal_invocations_unchanged(self) -> None:
         argv = self.run_codex_function("--version")
 
-        self.assertNotIn("-c", argv)
-        self.assertEqual(argv[-1], "--version")
+        self.assertEqual(argv, ["--version"])
 
     def test_codex_function_preserves_openai_model_and_profile_arguments(self) -> None:
         argv = self.run_codex_function("exec --profile deep -m gpt-5.4 prompt")
 
-        self.assertEqual(argv[1:], ["exec", "--profile", "deep", "-m", "gpt-5.4", "prompt"])
+        self.assertEqual(argv, ["exec", "--profile", "deep", "-m", "gpt-5.4", "prompt"])
 
     def test_codex_function_preserves_explicit_ollama_profiles(self) -> None:
         for profile in ("ollama-coding", "ollama-fast", "ollama-research"):
             with self.subTest(profile=profile):
                 argv = self.run_codex_function(f"--profile {profile} -C .")
-                self.assertEqual(argv[1:], ["--profile", profile, "-C", "."])
+                self.assertEqual(argv, ["--profile", profile, "-C", "."])
 
     def test_codex_function_preserves_explicit_profile_with_gpt_oss_override(self) -> None:
         argv = self.run_codex_function("--profile ollama-coding -m gpt-oss:120b -C .")
-        self.assertEqual(argv[1:], ["--profile", "ollama-coding", "-m", "gpt-oss:120b", "-C", "."])
+        self.assertEqual(argv, ["--profile", "ollama-coding", "-m", "gpt-oss:120b", "-C", "."])
 
     def test_noninteractive_codex_preserves_explicit_ollama_profile(self) -> None:
         argv = self.run_codex_function(
@@ -72,7 +71,6 @@ class FishConfigTests(unittest.TestCase):
             home = temp_root / "home"
             bin_dir = temp_root / "bin"
             functions_dir = home / ".config" / "fish" / "functions"
-            wrapper = home / ".config" / "fish" / "codex-pty-wrapper.py"
             output_path = temp_root / "argv.txt"
             codex_function = functions_dir / "codex.fish"
 
@@ -80,7 +78,6 @@ class FishConfigTests(unittest.TestCase):
             bin_dir.mkdir()
             (home / ".codex").mkdir()
             (home / ".codex" / "ollama-launch.config.toml").write_text("model = \"gpt-oss:120b\"\n", encoding="utf-8")
-            wrapper.parent.mkdir(parents=True, exist_ok=True)
             codex_function.write_text(
                 (ROOT / "config" / "fish" / "functions" / "codex.fish").read_text(encoding="utf-8"),
                 encoding="utf-8",
@@ -88,11 +85,6 @@ class FishConfigTests(unittest.TestCase):
             capture_script = "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\"; done > \"$CODEX_ARGV_CAPTURE\"\n"
             (bin_dir / "codex").write_text(capture_script, encoding="utf-8")
             (bin_dir / "codex").chmod(0o755)
-            wrapper.write_text(
-                "#!/bin/sh\nfor arg do printf '%s\\n' \"$arg\"; done > \"$CODEX_ARGV_CAPTURE\"\n",
-                encoding="utf-8",
-            )
-            wrapper.chmod(0o755)
 
             env = dict(os.environ)
             env["HOME"] = str(home)
