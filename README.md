@@ -100,13 +100,13 @@ Herdr tabs serve as screen/tmux windows; Herdr's indexed tab jumps use 1-9.
 | --- | --- |
 | `c`, `n`, `p`, `1`-`9` | Create, cycle, or select a tab |
 | `,`, `A` | Rename a tab (tmux / screen) |
-| `%`, `\|`, `v` | Split side by side |
-| `"`, `S`, `-` | Split above/below |
-| Arrow keys, `h/j/k/l` | Focus a pane |
+| <code>&#124;</code> | Split side by side |
+| `S` (Shift+s) | Split above/below |
+| Arrow keys | Focus a pane |
 | `o`, `Tab`; `Shift+Tab` | Cycle panes forward; backward |
 | `z`, `r` | Zoom a pane; enter resize mode |
 | `[`; `e` | Enter copy mode; open scrollback in `$EDITOR` |
-| `x`; `&` | Close a pane; close a tab |
+| `k`; `&` | Close a pane; close a tab |
 | `d` | Detach and leave programs running |
 | `b`, `w`, `?` | Toggle sidebar, navigate workspaces, show active bindings |
 | `O` | Jump to the visible notification's target |

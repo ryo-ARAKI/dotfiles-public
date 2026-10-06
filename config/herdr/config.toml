@@ -14,17 +14,17 @@ switch_tab = "prefix+1..9"
 rename_tab = ["prefix+comma", "prefix+shift+a", "prefix+shift+t"]
 close_tab = ["prefix+ampersand", "prefix+shift+x"]
 
-# tmux %, screen |, and Herdr v split side by side.
-# tmux ", screen S, and Herdr - split above/below.
-split_vertical = ["prefix+%", "prefix+|", "prefix+v"]
-split_horizontal = ['prefix+"', "prefix+shift+s", "prefix+minus"]
-focus_pane_left = ["prefix+left", "prefix+h"]
-focus_pane_down = ["prefix+down", "prefix+j"]
-focus_pane_up = ["prefix+up", "prefix+k"]
-focus_pane_right = ["prefix+right", "prefix+l"]
+# A vertical divider splits panes side by side.
+# Match screen's S binding to split panes above/below.
+split_vertical = "prefix+|"
+split_horizontal = "prefix+shift+s"
+focus_pane_left = "prefix+left"
+focus_pane_down = "prefix+down"
+focus_pane_up = "prefix+up"
+focus_pane_right = "prefix+right"
 cycle_pane_next = ["prefix+o", "prefix+tab"]
 cycle_pane_previous = "prefix+shift+tab"
-close_pane = "prefix+x"
+close_pane = "prefix+k"
 zoom = "prefix+z"
 resize_mode = "prefix+r"
 copy_mode = "prefix+["
