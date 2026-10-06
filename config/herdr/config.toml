@@ -1,5 +1,8 @@
 onboarding = false
 
+[keys]
+prefix = "ctrl+z"
+
 [ui.toast]
 delivery = "herdr"
 
