@@ -365,6 +365,11 @@ Additional option notes:
 The installer validates each selected Codex TOML before changing files and
 retains only known runtime state from that same target: plugin, MCP server, and
 marketplace entries; project trust; model migration state; and listed UI state.
+Hook activation (`features.hooks`) and state (`hooks.state.<id>.enabled` and
+`trusted_hash`) are retained per target;
+hook event definitions must be present in the managed source to be accepted.
+The field types follow the official
+[Codex configuration schema](https://developers.openai.com/codex/config-schema.json).
 Managed values win conflicts. Omitting a retained entry does not unregister it;
 remove it through a separate explicit operation. Unknown existing keys,
 malformed TOML, duplicate keys, and type conflicts stop the run before any

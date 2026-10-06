@@ -16,6 +16,7 @@ except ModuleNotFoundError:  # pragma: no cover - fail closed on Python < 3.11
 
 _PRESERVE_TABLES = {"plugins", "mcp_servers", "marketplaces"}
 _PRESERVE_SCALARS = {
+    ("features", "hooks"),
     ("notice", "hide_rate_limit_model_nudge"),
     ("tui", "screen_reader_detection_done"),
     ("desktop", "followUpQueueMode"),
@@ -25,6 +26,7 @@ _PRESERVE_MAPS = {
     ("tui", "model_availability_nux"),
 }
 _PRESERVE_PREFIXES = {("notice",), ("tui",), ("desktop",), ("projects",)}
+_HOOK_STATE_PREFIX = ("hooks", "state")
 
 
 @dataclass(frozen=True)
@@ -55,6 +57,10 @@ def _loads(text: str, *, what: str) -> dict[str, Any]:
 def _allowed_existing(path: tuple[str, ...]) -> bool:
     if not path:
         return False
+    if path in {("features",), ("hooks",), _HOOK_STATE_PREFIX}:
+        return True
+    if path[:2] == _HOOK_STATE_PREFIX:
+        return len(path) == 3 or (len(path) == 4 and path[3] in {"enabled", "trusted_hash"})
     if path in _PRESERVE_PREFIXES:
         return True
     if path in _PRESERVE_MAPS:
@@ -78,16 +84,21 @@ def _display_path(path: tuple[str, ...]) -> str:
     parts = list(path)
     if len(parts) >= 2 and parts[0] in _PRESERVE_TABLES | {"projects"}:
         parts[1] = "*"
-    elif len(parts) >= 3 and path[:2] in _PRESERVE_MAPS:
+    elif len(parts) >= 3 and (path[:2] in _PRESERVE_MAPS or path[:2] == _HOOK_STATE_PREFIX):
         parts[2] = "*"
     return ".".join(parts)
 
 
 def _validate_preserved_type(path: tuple[str, ...], value: Any) -> None:
     expected: type | None = None
-    if len(path) == 3 and path[0] == "projects" and path[2] == "trust_level":
+    if path in {("features",), ("hooks",)} or (path[:2] == _HOOK_STATE_PREFIX and len(path) in {2, 3}):
+        expected = dict
+    elif len(path) == 4 and path[:2] == _HOOK_STATE_PREFIX:
+        expected = bool if path[3] == "enabled" else str
+    elif len(path) == 3 and path[0] == "projects" and path[2] == "trust_level":
         expected = str
     elif path in {
+        ("features", "hooks"),
         ("notice", "hide_rate_limit_model_nudge"),
         ("tui", "screen_reader_detection_done"),
     }:
@@ -120,6 +131,7 @@ def _merge(managed: Any, existing: Any, path: tuple[str, ...], preserved: set[st
         for key, value in old.items():
             if key not in managed:
                 child_path = (*path, key)
+                _validate_preserved_type(child_path, value)
                 if isinstance(value, dict):
                     result[key] = _merge({}, value, child_path, preserved)
                 else:
@@ -129,7 +141,6 @@ def _merge(managed: Any, existing: Any, path: tuple[str, ...], preserved: set[st
                         raise ValueError(f"Codex config type conflict at {_display_path(child_path)}")
                     if (len(child_path) == 2 and child_path[0] in _PRESERVE_TABLES | {"projects"}) or child_path in _PRESERVE_MAPS:
                         raise ValueError(f"Codex config type conflict at {_display_path(child_path)}")
-                    _validate_preserved_type(child_path, value)
                     result[key] = value
                     preserved.add(_display_path(child_path))
         return result

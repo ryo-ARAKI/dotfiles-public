@@ -9,6 +9,88 @@ from dotfiles_installer.codex_runtime import plan_codex_runtime
 
 
 class CodexRuntimeTests(unittest.TestCase):
+    def test_retains_hook_feature_and_managed_values_win(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "config.toml"
+            target.write_text('[features]\nhooks = true\n', encoding="utf-8")
+            for managed, expected in (
+                ('model = "managed"\n', {"hooks": True}),
+                ('[features]\nother_managed = true\n', {"other_managed": True, "hooks": True}),
+                ('[features]\nhooks = false\n', {"hooks": False}),
+            ):
+                with self.subTest(managed=managed):
+                    plan = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
+                    self.assertEqual(tomllib.loads(plan.content)["features"], expected)
+                    self.assertEqual("features.hooks" in plan.preserved_keys, "hooks = false" not in managed)
+
+    def test_hook_feature_rejects_invalid_types_and_unknown_flags(self) -> None:
+        for existing, error in (
+            ('features = true\n', "type conflict"),
+            ('[features]\nhooks = "true"\n', "type conflict"),
+            ('[features.hooks]\nenabled = true\n', "type conflict"),
+            ('[features]\nunknown_flag = true\n', "Unclassified existing Codex setting"),
+        ):
+            with self.subTest(existing=existing), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "config.toml"
+                target.write_text(existing, encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, error):
+                    plan_codex_runtime('model = "managed"\n', target_path=target, source_label="x", target_label="target")
+
+    def test_retains_hook_state_with_redacted_diagnostics(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "config.toml"
+            target.write_text(
+                'model = "old"\n[hooks.state."private-hook@example"]\n'
+                'enabled = false\ntrusted_hash = "synthetic-hash"\n',
+                encoding="utf-8",
+            )
+            plan = plan_codex_runtime('model = "managed"\n', target_path=target, source_label="x", target_label="target")
+            self.assertEqual(tomllib.loads(plan.content)["hooks"]["state"]["private-hook@example"],
+                             {"enabled": False, "trusted_hash": "synthetic-hash"})
+            self.assertEqual(set(plan.preserved_keys), {"hooks.state.*.enabled", "hooks.state.*.trusted_hash"})
+            self.assertEqual(apply_codex_runtime(plan, backup_root=root / "backup", dry_run=False), "applied")
+            fresh = plan_codex_runtime('model = "managed"\n', target_path=target, source_label="x", target_label="target")
+            self.assertEqual(apply_codex_runtime(fresh, backup_root=root / "backup", dry_run=True), "nochange")
+
+    def test_managed_hook_state_wins_without_dropping_other_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "config.toml"
+            target.write_text('[hooks.state.example]\nenabled = true\ntrusted_hash = "synthetic-hash"\n', encoding="utf-8")
+            plan = plan_codex_runtime('[hooks.state.example]\nenabled = false\n', target_path=target, source_label="x", target_label="target")
+            self.assertEqual(tomllib.loads(plan.content)["hooks"]["state"]["example"],
+                             {"enabled": False, "trusted_hash": "synthetic-hash"})
+
+    def test_hook_state_rejects_unknown_fields_and_executable_hooks(self) -> None:
+        for existing in (
+            '[hooks.state."private-hook@example"]\ncommand = "synthetic-secret"\n',
+            '[hooks]\nSessionStart = []\n',
+        ):
+            with self.subTest(existing=existing), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "config.toml"
+                target.write_text(existing, encoding="utf-8")
+                with self.assertRaises(ValueError) as caught:
+                    plan_codex_runtime('model = "managed"\n', target_path=target, source_label="x", target_label="target")
+                self.assertIn("Unclassified existing Codex setting", str(caught.exception))
+                self.assertNotIn("private-hook@example", str(caught.exception))
+                self.assertNotIn("synthetic-secret", str(caught.exception))
+
+    def test_hook_state_rejects_invalid_table_and_value_types(self) -> None:
+        for existing in (
+            'hooks = "not-a-table"\n',
+            '[hooks]\nstate = false\n',
+            '[hooks.state]\n"private-hook@example" = false\n',
+            '[hooks.state."private-hook@example"]\nenabled = "false"\n',
+            '[hooks.state."private-hook@example"]\ntrusted_hash = 42\n',
+            '[hooks.state."private-hook@example".enabled]\nnested = true\n',
+        ):
+            with self.subTest(existing=existing), tempfile.TemporaryDirectory() as tmp:
+                target = Path(tmp) / "config.toml"
+                target.write_text(existing, encoding="utf-8")
+                with self.assertRaisesRegex(ValueError, "type conflict") as caught:
+                    plan_codex_runtime('model = "managed"\n', target_path=target, source_label="x", target_label="target")
+                self.assertNotIn("private-hook@example", str(caught.exception))
+
     def test_retains_allowlisted_state_and_managed_values_win(self) -> None:
         existing = "\n".join([
             'model = "old-model"', '[plugins."plug@example"]', 'enabled = true',
