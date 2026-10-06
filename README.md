@@ -90,6 +90,38 @@ Notable tracked config beyond the original shell files includes:
 - `config/gh/config.yml` for GitHub CLI defaults and aliases
 - `config/herdr/config.toml` for herdr theme, notification, and UI preferences
 
+## Herdr terminal workflow
+
+`config/herdr/config.toml` uses `Ctrl+z`, matching `.screenrc` and `.tmux.conf`.
+Press the prefix, release it, then press the action key.
+Herdr tabs serve as screen/tmux windows; Herdr's indexed tab jumps use 1-9.
+
+| After `Ctrl+z` | Action |
+| --- | --- |
+| `c`, `n`, `p`, `1`-`9` | Create, cycle, or select a tab |
+| `,`, `A` | Rename a tab (tmux / screen) |
+| `%`, `\|`, `v` | Split side by side |
+| `"`, `S`, `-` | Split above/below |
+| Arrow keys, `h/j/k/l` | Focus a pane |
+| `o`, `Tab`; `Shift+Tab` | Cycle panes forward; backward |
+| `z`, `r` | Zoom a pane; enter resize mode |
+| `[`; `e` | Enter copy mode; open scrollback in `$EDITOR` |
+| `x`; `&` | Close a pane; close a tab |
+| `d` | Detach and leave programs running |
+| `b`, `w`, `?` | Toggle sidebar, navigate workspaces, show active bindings |
+| `O` | Jump to the visible notification's target |
+
+The sidebar starts hidden, while a bottom tab/status row remains visible even
+with one tab. It shows zoom state, the server hostname, and load averages.
+Mouse pane selection, divider dragging, and scrolling remain enabled;
+scrollback is retained up to 50 MB per pane, rather than a fixed number of lines.
+New panes and tabs follow the source pane's working directory and start fish.
+The Nord theme, in-app notifications, and muted sounds remain configured.
+
+The configuration follows the official
+[keybinding reference](https://herdr.dev/docs/config-reference/#keybindings) and
+[UI configuration guide](https://herdr.dev/docs/configuration/#ui-and-sidebar).
+
 ## Herdr worktrees
 
 Use `herdr-worktree feature/my-task` from a repository or one of its linked

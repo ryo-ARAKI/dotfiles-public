@@ -1,24 +1,76 @@
 onboarding = false
 
+# Keyboard and status bar references: https://herdr.dev/docs/configuration/
 [keys]
+# Match the prefix in home/.screenrc and home/.tmux.conf.
 prefix = "ctrl+z"
 detach = "prefix+d"
 
+# Herdr tabs correspond to screen/tmux windows (numbered 1-9 in Herdr).
+new_tab = "prefix+c"
+previous_tab = "prefix+p"
+next_tab = "prefix+n"
+switch_tab = "prefix+1..9"
+rename_tab = ["prefix+comma", "prefix+shift+a", "prefix+shift+t"]
+close_tab = ["prefix+ampersand", "prefix+shift+x"]
+
+# tmux %, screen |, and Herdr v split side by side.
+# tmux ", screen S, and Herdr - split above/below.
+split_vertical = ["prefix+%", "prefix+|", "prefix+v"]
+split_horizontal = ['prefix+"', "prefix+shift+s", "prefix+minus"]
+focus_pane_left = ["prefix+left", "prefix+h"]
+focus_pane_down = ["prefix+down", "prefix+j"]
+focus_pane_up = ["prefix+up", "prefix+k"]
+focus_pane_right = ["prefix+right", "prefix+l"]
+cycle_pane_next = ["prefix+o", "prefix+tab"]
+cycle_pane_previous = "prefix+shift+tab"
+close_pane = "prefix+x"
+zoom = "prefix+z"
+resize_mode = "prefix+r"
+copy_mode = "prefix+["
+edit_scrollback = "prefix+e"
+
+# Keep notification navigation available after assigning o to pane cycling.
+open_notification_target = "prefix+shift+o"
+toggle_sidebar = "prefix+b"
+help = "prefix+?"
+
 [terminal]
 default_shell = "fish"
+new_cwd = "follow"
+
+[advanced]
+# Herdr measures retained scrollback in bytes, unlike screen/tmux line limits.
+scrollback_limit_bytes = 50_000_000
+
+[ui]
+status_indicators = "dots"
+prompt_new_tab_name = false
+
+# Keep a bottom status row even for one tab, and reclaim the sidebar width.
+tab_bar_position = "bottom"
+hide_tab_bar_when_single_tab = false
+sidebar_start_collapsed = true
+sidebar_collapsed_mode = "hidden"
+tab_bar_right = [
+  { type = "zoom" },
+  { type = "hostname" },
+  { type = "command", command = "LC_ALL=C uptime | sed 's/.*load averages*: */Load: /'", interval_seconds = 5, timeout_seconds = 2 },
+]
+tab_bar_right_separator = " | "
+
+# tmux-style internal splitters without an outer frame or scrollbar column.
+pane_borders = "auto"
+pane_outer_borders = false
+pane_gaps = false
+pane_scrollbars = false
+mouse_capture = true
 
 [ui.toast]
 delivery = "herdr"
 
 [ui.sound]
 enabled = false
-
-[ui]
-status_indicators = "dots"
-prompt_new_tab_name = false
-hide_tab_bar_when_single_tab = true
-pane_outer_borders = false
-pane_gaps = false
 
 [theme]
 name = "nord"
