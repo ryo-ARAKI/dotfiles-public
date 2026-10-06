@@ -1,4 +1,9 @@
 if status --is-interactive
+    # Set up Cargo PATH before looking for Starship.
+    if test -f "$HOME/.cargo/env.fish"
+        source "$HOME/.cargo/env.fish"
+    end
+
     # prompt setting (using starship)
     if command -v starship >/dev/null
         starship init fish | source
