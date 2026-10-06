@@ -2,6 +2,10 @@ onboarding = false
 
 [keys]
 prefix = "ctrl+z"
+detach = "prefix+d"
+
+[terminal]
+default_shell = "fish"
 
 [ui.toast]
 delivery = "herdr"
@@ -11,6 +15,10 @@ enabled = false
 
 [ui]
 status_indicators = "dots"
+prompt_new_tab_name = false
+hide_tab_bar_when_single_tab = true
+pane_outer_borders = false
+pane_gaps = false
 
 [theme]
 name = "nord"
