@@ -90,6 +90,19 @@ Notable tracked config beyond the original shell files includes:
 - `config/gh/config.yml` for GitHub CLI defaults and aliases
 - `config/herdr/config.toml` for herdr theme, notification, and UI preferences
 
+## Herdr worktrees
+
+Use `herdr-worktree feature/my-task` from a repository or one of its linked
+worktrees to create and open `<primary-repo>/.worktrees/feature/my-task`.
+The helper supports `--base`, `--label`, `--focus`, `--no-focus`, and
+`--trust-repository`; Git and Herdr must be installed.
+Ensure `.worktrees/` is ignored in each repository.
+
+Herdr’s built-in sidebar creation still uses its global worktree directory.
+This helper passes an explicit `--path` instead; `worktrees.directory` cannot
+select each repository’s root dynamically.
+Bare repositories and primary checkouts with a separate Git directory are unsupported.
+
 ## Manifest Format
 
 The installer uses a tab-separated manifest with four columns:
