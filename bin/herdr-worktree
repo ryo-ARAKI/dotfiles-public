@@ -1,0 +1,51 @@
+#!/usr/bin/env python3
+"""Create a Herdr worktree under the primary checkout's .worktrees directory."""
+import argparse
+import subprocess
+import sys
+from pathlib import Path
+
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('branch', help='Git branch name; slashes create subdirectories')
+    parser.add_argument('--base', help='Starting Git ref')
+    parser.add_argument('--label', help='Herdr workspace label')
+    focus = parser.add_mutually_exclusive_group()
+    focus.add_argument('--focus', action='store_true')
+    focus.add_argument('--no-focus', action='store_true')
+    parser.add_argument('--trust-repository', action='store_true')
+    args = parser.parse_args()
+    try:
+        subprocess.run(['git', 'check-ref-format', 'refs/heads/' + args.branch],
+                       check=True, capture_output=True, text=True)
+        if args.branch.startswith('-'):
+            parser.error('branch must not start with a dash')
+        common = subprocess.check_output(
+            ['git', 'rev-parse', '--path-format=absolute', '--git-common-dir'], text=True).strip()
+        bare = subprocess.check_output(['git', 'rev-parse', '--is-bare-repository'], text=True).strip()
+        common_path = Path(common)
+        if bare == 'true' or common_path.name != '.git':
+            parser.error('requires a primary checkout with a .git directory')
+        root = common_path.parent
+        storage = root / '.worktrees'
+        target = storage / args.branch
+        # Reject symlinks that would place a checkout outside the intended directory.
+        if storage.is_symlink() or not target.resolve().is_relative_to(storage.resolve()):
+            parser.error('worktree path escapes the repository .worktrees directory')
+        command = ['herdr', 'worktree', 'create', '--cwd', str(root),
+                   '--branch', args.branch, '--path', str(target)]
+        for name in ('base', 'label'):
+            if getattr(args, name) is not None:
+                command.extend(['--' + name, getattr(args, name)])
+        for name in ('focus', 'no_focus', 'trust_repository'):
+            if getattr(args, name):
+                command.append('--' + name.replace('_', '-'))
+        return subprocess.run(command, check=False).returncode
+    except (subprocess.CalledProcessError, OSError) as exc:
+        print(f'herdr-worktree: {exc}', file=sys.stderr)
+        return 1
+
+
+if __name__ == '__main__':
+    sys.exit(main())

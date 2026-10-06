@@ -32,3 +32,4 @@ config/systemd/user/projecteur.service	~/.config/systemd/user/projecteur.service
 config/systemd/user/projecteur-spotlight-watch.service	~/.config/systemd/user/projecteur-spotlight-watch.service	0644	local
 config/autostart/projecteur-spotlight-watch.desktop	~/.config/autostart/projecteur-spotlight-watch.desktop	0644	local
 config/xbindkeys/.xbindkeysrc	~/.xbindkeysrc	0644	always
+bin/herdr-worktree	~/.local/bin/herdr-worktree	0755	always
