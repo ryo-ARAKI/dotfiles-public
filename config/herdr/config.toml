@@ -1,0 +1,14 @@
+onboarding = false
+
+[ui.toast]
+delivery = "herdr"
+
+[ui.sound]
+enabled = false
+
+[ui]
+status_indicators = "dots"
+
+[theme]
+name = "nord"
+auto_switch = false

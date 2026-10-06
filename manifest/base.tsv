@@ -24,6 +24,7 @@ config/codex/deep.config.toml	~/.codex/deep.config.toml	0644	always
 config/codex/subagent.config.toml	~/.codex/subagent.config.toml	0644	always
 config/codex/reviewer.config.toml	~/.codex/reviewer.config.toml	0644	always
 config/gh/config.yml	~/.config/gh/config.yml	0644	always
+config/herdr/config.toml	~/.config/herdr/config.toml	0644	always
 config/terminator/config	~/.config/terminator/config	0644	always
 config/Projecteur/Projecteur.conf	~/.config/Projecteur/Projecteur.conf	0644	always
 bin/projecteur-spotlight-watch	~/.local/bin/projecteur-spotlight-watch	0755	local
