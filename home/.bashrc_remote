@@ -13,8 +13,14 @@ export LC_ALL=en_US.UTF-8
 # export MODULEPATH="/path/to/modulefiles${MODULEPATH:+:$MODULEPATH}"
 
 # Make Node and Codex available to non-interactive SSH commands.
-if [ -d "$HOME/.nvm/versions/node/v20.19.3/bin" ]; then
-    export PATH="$HOME/.nvm/versions/node/v20.19.3/bin:$PATH"
+if ! command -v codex >/dev/null 2>&1; then
+    while IFS= read -r codex_node_bin; do
+        if [ -x "$codex_node_bin/node" ] && [ -x "$codex_node_bin/codex" ]; then
+            export PATH="$codex_node_bin:$PATH"
+            break
+        fi
+    done < <(printf '%s\n' "$HOME"/.nvm/versions/node/v*/bin | sort -Vr)
+    unset codex_node_bin
 fi
 
 case $- in

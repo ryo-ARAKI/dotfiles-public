@@ -1,12 +1,21 @@
+# Make NVM-installed Codex available in interactive and non-interactive shells.
+# Preserve an existing executable; otherwise use the newest complete installation.
+if not command -sq codex
+    set -l codex_node_bins "$HOME"/.nvm/versions/node/v*/bin
+    if test (count $codex_node_bins) -gt 0
+        for codex_node_bin in (printf '%s\n' $codex_node_bins | sort -Vr)
+            if test -x "$codex_node_bin/node"; and test -x "$codex_node_bin/codex"
+                set -gx PATH "$codex_node_bin" $PATH
+                break
+            end
+        end
+    end
+end
+
 if status --is-interactive
     # Set up Cargo PATH before looking for Starship.
     if test -f "$HOME/.cargo/env.fish"
         source "$HOME/.cargo/env.fish"
-    end
-
-    # Node and Codex installed through NVM.
-    if test -d "$HOME/.nvm/versions/node/v20.19.3/bin"
-        set -gx PATH "$HOME/.nvm/versions/node/v20.19.3/bin" $PATH
     end
 
     # prompt setting (using starship)
