@@ -1,0 +1,60 @@
+# Shared environment for Bash login shells and Bash->Fish interactive startup.
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/.local/bin" ] ; then
+    PATH="$HOME/.local/bin:$PATH"
+fi
+
+if [ -f "$HOME/.cargo/env" ]; then
+    . "$HOME/.cargo/env"
+fi
+
+# >>> juliaup initialize >>>
+
+# !! Contents within this block are managed by juliaup !!
+
+case ":$PATH:" in
+    *:"$HOME"/.juliaup/bin:*)
+        ;;
+
+    *)
+        export PATH="$HOME/.juliaup/bin${PATH:+:${PATH}}"
+        ;;
+esac
+
+# <<< juliaup initialize <<<
+
+if [ -d /usr/local/python ]; then
+    case ":${PYTHONPATH:-}:" in
+        *:/usr/local/python:*) ;;
+        *) export PYTHONPATH="/usr/local/python${PYTHONPATH:+:$PYTHONPATH}" ;;
+    esac
+
+    case ":${LD_LIBRARY_PATH:-}:" in
+        *:/usr/local/python:*) ;;
+        *) LD_LIBRARY_PATH="/usr/local/python${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ;;
+    esac
+fi
+
+if [ -d /usr/local/lib ]; then
+    case ":${LD_LIBRARY_PATH:-}:" in
+        *:/usr/local/lib:*) ;;
+        *) LD_LIBRARY_PATH="/usr/local/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}" ;;
+    esac
+fi
+
+export LD_LIBRARY_PATH
+export NVM_DIR="$HOME/.nvm"
+
+if [ -n "$BASH_VERSION" ] && [ -s "$NVM_DIR/nvm.sh" ]; then
+    . "$NVM_DIR/nvm.sh"
+fi
+
+if [ -f "$HOME/.local_env" ]; then
+    . "$HOME/.local_env"
+fi
