@@ -27,6 +27,7 @@ from dotfiles_installer.context import detect_context
 from dotfiles_installer.manifest import ManifestEntry
 from dotfiles_installer.manifest import load_manifest
 from dotfiles_installer.planner import build_plan_report
+from dotfiles_installer.settings_fragments import fragment_for, plan_private_settings
 from dotfiles_installer.reporting import (
     read_text_if_exists,
     render_text_diff,
@@ -40,7 +41,7 @@ from dotfiles_installer.reporting import (
 def _matches_only(entry: ManifestEntry, only: str | None) -> bool:
     if not only:
         return True
-    return only in entry.target or only in entry.source
+    return only in entry.target or only in entry.source or only in (fragment_for(entry) or "")
 
 
 def _resolve_host_name(explicit: str | None) -> str:
@@ -79,9 +80,12 @@ def _matches_codex_agents_only(only: str | None) -> bool:
 
 
 def _should_plan_codex_agents(private_root: Path | None, only: str | None) -> bool:
-    if private_root is None or not _matches_codex_agents_only(only):
+    if not _matches_codex_agents_only(only):
         return False
-    return only is not None or (private_root / CODEX_AGENTS_COMMON_FRAGMENT).exists()
+    return (
+        (ROOT / CODEX_AGENTS_COMMON_FRAGMENT).exists()
+        or private_root is not None and (only is not None or (private_root / CODEX_AGENTS_COMMON_FRAGMENT).exists())
+    )
 
 
 def _resolve_repo_root(
@@ -131,16 +135,21 @@ def _report_codex_apply_failure(
     return 1
 
 
-def _render_entry_preview(entry, repo_root: Path, *, dry_run: bool) -> tuple[bool, str | None]:
+def _render_entry_preview(entry, repo_root: Path, *, dry_run: bool, settings=None) -> tuple[bool, str | None]:
     source_path = repo_root / entry.source
     target_path = Path(entry.target).expanduser()
-    source_bytes = source_path.read_bytes()
+    source_bytes = settings.content if settings is not None else source_path.read_bytes()
     current_bytes = target_path.read_bytes() if target_path.exists() else None
     current_mode = _file_mode(target_path)
     desired_mode = int(entry.mode, 8)
     content_matches = current_bytes == source_bytes
     mode_matches = current_mode == desired_mode
     needs_change = not (content_matches and mode_matches)
+
+    if settings is not None:
+        status = "nochange" if not needs_change else "would apply"
+        label = f"{entry.layer}: {entry.source} + {settings.fragment} -> {entry.target}"
+        return needs_change, f"{status}: {label}"
 
     if dry_run:
         status = "nochange" if not needs_change else "would apply"
@@ -212,7 +221,7 @@ def main() -> int:
     codex_agents_plan = None
     if _should_plan_codex_agents(private_root, args.only):
         try:
-            codex_agents_plan = plan_codex_agents(private_root, context=context)
+            codex_agents_plan = plan_codex_agents(private_root, base_root=ROOT, context=context)
         except ValueError as exc:
             parser.error(str(exc))
     report = build_plan_report(entries, context=context)
@@ -230,6 +239,7 @@ def main() -> int:
     # Plan every selected Codex profile before any generic manifest write.
     codex_profiles = {}
     generic_plan = {}
+    settings_plans = {}
     for target, entry in filtered_plan.items():
         target_path = Path(entry.target).expanduser()
         if target_path.parent == Path.home() / ".codex" and target_path.name.endswith(".config.toml"):
@@ -242,6 +252,12 @@ def main() -> int:
                 target_label=entry.target,
             ))
         else:
+            try:
+                settings = plan_private_settings(entry, base_root=ROOT, private_root=private_root)
+            except ValueError as exc:
+                parser.error(str(exc))
+            if settings is not None:
+                settings_plans[target] = settings
             generic_plan[target] = entry
 
     backup_root = Path.home() / ".dotfiles-backup" / datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -251,7 +267,8 @@ def main() -> int:
     nochange = 0
     for entry in generic_plan.values():
         repo_root = _resolve_repo_root(entry, base_root=ROOT, private_root=private_root, host_root=host_root)
-        needs_change, preview = _render_entry_preview(entry, repo_root=repo_root, dry_run=args.dry_run)
+        settings = settings_plans.get(entry.target)
+        needs_change, preview = _render_entry_preview(entry, repo_root=repo_root, dry_run=args.dry_run, settings=settings)
         print(preview)
         if not needs_change:
             nochange += 1
@@ -276,7 +293,8 @@ def main() -> int:
         if not apply_current:
             skipped += 1
             continue
-        apply_entry(entry, repo_root=repo_root, backup_root=backup_root)
+        apply_entry(entry, repo_root=repo_root, backup_root=backup_root,
+                    content=settings.content if settings is not None else None)
         applied += 1
         applied_targets.append(entry.target)
     if codex_plan is not None:
