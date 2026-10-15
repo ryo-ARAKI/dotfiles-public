@@ -1,0 +1,51 @@
+#!/usr/bin/env bash
+# Run from the dashboard repository. Workbook selection belongs to the caller.
+set -o pipefail
+
+workbook=
+log_path=
+pause_on_exit=false
+while [ "$#" -gt 0 ]; do
+    case "$1" in
+        --workbook|--log)
+            if [ "$#" -lt 2 ] || [ -z "$2" ]; then
+                printf 'Missing value for %s\n' "$1" >&2
+                exit 2
+            fi
+            if [ "$1" = --workbook ]; then workbook=$2; else log_path=$2; fi
+            shift 2
+            ;;
+        --pause) pause_on_exit=true; shift ;;
+        *) printf 'Usage: workbook-dashboard-launch --workbook PATH [--log PATH] [--pause]\n' >&2; exit 2 ;;
+    esac
+done
+if [ -z "$workbook" ]; then
+    printf 'Usage: workbook-dashboard-launch --workbook PATH [--log PATH] [--pause]\n' >&2
+    exit 2
+fi
+if [ -n "$log_path" ]; then
+    # Fail before the import if the requested log cannot be written.
+    touch -- "$log_path" || exit 1
+    exec > >(tee -a -- "$log_path") 2>&1
+fi
+
+printf '\n===== %s =====\n' "$(date --iso-8601=seconds)"
+printf 'cwd=%s\n' "$PWD"
+npm run simple:import -- "$workbook" --replace
+import_status=$?
+printf 'import_exit_status=%s\n' "$import_status"
+if [ "$import_status" -eq 0 ]; then
+    printf 'Import succeeded. Starting dashboard server...\n'
+    npm run dev
+    status=$?
+    printf 'dev_exit_status=%s\n' "$status"
+else
+    status=$import_status
+    printf 'Import failed.\n'
+fi
+if [ -n "$log_path" ]; then printf 'Log saved: %s\n' "$log_path"; fi
+if "$pause_on_exit"; then
+    printf 'Press Enter to close...'
+    read -r
+fi
+exit "$status"
