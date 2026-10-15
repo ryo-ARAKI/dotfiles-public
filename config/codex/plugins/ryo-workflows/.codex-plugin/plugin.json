@@ -1,0 +1,41 @@
+{
+  "name": "ryo-workflows",
+  "version": "0.1.0+codex.20260912054231",
+  "description": "Reusable dotfiles, arXiv diff PDF, and editable Typst figure workflows.",
+  "author": {
+    "name": "Ryo"
+  },
+  "homepage": "https://github.com/ryo-ARAKI/dotfiles-public",
+  "repository": "https://github.com/ryo-ARAKI/dotfiles-public",
+  "license": "UNLICENSED",
+  "keywords": [
+    "codex",
+    "workflows",
+    "dotfiles",
+    "typst",
+    "arxiv",
+    "latex",
+    "pdf"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Ryo Workflows",
+    "shortDescription": "Reusable dotfiles and document workflows for Codex.",
+    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, and editable Typst figure bundles.",
+    "developerName": "Ryo",
+    "category": "Productivity",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/ryo-ARAKI/dotfiles-public",
+    "defaultPrompt": [
+      "Deploy managed dotfiles",
+      "Create an arXiv version diff PDF",
+      "Package editable Typst figures"
+    ],
+    "brandColor": "#334155",
+    "screenshots": []
+  }
+}

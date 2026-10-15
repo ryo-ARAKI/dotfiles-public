@@ -1,0 +1,21 @@
+{
+  "workbench.statusbar.hidden": [
+    "status.forwardedPorts",
+    "status.scm.1",
+    "GitHub.copilot.status",
+    "status.editor.selection",
+    "status.editor.indentation",
+    "status.editor.encoding",
+    "status.editor.eol",
+    "status.languageStatus",
+    "status.editor.mode",
+    "chat.statusBarEntry",
+    "esbenp.prettier-vscode.prettier.status",
+    "status.notifications"
+  ],
+  "menu.hiddenCommands": {
+    "TitleBar": [
+      "ChatTitleBarMenu"
+    ]
+  }
+}

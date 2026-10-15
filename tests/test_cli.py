@@ -418,7 +418,7 @@ class InstallCliTests(unittest.TestCase):
         self.assertEqual(local_launcher.returncode, 0, msg=local_launcher.stderr)
         self.assertRegex(
             local_launcher.stdout,
-            r"(?m)^(?:would apply|nochange): private: config/fish/conf\.d/95-codex-dgx\.fish -> ~/\.config/fish/conf\.d/95-codex-dgx\.fish$",
+            r"(?m)^(?:would apply|nochange): base: config/fish/conf\.d/95-codex-dgx\.fish -> ~/\.config/fish/conf\.d/95-codex-dgx\.fish$",
         )
         self.assertNotIn(": host:", local_launcher.stdout)
 

@@ -1,0 +1,361 @@
+// ~/.config/Code/User/settings.json
+{
+  // ====================================
+  // Work benchの設定
+  // ====================================
+  "workbench.startupEditor": "newUntitledFile",
+  // アニメーションを減らす
+  "workbench.reduceMotion": "on",
+  // 起動時の空ファイルの内容
+  "workbench.editor.empty.hint": "hidden",
+  // 左から順にファイルを閉じる
+  "workbench.editor.focusRecentEditorAfterClose": false,
+  // Jupyter notebookの関連づけ
+  "workbench.editorAssociations": {
+    "*.ipynb": "jupyter-notebook"
+  },
+  // タブをすべて表示できないときにサイズを縮小する
+  "workbench.editor.tabSizing": "shrink",
+  // タブの「閉じる」ボタンを表示しない
+  // "workbench.editor.tabActionCloseVisibility": false,
+  // サイトバーを右側に表示する（コード先頭が移動しない）
+  "workbench.sideBar.location": "right",
+  // カラーテーマ
+  "workbench.colorTheme": "Monokai",
+  // タイトルバーの不要な操作を非表示
+  "chat.titleBar.openInAgentsWindow.enabled": false,
+  "workbench.layoutControl.enabled": false,
+  "workbench.navigationControl.enabled": false,
+  "workbench.browser.showInTitleBar": false,
+  "window.commandCenter": false,
+  // アイコンテーマ
+  "workbench.iconTheme": "material-icon-theme",
+  //
+  // ====================================
+  // Copilot/Agentの設定
+  // ====================================
+  // サジェストを表示しない
+  "editor.inlineSuggest.enabled": false,
+  // Chat sessionをクラウド同期しない
+  "chat.sessionSync.enabled": false,
+  // Agent terminalでネットワーク制限に当たった場合はallow-network sandboxでの再試行を許可
+  "chat.agent.sandbox.retryWithAllowNetworkRequests": true,
+  //
+  // ====================================
+  // Zen modeの設定
+  // ====================================
+  // 行番号を表示する
+  "zenMode.hideLineNumbers": false,
+  //
+  // ====================================
+  // Windowの設定
+  // ====================================
+  // ズーム段階
+  "window.zoomLevel": 1,
+  // メニューバーを非表示（altで表示）
+  "window.menuBarVisibility": "compact",
+  // 新しいウィンドウを最大サイズで開く
+  "window.newWindowDimensions": "maximized",
+  //
+  // ====================================
+  // エクスプローラーの設定
+  // ====================================
+  // エクスプローラーで非表示にするファイル・サブディレクトリ
+  "files.exclude": {
+    "**/__pycache__": true
+  },
+  // ファイルが変更されたときに自動で内容をリロード
+  "files.autoGuessEncoding": true,
+  // ファイルのドラッグ＆ドロップの確認を無効化
+  "explorer.confirmDelete": false,
+  //
+  // ====================================
+  // エディタUIの設定
+  // ====================================
+  // フォントサイズ
+  "editor.fontSize": 16,
+  // ファイルのパンくずリストを非表示
+  "breadcrumbs.enabled": false,
+  // インデントガイドを非表示
+  "editor.guides.indentation": false,
+  // フォント
+  "editor.fontFamily": "Ricty Diminished",
+  // マウスを用いた複数選択
+  "editor.multiCursorModifier": "ctrlCmd",
+  // 折返し表示
+  "editor.wordWrap": "on",
+  "editor.renderWhitespace": "boundary",
+  // カーソル表示スタイル
+  "editor.cursorStyle": "block",
+  "editor.cursorBlinking": "smooth",
+  // スムーズスクロールを有効化
+  "editor.smoothScrolling": true,
+  // ブレークポイント等を表示するグリフを非表示
+  "editor.glyphMargin": false,
+  // スクリーンリーダーに最適化しない
+  "editor.accessibilitySupport": "off",
+  // コピー時に書式設定を含めない
+  "editor.copyWithSyntaxHighlighting": false,
+  // 単語の区切り文字（全角文字を追加）
+  "editor.wordSeparators": "`~!@#$%^&*()-=+[{]}\\|;:'\",.<>/?、。！？「」【】『』（）",
+  // 重複するファイルに末尾番号を着けて保存
+  "explorer.incrementalNaming": "smart",
+  // ワークスペースのフォルダ順の変更の許可を尋ねない
+  "explorer.confirmDragAndDrop": false,
+  "diffEditor.ignoreTrimWhitespace": false,
+  // 大規模ファイルのインテリセンスを無効化
+  "editor.largeFileOptimizations": true,
+  // WordCounterでreading timeを表示しない
+  "wordcounter.side.left": ["word", "char", "line", "paragraph"],
+  //
+  // ====================================
+  // ミニマップの設定
+  // ====================================
+  // ミニマップを非表示にする
+  "editor.minimap.enabled": false,
+  // スケール
+  "editor.minimap.scale": 2,
+  // 高さ方向の大きさをエディタとフィットさせる
+  "editor.minimap.size": "fit",
+  // ファイル編集時は非表示
+  "editor.minimap.autohide": "mouseover",
+  // 実際の文字をレンダリングしない
+  "editor.minimap.renderCharacters": false,
+  // エディタでの表示箇所を反映
+  "editor.minimap.showSlider": "always",
+  //
+  // ====================================
+  // オートコンプリートの設定
+  // ====================================
+  //直前に使用したものを優先
+  "editor.suggestSelection": "recentlyUsed",
+  // Enterで反映しない
+  "editor.acceptSuggestionOnEnter": "off",
+  // スニペットを補完候補の最初に表示
+  "editor.snippetSuggestions": "top",
+  // オートコンプリートのポップアップを遅延表示
+  "editor.quickSuggestionsDelay": 100,
+  //
+  // ====================================
+  // ファイル保存時の設定
+  // ====================================
+  // フォーマット
+  "editor.formatOnSave": true,
+  // ファイルからフォーカスが外れたら自動で保存
+  "files.autoSave": "onFocusChange",
+  // 行末のスペースを自動で削除
+  "files.trimTrailingWhitespace": true,
+  // ファイル末尾に改行を自動で挿入
+  "files.insertFinalNewline": true,
+  // ファイル末尾の空白行を自動で削除
+  "files.trimFinalNewlines": true,
+  //
+  // ====================================
+  // ファイルの設定
+  // ====================================
+  // 拡張子の関連づけ
+  "files.associations": {
+    "*.tikz": "tex"
+  },
+  //
+  // ====================================
+  // gitの設定
+  // ====================================
+  // 親フォルダがgitで管理されていればリポジトリを開く
+  "git.openRepositoryInParentFolders": "always",
+  // 変更をサマリー表示
+  "git.autofetch": true,
+  "git.confirmSync": false,
+  "git.enableSmartCommit": true,
+  //
+  "git.ignoreLegacyWarning": true,
+  "gitlens.advanced.messages": {
+    "suppressGitVersionWarning": true
+  },
+  "gitlens.launchpad.indicator.enabled": false,
+  //
+  // ====================================
+  // 検索の設定
+  // ====================================
+  // 検索時に.gitignoreで指定されたファイルを除外する
+  "search.useIgnoreFiles": false,
+  // ワークスペース内のファイル検索の高速化
+  "search.followSymlinks": false,
+  //
+  // ====================================
+  // ターミナルの設定
+  // ====================================
+  // クリアな見た目のテーマ
+  "terminal.integrated.tabs.enabled": true,
+  // フォントサイズ
+  "terminal.integrated.fontSize": 16,
+  // ターミナルで選択した文字列をクリップボードにコピー
+  "terminal.integrated.copyOnSelection": true,
+  "terminal.integrated.commandsToSkipShell": [
+    "language-julia.interrupt",
+    "matlab.interrupt"
+  ],
+  // ターミナルのスクロールバックを増やす
+  "terminal.integrated.scrollback": 10000,
+  // 複数行の貼付時に警告を出さない
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  //
+  // ====================================
+  // スペルチェック
+  // ====================================
+  // イギリス英語を使用
+  "cSpell.language": "en-GB",
+  // チェックから除外する単語集
+  "cSpell.userWords": [
+    "cmap",
+    "coef",
+    "color",
+    "Colorbar",
+    "colormap",
+    "colsize",
+    "dealiasing",
+    "enstrophy",
+    "fftfreq",
+    "FFTW",
+    "fontsize",
+    "irfft",
+    "Kutta",
+    "lowpass",
+    "Makie",
+    "maxwave",
+    "Nicolson",
+    "nonlinear",
+    "Reexport",
+    "rfft",
+    "Runge",
+    "sprintf",
+    "uxuy",
+    "vxvy",
+    "wavenumber",
+    "xlabel",
+    "ylabel"
+  ],
+  //
+  // ====================================
+  // 拡張機能全般の設定
+  // ====================================
+  // 「おすすめの拡張機能」を表示しない
+  "extensions.ignoreRecommendations": true,
+  // Remote-SSHなどの拡張機能がNode.jsのnavigator global移行で起動に失敗するのを避ける明示的なガード
+  "extensions.supportNodeGlobalNavigator": false,
+  // 更新を確認する
+  "extensions.autoCheckUpdates": true,
+  "extensions.autoUpdate": "on",
+  //
+  // ====================================
+  // Markdownの設定
+  // ====================================
+  // HTMLエクスポートにも含める共通CSSの管理先
+  "markdown-preview-enhanced.configPath": "~/.local/state/crossnote",
+  // プレビューのテーマ
+  "markdown-preview-enhanced.previewTheme": "atom-dark.css",
+  // プレビューでより複雑な表の表示
+  "markdown-preview-enhanced.enableExtendedTableSyntax": true,
+  // プレビューで改行を表示しない
+  "markdown-preview-enhanced.breakOnSingleNewLine": false,
+  // プレビューから無駄な要素を排除する
+  "markdown-preview-enhanced.enablePreviewZenMode": false,
+  // 数式プレビューの有効化
+  "markdown-preview-enhanced.mathRenderingOption": "MathJax",
+  // Prettierを使ってフォーマットする
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  // VSCodeデフォルトのプレビューを維持する（Marpで使うため）
+  "markdown-preview-enhanced.hideDefaultVSCodeMarkdownPreviewButtons": false,
+  // MarpでのMarkdown文書の改行の表示設定
+  "markdown.marp.breaks": "inherit",
+  // Marpでエクスポートフォーマットの指定（PDFだとズレる）
+  "markdown.marp.exportType": "html",
+  "markdown.marp.themes": ["./style.css"],
+  "markdown.marp.html": "default",
+  //
+  // ====================================
+  // Juliaの設定
+  // ====================================
+  // Download symbol server cache files from GitHub.
+  "julia.symbolCacheDownload": true,
+  // Enable usage data and errors to be sent to the julia VS Code extension developers
+  "julia.enableTelemetry": true,
+  "customLocalFormatters.formatters": [
+    {
+      "command": "jlfmt --config-dir=. --prioritize-config-file --stdin-filename=\"${file}\" -",
+      "languages": ["julia"]
+    }
+  ],
+  // グローバルにインストールしたjlfmtをJulia用フォーマッタとして使用
+  "[julia]": {
+    "editor.defaultFormatter": "jkillian.custom-local-formatters",
+    "editor.formatOnSaveMode": "file"
+  },
+  //
+  // ====================================
+  // Pythonの設定
+  // ====================================
+  // Python用フォーマッタ
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.autopep8"
+  },
+  //
+  // ====================================
+  // Fortranの設定
+  // ====================================
+  // linterにgfortranを使う
+  "fortran.linter.compilerPath": "/usr/bin/gfortran",
+  // formatterはfprettify/findentを導入するまで無効化
+  "fortran.formatting.formatter": "Disabled",
+  //
+  // ====================================
+  // LaTeXの設定
+  // ====================================
+  // 自動コンパイルを実行しない
+  "latex-workshop.latex.autoBuild.run": "never",
+  // TeX/LaTeX/BibTeX用フォーマッタ
+  "[tex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
+  "[latex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop"
+  },
+  "[bibtex]": {
+    "editor.defaultFormatter": "James-Yu.latex-workshop",
+    "editor.insertSpaces": true,
+    "editor.tabSize": 4
+  },
+  "latex-workshop.bibtex-format.tab": "4 spaces",
+  "latex-workshop.formatting.latex": "latexindent",
+  //
+  // ====================================
+  // Typstの設定
+  // ====================================
+  // フォーマッタ
+  "tinymist.formatterMode": "typstyle",
+  "[typst]": {
+    "editor.defaultFormatter": "myriad-dreamin.tinymist",
+    "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+  },
+  "[typst-code]": {
+    "editor.wordSeparators": "`~!@#$%^&*()=+[{]}\\|;:'\",.<>/?"
+  },
+  "tinymist.formatterPrintWidth": 130,
+  "python.defaultInterpreterPath": "/bin/python3",
+  "prettier.resolveGlobalModules": true,
+  "workbench.secondarySideBar.defaultVisibility": "hidden",
+  "yaml.disableSchemaDetection": [
+    "**/.github/workflows/*.yml",
+    "**/.github/workflows/*.yaml",
+    "**/.gitea/workflows/*.yml",
+    "**/.gitea/workflows/*.yaml",
+    "**/.forgejo/workflows/*.yml",
+    "**/.forgejo/workflows/*.yaml"
+  ]
+  //
+  // ====================================
+  // 自動で追加された設定
+  // ====================================
+}

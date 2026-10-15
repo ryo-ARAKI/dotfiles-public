@@ -6,7 +6,7 @@ This repository holds the configuration files that I am comfortable publishing.
 It is designed to work together with two companion repositories:
 
 - `dotfiles-public`: shareable base configuration
-- `dotfiles-private`: personal overlay for non-public or machine-specific settings
+- `dotfiles-private`: personal overlay for non-public values and environment dependencies
 - `dotfiles-hosts`: host-specific overrides for machines such as `h200`, `Reshiram`, and `Zekrom`
 
 The installer in this repository reads manifest files and applies the selected files to their real locations under `$HOME`.
@@ -18,6 +18,9 @@ This repository is meant for settings that are either reusable as-is or easy to 
 - shell startup files such as `.bashrc`, `.profile`, `.screenrc`, `.tmux.conf`, `.vimrc`
 - shared `fish` configuration
 - shared terminal and desktop config such as Terminator and Projecteur
+- Starship prompt settings, VS Code settings and UI helpers, and Markdown print styles
+- reusable Codex working agreements, document workflows, and their supporting scripts
+- reusable StreamController SVG icons
 - the installer itself, its manifest format, and tests
 
 Settings that contain private information or strong host-specific assumptions are kept out of this repository and belong in `dotfiles-private` or `dotfiles-hosts`.
@@ -175,7 +178,7 @@ The current behavior is:
    ask for confirmation unless `--yes` is used
    back up the current file if it exists
    install the new file and set the requested mode
-8. Generate `~/.codex/config.toml` from public, private, and local-private fragments
+8. Generate `~/.codex/config.toml` and the common `~/.codex/AGENTS.md`, with optional private fragments
 9. Print a summary at the end
 
 Codex profile files such as `~/.codex/quick.config.toml`,
@@ -217,6 +220,28 @@ interactive sessions, `codex exec`, and the `quick` and `deep` profiles, while
 the shared `auto_review.policy` supplies the stricter authorization rules. The
 flag is therefore redundant for ordinary launches using this configuration.
 The TUI status line shows both the active permission and approval modes.
+
+### Shared settings and private fragments
+
+The following settings use a shared public source and an optional private fragment:
+
+| Public source | Private fragment | Target |
+| --- | --- | --- |
+| `config/starship.toml` | `config/starship.private.toml` | `~/.config/starship.toml` |
+| `config/Code/User/settings.json` | `config/Code/User/settings.private.json` | `~/.config/Code/User/settings.json` |
+
+The fragments are read directly from the selected `--private` checkout; they need no manifest row.
+Objects/tables merge recursively; private scalar values and arrays replace the corresponding public setting.
+VS Code sources accept comments and trailing commas, while the composed output is JSON.
+Starship output remains valid TOML, including array values and tables.
+When composing settings, both source files are validated before any manifest write, and previews report paths without printing composed values.
+The normal backup and file-mode rules still apply.
+`--only` also accepts a private fragment's path.
+A complete private or host manifest file for the same target retains its normal layer precedence.
+
+`config/codex/AGENTS.common.md` is public and is generated even without `--private`.
+The optional private `config/codex/AGENTS.local.extra.md` is appended only in local context.
+An older private checkout's complete `AGENTS.common.md` remains a supported override during migration.
 
 Shared Codex defaults keep tool output history bounded at 4000 tokens, disable
 automatic plugin suggestions, and keep reasoning summaries concise. Automatic
@@ -341,7 +366,7 @@ Dry runs do not write anything. They report what would be applied and show overr
 ./install --dry-run --context remote --only fish/conf.d
 ```
 
-`--only` matches by substring against either the manifest source path or the target path.
+`--only` matches by substring against the manifest source path, target path, or a supported private fragment path.
 
 Additional option notes:
 
@@ -383,9 +408,33 @@ overlay keeps trust scoped to that profile.
 Automatic review policy is a replacement policy rather than an addition to a
 standard policy; its managed body is unchanged by this refresh. `fast_mode`
 remains enabled as a feature flag, while `service_tier = "default"` keeps the
-standard tier selected. Machine-wide skill routing and workflow exceptions live in the private
-`config/codex/AGENTS.common.md`; keep vendor skill caches unchanged so upstream
+standard tier selected. Machine-wide workflow agreements live in the public
+`config/codex/AGENTS.common.md`; private workflow routing remains in
+`config/codex/AGENTS.local.extra.md`. Keep vendor skill caches unchanged so upstream
 updates remain available.
+
+### Reusable workflows and scripts
+
+The public manifest deploys the three generic `ryo-workflows` skills and their resources
+to `~/plugins/ryo-workflows` in local context: dotfiles deployment, arXiv diff PDFs,
+and editable Typst figure bundles.
+The private layer adds repository-specific skills and retains its existing marketplace
+registration, plugin ID, and enablement. Update both source checkouts together.
+Public-only users can register and enable the deployed plugin through their local plugin setup.
+
+VS Code keybindings, extension IDs, and the two managed UI visibility keys are public.
+The public manifest also installs `ui-state.json` and `restore-ui-state.py` together under
+`~/.config/Code/`. Close VS Code before running the deployed helper with `--apply`;
+without that flag it only previews changes. The full state database is not distributed.
+The shared Julia formatter command expects `jlfmt` on `PATH`; a private settings fragment
+can select a specific executable and environment.
+
+`workbook-dashboard-launch --workbook PATH [--log PATH] [--pause]` runs from a dashboard
+repository that provides `npm run simple:import` and `npm run dev`.
+It imports the selected workbook with `--replace`, starts the server only after successful
+import, and returns the failing import or server exit status.
+Workbook names, project navigation, and terminal-specific pause/log choices belong to the caller.
+The private StreamController launcher supplies those choices.
 
 ### Add a new public file
 
@@ -420,16 +469,21 @@ Use this rule of thumb:
 - `dotfiles-public`
   Settings that are safe to publish and broadly reusable
 - `dotfiles-private`
-  Personal settings, private values, or config with strong path assumptions
+  Non-public values and settings that identify personal paths, projects, or connections
 - `dotfiles-hosts`
   Overrides that should apply only to one named host
 
 Examples of things that belong in `dotfiles-private`:
 
-- `~/.shell_env`
-- `~/.config/starship.toml`
-- `fish` aliases or abbreviations that depend on personal paths
-- editor settings that assume local executables or local tooling layout
+- Codex trust decisions for personal project paths and local plugin registration
+- Starship substitutions for personal directory names
+- editor commands that name personal executables and personal word dictionaries
+- StreamController launch inputs, project paths, connection targets, and device IDs
+
+Personal preferences such as colors, keybindings, generic shell initialization, aliases,
+and reusable scripts can be public when their contents are safe to publish.
+The `local`/`remote` manifest condition selects an execution context independently of visibility.
+Host OS security profiles and machine-specific setup remain separate from the shared home settings.
 
 Examples of things that may eventually belong in `dotfiles-hosts`:
 
