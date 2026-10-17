@@ -16,7 +16,7 @@ if status --is-interactive
     abbr gpsh "git push --set-upstream origin HEAD"
     abbr gpl "git pull"
     abbr gf "git fetch"
-    abbr gdif "git diff --color-words=."
+    abbr gdif "git diff --color-words"
     abbr gdh "git diff HEAD^...HEAD"
     abbr gdc "git diff --cached"
     abbr gchk "git checkout"
