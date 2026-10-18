@@ -42,6 +42,9 @@ config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/SKILL.md
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/presentation-and-layout.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/presentation-and-layout.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	0644	local
+config/codex/plugins/ryo-workflows/skills/writing-typst-research-reports/SKILL.md	~/plugins/ryo-workflows/skills/writing-typst-research-reports/SKILL.md	0644	local
+config/codex/plugins/ryo-workflows/skills/writing-typst-research-reports/references/writing-and-tables.md	~/plugins/ryo-workflows/skills/writing-typst-research-reports/references/writing-and-tables.md	0644	local
+config/codex/plugins/ryo-workflows/skills/writing-typst-research-reports/references/report-composition.md	~/plugins/ryo-workflows/skills/writing-typst-research-reports/references/report-composition.md	0644	local
 config/starship.toml	~/.config/starship.toml	0644	always
 config/fish/conf.d/91-abbrs.fish	~/.config/fish/conf.d/91-abbrs.fish	0644	always
 config/fish/conf.d/92-aliases.fish	~/.config/fish/conf.d/92-aliases.fish	0644	always

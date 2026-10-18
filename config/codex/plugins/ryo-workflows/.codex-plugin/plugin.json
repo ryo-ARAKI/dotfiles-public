@@ -1,7 +1,7 @@
 {
   "name": "ryo-workflows",
   "version": "0.1.0+codex.20260912054231",
-  "description": "Reusable dotfiles, arXiv diff PDF, and editable Typst figure workflows.",
+  "description": "Reusable dotfiles, arXiv diff PDF, editable Typst figure, and Typst research report workflows.",
   "author": {
     "name": "Ryo"
   },
@@ -13,6 +13,8 @@
     "workflows",
     "dotfiles",
     "typst",
+    "research",
+    "reports",
     "arxiv",
     "latex",
     "pdf"
@@ -21,7 +23,7 @@
   "interface": {
     "displayName": "Ryo Workflows",
     "shortDescription": "Reusable dotfiles and document workflows for Codex.",
-    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, and editable Typst figure bundles.",
+    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, editable Typst figure bundles, and writing or reviewing Typst research reports.",
     "developerName": "Ryo",
     "category": "Productivity",
     "capabilities": [
@@ -33,7 +35,8 @@
     "defaultPrompt": [
       "Deploy managed dotfiles",
       "Create an arXiv version diff PDF",
-      "Package editable Typst figures"
+      "Package editable Typst figures",
+      "Write or review a Typst research report"
     ],
     "brandColor": "#334155",
     "screenshots": []
