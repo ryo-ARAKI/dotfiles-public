@@ -4,7 +4,7 @@ import json
 import os
 import shutil
 import tempfile
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -30,15 +30,15 @@ _HOOK_STATE_PREFIX = ("hooks", "state")
 
 
 @dataclass(frozen=True)
-class CodexRuntimePlan:
+class CodexFilePlan:
     content: str
     source_label: str
     target_path: Path
     target_label: str
     snapshot: bytes | None
     snapshot_mode: int | None
-    preserved_keys: tuple[str, ...]
-    changed_keys: tuple[str, ...]
+    preserved_keys: tuple[str, ...] = ()
+    changed_keys: tuple[str, ...] = ()
 
 
 def _loads(text: str, *, what: str) -> dict[str, Any]:
@@ -186,23 +186,37 @@ def _dumps(data: dict[str, Any]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def plan_codex_file(
+    content: str,
+    *,
+    target_path: Path,
+    source_label: str,
+    target_label: str,
+) -> CodexFilePlan:
+    """Snapshot a generated file without interpreting its contents."""
+    try:
+        snapshot = target_path.read_bytes() if target_path.exists() else None
+        mode = target_path.stat().st_mode & 0o777 if target_path.exists() else None
+    except OSError:
+        raise ValueError(f"Cannot safely read Codex target: {target_label}") from None
+    return CodexFilePlan(content, source_label, target_path, target_label, snapshot, mode)
+
+
 def plan_codex_runtime(
     content: str,
     *,
     target_path: Path,
     source_label: str,
     target_label: str,
-) -> CodexRuntimePlan:
+) -> CodexFilePlan:
     managed = _loads(content, what="managed config")
-    try:
-        snapshot = target_path.read_bytes() if target_path.exists() else None
-        mode = target_path.stat().st_mode & 0o777 if target_path.exists() else None
-    except OSError:
-        raise ValueError(f"Cannot safely read Codex target: {target_label}") from None
-    existing = _loads(snapshot.decode("utf-8"), what="existing config") if snapshot is not None else {}
+    plan = plan_codex_file(
+        content, target_path=target_path, source_label=source_label, target_label=target_label,
+    )
+    existing = _loads(plan.snapshot.decode("utf-8"), what="existing config") if plan.snapshot is not None else {}
     preserved: set[str] = set()
     merged = _merge(managed, existing, (), preserved)
-    merged_text = content if snapshot is None or merged == managed else _dumps(merged)
+    merged_text = content if plan.snapshot is None or merged == managed else _dumps(merged)
     _loads(merged_text, what="merged config")
     changed: set[str] = set()
 
@@ -216,19 +230,15 @@ def plan_codex_runtime(
                 changed.add(_display_path(path))
 
     visit(managed, existing)
-    return CodexRuntimePlan(
-        merged_text,
-        source_label,
-        target_path,
-        target_label,
-        snapshot,
-        mode,
-        tuple(sorted(preserved)),
-        tuple(sorted(changed)),
+    return replace(
+        plan,
+        content=merged_text,
+        preserved_keys=tuple(sorted(preserved)),
+        changed_keys=tuple(sorted(changed)),
     )
 
 
-def apply_codex_runtime(plan: CodexRuntimePlan, *, backup_root: Path, dry_run: bool) -> str:
+def apply_codex_file(plan: CodexFilePlan, *, backup_root: Path, dry_run: bool) -> str:
     try:
         current = plan.target_path.read_bytes() if plan.target_path.exists() else None
         current_mode = plan.target_path.stat().st_mode & 0o777 if plan.target_path.exists() else None

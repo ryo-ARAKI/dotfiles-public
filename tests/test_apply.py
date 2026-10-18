@@ -233,7 +233,7 @@ class ApplyEntryTests(unittest.TestCase):
                 patch.object(install_module.Path, "home", return_value=home),
                 patch.dict("os.environ", {"HOME": str(home)}, clear=False),
                 patch("sys.argv", ["install", "--yes"]),
-                patch.object(install_module, "apply_codex_config", side_effect=OSError("synthetic-secret")),
+                patch.object(install_module, "apply_codex_file", side_effect=OSError("synthetic-secret")),
                 patch("sys.stdout", stdout),
                 patch("sys.stderr", stderr),
             ):
