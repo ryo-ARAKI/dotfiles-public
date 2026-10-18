@@ -163,7 +163,9 @@ Column meanings:
 
 ## How `install` Works
 
-`./install` is a manifest-driven installer. It does not hardcode file placement rules in the script beyond reading the manifests and applying the selected entries.
+`./install` selects ordinary files and Codex profiles from manifests.
+Codex base configuration and working agreements are composed from named fragments.
+See the [Codex configuration design](config/codex/README.md) for responsibilities, data flow, and preservation contracts.
 
 The current behavior is:
 
@@ -178,8 +180,14 @@ The current behavior is:
    ask for confirmation unless `--yes` is used
    back up the current file if it exists
    install the new file and set the requested mode
-8. Generate `~/.codex/config.toml` and the common `~/.codex/AGENTS.md`, with optional private fragments
+8. Apply the preplanned Codex configuration, profiles, and `AGENTS.md` through one confirmation, backup, and atomic-write path
 9. Print a summary at the end
+
+All selected Codex files are planned before the first write.
+Generated-file previews show paths and changed/retained key names without printing values.
+Confirmation accepts `y`, `n`, `q`, or `a` (all remaining changes); `--yes` skips prompts.
+`--only` uses substring matching on source/target paths and generated fragments, including `config.private.local.toml`.
+For example, `--only config.toml` includes the base config, profiles, and any ordinary manifest path containing that substring; `--only '~/.codex/config.toml'` selects just the base target.
 
 Codex profile files such as `~/.codex/quick.config.toml`,
 `~/.codex/deep.config.toml`, `~/.codex/subagent.config.toml`, and
@@ -441,6 +449,9 @@ remove it through a separate explicit operation. Unknown existing keys,
 malformed TOML, duplicate keys, and type conflicts stop the run before any
 manifest write. Preview output reports file paths and status without printing
 configuration values. Local and remote targets retain only their own state.
+The base config, profiles, and AGENTS all recheck the planned content and mode, back up changed files, and replace them atomically while retaining existing permissions.
+A skipped or unchanged file creates no backup; a file changed since planning stops application.
+This is a per-file guarantee: a later failure reports already applied and pending targets plus the backup location; earlier files are not rolled back automatically.
 Private and host manifest layers still select the managed source in the order
 base, private, host. Config fragments are concatenated, so duplicate TOML keys
 remain errors rather than overrides. The local private `deep.config.toml`
