@@ -1,7 +1,7 @@
 {
   "name": "ryo-workflows",
   "version": "0.1.0+codex.20260912054231",
-  "description": "Reusable dotfiles, arXiv diff PDF, editable Typst figure, and Typst research report workflows.",
+  "description": "Reusable dotfiles, arXiv diff PDF, Typst figure/report, and travel-calendar workflows.",
   "author": {
     "name": "Ryo"
   },
@@ -17,13 +17,16 @@
     "reports",
     "arxiv",
     "latex",
-    "pdf"
+    "pdf",
+    "travel",
+    "calendar",
+    "ics"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Ryo Workflows",
-    "shortDescription": "Reusable dotfiles and document workflows for Codex.",
-    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, editable Typst figure bundles, and writing or reviewing Typst research reports.",
+    "shortDescription": "Reusable dotfiles, document, and travel workflows for Codex.",
+    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, editable Typst figure bundles, writing or reviewing Typst research reports, and calendar files from travel reservation Markdown.",
     "developerName": "Ryo",
     "category": "Productivity",
     "capabilities": [
@@ -36,7 +39,8 @@
       "Deploy managed dotfiles",
       "Create an arXiv version diff PDF",
       "Package editable Typst figures",
-      "Write or review a Typst research report"
+      "Write or review a Typst research report",
+      "Create calendar files from travel reservations"
     ],
     "brandColor": "#334155",
     "screenshots": []
