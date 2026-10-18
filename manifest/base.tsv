@@ -42,6 +42,10 @@ config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/SKILL.md
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/presentation-and-layout.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/presentation-and-layout.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	0644	local
+config/codex/plugins/ryo-workflows/skills/extrip-to-ics/SKILL.md	~/plugins/ryo-workflows/skills/extrip-to-ics/SKILL.md	0644	local
+config/codex/plugins/ryo-workflows/skills/extrip-to-ics/agents/openai.yaml	~/plugins/ryo-workflows/skills/extrip-to-ics/agents/openai.yaml	0644	local
+config/codex/plugins/ryo-workflows/skills/extrip-to-ics/references/events-schema.md	~/plugins/ryo-workflows/skills/extrip-to-ics/references/events-schema.md	0644	local
+config/codex/plugins/ryo-workflows/skills/extrip-to-ics/scripts/build_ics.py	~/plugins/ryo-workflows/skills/extrip-to-ics/scripts/build_ics.py	0644	local
 config/codex/plugins/ryo-workflows/skills/writing-typst-research-reports/SKILL.md	~/plugins/ryo-workflows/skills/writing-typst-research-reports/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/writing-typst-research-reports/references/writing-and-tables.md	~/plugins/ryo-workflows/skills/writing-typst-research-reports/references/writing-and-tables.md	0644	local
 config/codex/plugins/ryo-workflows/skills/writing-typst-research-reports/references/report-composition.md	~/plugins/ryo-workflows/skills/writing-typst-research-reports/references/report-composition.md	0644	local
