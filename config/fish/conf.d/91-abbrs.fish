@@ -28,6 +28,7 @@ if status --is-interactive
     abbr gls "git ls-files"
     abbr glst "git stash list"
     abbr gw "git switch"
+    abbr --set-cursor gwa 'git worktree add .worktrees/%'
     abbr gb "git branch --sort=-committerdate"
     abbr gba "git branch --all --sort=-committerdate"
     ## https://techracho.bpsinc.jp/jhonda/2018_12_13/66486
