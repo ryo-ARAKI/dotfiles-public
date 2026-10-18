@@ -4,15 +4,52 @@ These are machine-wide defaults. Keep repository- and task-specific procedures i
 
 ## Model roles
 
-Use the standard `gpt-6.1-sol` at high reasoning for ordinary work, `quick` for
-bounded tasks, and `deep` for difficult investigation. Spawned sub-agents default
-to `gpt-6-luna` at medium reasoning; this model setting does not grant permission
-to delegate. For an independent review, select the `reviewer` role or
-`--profile reviewer`, which uses Sol/high with read-only review instructions.
-For difficult design, numerical, or permission reviews, explicitly select
-`gpt-6-astra` at high reasoning. Explicit model and reasoning overrides take
-precedence. Reviewers inspect requirements, diffs, and evidence themselves and
+Explicit model and reasoning choices take precedence. Otherwise, choose from
+the unresolved judgment and the benefit of parallel work:
+
+| Choice | When to recommend it | Configuration |
+| --- | --- | --- |
+| quick: Luna medium | Narrow, routine work with clear steps, targets, and acceptance checks | `--profile quick`, medium reasoning and planning |
+| Sol high | Local fixes with a known cause and approach, or routine reviews | Explicit effort override; keep `reviewer` for reviews |
+| Sol xhigh: standard | Ordinary investigation, implementation, and verification that require understanding existing specifications | `gpt-6.1-sol`, xhigh reasoning, max planning |
+| Sol max: deep | Difficult judgment: competing hypotheses, design tradeoffs, numerical validity, or complex reviews | `--profile deep`, max reasoning and planning; reviews keep `reviewer` with both efforts overridden to max |
+| Sol ultra | Meaningful independent parts make parallel work useful | Verify client/model availability and selection method, then recommend individually within existing delegation authority |
+| Astra | A concrete Sol max limitation and a stated purpose for comparing models | Only with explicit approval for that task; never an automatic recommendation or fallback |
+
+Recommend max from the start when difficult judgment is already apparent;
+an xhigh failure is not a prerequisite. Gather missing evidence first.
+Permission, network, or runner failures alone do not justify higher effort.
+Large amounts of routine editing alone do not justify max or ultra; start with
+max for one tightly coupled hard problem. A planning phase alone does not
+justify a max recommendation; distinguish the recommendation from the
+profile's configured planning effort. The xhigh default reflects usage and
+user preference, not measured optimality; quality differences and usage-limit
+multipliers between efforts are unverified.
+
+Astra is normally avoided because of its larger usage-limit cost. Explain the
+specific Sol max limitation and comparison purpose before seeking task-specific
+approval; do not infer approval from a profile name. If max or ultra is
+unavailable, report that and an available alternative without switching to
+Astra. For ultra, explain the proposed independent parts and benefit, check the
+installed client (use `/model` when CLI selection syntax is unverified), and
+keep model selection separate from permission to delegate. Sol max with
+sequential work is an alternative when parallel work cannot help or is not
+authorized. Do not assume CLI, API, and UI support are identical.
+
+Spawned sub-agents default to `gpt-6-luna` at medium reasoning; this model
+setting grants no delegation permission. For an independent review, select the
+`reviewer` role or `--profile reviewer`: Sol high/high with read-only
+permissions and instructions. For difficult design, numerical, or permission
+reviews, keep that role/profile and override both normal and planning effort
+to max. Reviewers inspect requirements, diffs, and evidence themselves and
 report findings without editing, committing, or pushing.
+
+In handoffs, record profile, actual model ID, normal and planning efforts,
+the next judgment that explains the recommendation, and delegation authority.
+Compare these with the deployed base and selected profile before giving a
+launch command; managed source values alone do not establish deployment.
+Use explicit model and both effort overrides as needed, especially for an old
+deep profile that still selects Astra. Preserve reviewer read-only permissions.
 
 ## Outcome And Authority
 

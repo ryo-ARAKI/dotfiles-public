@@ -200,18 +200,59 @@ The local profile must set `approvals_reviewer = "user"`.
 Raw `--oss` launches continue to inherit the base automatic reviewer;
 removing legacy profile selection does not change that approval setting.
 
-The default Codex profile uses `gpt-6.1-sol` with high reasoning and maximum
-planning effort, and the standard service tier. Spawned sub-agents default to
-`gpt-6-luna` at medium reasoning. The `quick` profile uses `gpt-6-luna` with
-medium reasoning and planning effort for bounded tasks. The
-`deep` profile uses `gpt-6-astra` with high reasoning and `xhigh` planning for
-difficult investigation. The `subagent` profile uses `gpt-6-luna` with medium
-reasoning and planning. The `reviewer` role and `codex --profile reviewer` use
-Sol/high with read-only review instructions. Model defaults do not grant
-permission to delegate; explicit model and reasoning overrides take precedence.
-For difficult design, numerical, or permission reviews, explicitly select
-Astra/high. Reviewers inspect the requirements, diff, and evidence independently
-and report findings without editing, committing, or pushing.
+The managed Codex settings use the standard service tier and these model roles:
+
+| Selection | Model | Reasoning / planning | Use |
+| --- | --- | --- | --- |
+| default (no `--profile`) | `gpt-6.1-sol` | xhigh / max | Ordinary investigation, implementation, and verification |
+| `quick` | `gpt-6-luna` | medium / medium | Narrow routine work with clear acceptance checks |
+| Explicit Sol high override | `gpt-6.1-sol` | Record both overrides | Local fixes with a known cause and approach |
+| `deep` | `gpt-6.1-sol` | max / max | Difficult judgment, competing hypotheses, design, or numerical validity |
+| `subagent` and spawned defaults | `gpt-6-luna` | medium / medium for the profile; medium reasoning for spawned defaults | Bounded delegated work, when authorized |
+| `reviewer` role/profile | `gpt-6.1-sol` | high / high | Independent read-only review; use max / max overrides for difficult reviews |
+
+Choose from the judgment that remains. Recommend Sol max immediately when a
+hard problem is already apparent; an xhigh failure is not required. Gather
+missing evidence first, and do not raise effort solely for permission, network,
+or runner failures, a large volume of routine edits, or a planning phase.
+The xhigh default reflects usage and preference, not a measured optimum;
+quality differences and usage-limit multipliers by effort remain unverified.
+
+Consider Sol ultra when useful independent parts would benefit from parallel
+work. Explain the split and benefit, verify availability and selection in the
+installed client, and respect existing delegation authority. Model selection
+does not grant permission to spawn agents. Do not assume CLI, API, and UI
+support match or invent an unverified ultra launch flag. In the interactive
+CLI, inspect `/model` and its supported More reasoning options. If ultra is
+unavailable or parallel work is not useful or authorized, consider available
+Sol max with sequential work. If max is unavailable too, report the limitation
+and an available alternative without implying the requested setting worked.
+See the official [Models](https://learn.chatgpt.com/docs/models) and
+[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) guidance;
+account/client availability still needs checking.
+
+Astra is normally avoided because it consumes more of the usage limit. Never
+recommend or fall back to it automatically. Use it only after describing a
+specific Sol max limitation and the comparison purpose, with explicit approval
+for that task. Explicit user model and effort choices take precedence.
+Reviewers inspect requirements, diffs, and evidence and report findings without
+editing, committing, or pushing. Keep `reviewer` and its read-only permissions
+when increasing review effort; selecting `deep` would lose that profile's
+read-only restriction.
+
+The [handoff template](config/codex/codex-handoff-prompt.md) records profile,
+model ID, both efforts, selection reason, and delegation authority separately.
+Compare the deployed base and profile files with that recommendation, then add
+`-m` and `-c` overrides where needed. Editing these managed sources does not
+deploy them: an old deployed `deep` may still select Astra. For example, after
+confirming the named profile exists (and reviewer remains read-only):
+
+```fish
+# Deep investigation, including with an old Astra deep profile.
+codex --profile deep -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
+# Difficult review retains reviewer permissions.
+codex --profile reviewer -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
+```
 
 Normal Codex launches use automatic approval review with the `on-request`
 approval policy and workspace permissions. These persistent settings provide
