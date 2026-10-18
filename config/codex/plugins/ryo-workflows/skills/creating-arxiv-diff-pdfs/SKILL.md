@@ -19,8 +19,10 @@ Deliver one complete diff PDF based on the two official source versions. Keep th
 
 When the raw build hangs or fails, read [REVTeX and latexdiff troubleshooting](references/revtex-latexdiff-troubleshooting.md).
 
-6. Rebuild the full document. Do not substitute chunks, early pages, a page-limited build, or a concatenation of partial builds.
-7. From this skill's directory, run `python3 scripts/verify_diff_pdf.py --pdf ABSOLUTE_PDF --log ABSOLUTE_LOG --output-dir ABSOLUTE_OUTPUT_DIR`. Open and inspect every rendered first/middle/last image; a generated image is not visual evidence until inspected.
+6. Rebuild the full document and check expected sections, bibliography, and appendices against the source versions. Do not substitute chunks, early pages, a page-limited build, or a concatenation of partial builds.
+7. From this skill's directory, run `python3 scripts/verify_diff_pdf.py --pdf ABSOLUTE_PDF --log ABSOLUTE_LOG --output-dir ABSOLUTE_OUTPUT_DIR` with the final TeX `.log` from that build and a fresh verification directory.
+   The script checks TeX errors, a completed-build summary, matching log/PDF page counts, PDF structure, and sample rendering; it cannot establish source coverage or visual correctness.
+   Open and inspect every rendered first/middle/last image; a generated image is not visual evidence until inspected.
 
 ## Completion
 
