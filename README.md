@@ -415,9 +415,9 @@ updates remain available.
 
 ### Reusable workflows and scripts
 
-The public manifest deploys the three generic `ryo-workflows` skills and their resources
+The public manifest deploys the four generic `ryo-workflows` skills and their resources
 to `~/plugins/ryo-workflows` in local context: dotfiles deployment, arXiv diff PDFs,
-and editable Typst figure bundles.
+editable Typst figure bundles, and Typst research report writing, revision, and review.
 The private layer adds repository-specific skills and retains its existing marketplace
 registration, plugin ID, and enablement. Update both source checkouts together.
 Public-only users can register and enable the deployed plugin through their local plugin setup.
