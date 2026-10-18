@@ -2,39 +2,42 @@
 
 ## Figure Selection and Display Requirements
 
-Choose figures by the question and comparison they support, and cite them from the body in an order the reader can follow.
-Select curves, points, tables, or other representations according to the quantity's meaning; discrete condition comparisons do not automatically describe a continuous field suitable for contours.
-Before changing composition, identify the required conditions, displayed points, quantities, units, comparison directions, reference values, ranges, and interval endpoints from the existing inputs.
-Distinguish repeated displays of a point from independent comparisons so aggregation does not silently change coverage.
+Assign each figure, table, and section a research question and a comparison role that the other material does not already provide.
+Cite retained figures from the body in an order the reader can follow, explaining their contribution and supported conditional answer.
+Combine or omit redundant displays when the question remains answered, respecting the latest user edits and prior decisions to remove analyses.
+Omitting a display from the report does not authorize untracking or deleting its source, data, or standalone output.
 
-Choose panel grouping, shared legends, insets, or overlays by readability at the intended publication dimensions, rather than a fixed figure count or panel arrangement.
-Overlays need distinguishable conditions and series; an inset needs a clear relation to the full range and enough space to resolve the small difference it is intended to show.
+Before requesting a figure change, identify the required conditions, series, displayed points, quantities, units, comparison directions, reference values, ranges, interval endpoints, receiving dimensions, and formats from the existing inputs.
+Choose a representation and panel grouping for the comparison and readability, without fixing the number of figures or panels from a previous report.
+Discrete condition comparisons do not automatically describe a continuous field suitable for contours or interpolation.
 Keep negative values, zero, small differences, and required endpoints visible where the comparison depends on them.
-Do not unify ranges, normalize values, drop points, or replace statistical quantities merely to make panels align or shorten the report.
-If a requested display transformation is scientifically equivalent, confirm its definition and scope before implementation; an unresolved conflict blocks that transformation.
+A shorter report or aligned layout does not justify changing scientific quantities, selection, aggregation, or normalization.
 
-For report figures, prioritize axes, units, readable ticks, concise meaningful legends, and necessary panel identifiers.
-Use mathematical quantity labels and powers of ten when appropriate, and require legend samples to match the actual lines and markers.
-Move long explanations and redundant titles into the body or caption.
-State shared explanations once and map rows, columns, panel identifiers, conditions, and insets explicitly, using cross-references for details already defined elsewhere.
+## Cooperation with Figure Creation and Packaging
 
-## Cooperation with Editable Figure Bundles
+For existing figures used as-is, include and explain them using their current outputs and definitions.
+Validate the body, caption, and receiving size without starting extraction, redistribution, or relocation checks.
 
-For existing figures used as-is, include and explain them without starting extraction, redistribution, or an unrelated upstream audit.
-For ordinary figures without a bundle, work with the existing manuscript and plotting code; conversion into a bundle is not a prerequisite.
-Standalone bundle maintenance belongs to `export-editable-typst-figures`, outside this report skill's scope.
+When a figure needs creation, addition, or revision, pass the question and display requirements above to [Create and Edit Typst Figures](../../creating-and-editing-typst-figures/SKILL.md).
+Use the existing manuscript and plotting code; a portable bundle is not a prerequisite.
+Receive the verified affected outputs, condition/point coverage evidence, identities, limitations, and referenceable caption ingredients, then check their integration into the report.
+The technical sources of truth are [Presentation and Layout](../../creating-and-editing-typst-figures/references/presentation-and-layout.md) for drawing and exports and [Data and Verification](../../creating-and-editing-typst-figures/references/data-and-verification.md) for input preservation and output updates.
+Read only relevant sections; reference reading does not activate the other skill's entire workflow.
+If guidance or a definition is unavailable, identify the dependent operation and continue independent report work.
 
-When a report needs bundle changes, first establish the report's purpose, required comparisons and conditions, displayed quantities and units, and receiving dimensions.
-Then use the available figure skill for bundle implementation and verification, and integrate the verified outputs into the report for a whole-document check.
-The technical sources of truth remain [Presentation and Layout](../../export-editable-typst-figures/references/presentation-and-layout.md) for legends, axes, ticks, fonts, quantity transformations, panel composition and exports, and [Data and Provenance](../../export-editable-typst-figures/references/data-and-provenance.md) for extraction, dependencies, portability, provenance and delivery updates.
-Consult only the sections relevant to the bundle change; keep their code examples, transformation procedures, and feature-specific verification there.
-If that skill is unavailable, continue independent report work and identify any bundle operation needing its technical guidance.
+Use [Export Editable Typst Figures](../../export-editable-typst-figures/SKILL.md) only when creating or maintaining a portable set of source, data, settings, and helpers is requested.
+Its [Data and Provenance](../../export-editable-typst-figures/references/data-and-provenance.md) owns extraction, dependencies, provenance, relocation, and recipient integration.
+Report PDF validation, figure-output validation, and portability/integration checks are separate claims scoped to the affected artifacts.
 
-Apply report paper and placement rules to the manuscript, preserving the dimensions and export conventions of standalone figures and panels.
-When report captions allow shorter labels, keep independently necessary quantities, units, conditions, and series information in standalone outputs.
-Use existing caller settings or wrappers to distinguish report and standalone display; a new shared API is not assumed.
-If those displays cannot be separated within the authorized change, identify the affected outputs and scope decision before removing standalone information.
-Report PDF validation and bundle portability/export validation are separate claims, each scoped to the changed artifacts.
+## Captions and Receiving Context
+
+Compose contextual captions from the figure's authoritative quantity, unit, condition, and series definitions, using its referenceable ingredients rather than a second hand-maintained mapping.
+State what rows, columns, panel identifiers, markers, line styles, and insets mean; keep legend samples consistent with the actual data display.
+Put long explanations and redundant drawing titles in the body or caption and define shared conditions once with an explicit cross-reference.
+Retain the independently necessary quantities, units, and series information in standalone outputs when report captions permit shorter report labels.
+Use existing caller settings or wrappers to distinguish report and standalone display without imposing a new API.
+If those displays cannot be separated within scope, resolve the affected output requirement before removing standalone information.
+Apply paper and placement rules to the manuscript while preserving the dimensions and export conventions of standalone figures and panels.
 
 ## Page Composition
 
@@ -52,6 +55,8 @@ Capture the relevant source/input identities and existing successful outputs bef
 Compile candidate PDFs to a temporary location so compilation or inspection failure leaves successful PDFs and their records intact.
 Use the project's normal Typst command and dependencies; verify relative imports and references rather than bypassing missing files with absolute paths or source-repository symlinks.
 For an unresolved definition, missing evidence, numeric mismatch, or broken reference, identify the affected part and required repair and keep it incomplete.
+Continue independent work and preserve the jointly affected successful artifacts and records if one required output fails.
+After a change to a final loaded input or metadata, rerun affected checks before updating successful identities; reuse unaffected evidence when its inputs, target tree, and material environment assumptions remain unchanged.
 
 Check meaning as well as compilation: question/answer support, saved numbers and conditions, units, statistic names and scope, comparison direction, coverage, and body/caption/panel references.
 For presentation-only changes, compare scientific input bytes before and after and reconcile displayed values and selections with the saved source; hashes alone do not establish numerical correctness.
@@ -59,5 +64,5 @@ Check page count and dimensions with `pdfinfo`, extract text with `pdftotext` fo
 Inspect at the intended reading size for text and tick legibility, legend correspondence, clipping, excessive whitespace, missing content, and figure/table placement.
 Confirm required points, interval bounds, and zero lines in the rendered figure as well as the selected records.
 When placement changes can propagate to later pages, inspect every page; a successful compile or a first-page preview does not cover that effect.
-Validate affected standalone outputs through the figure workflow when bundle changes affect them, keeping their labels and scientific information intact.
+Validate affected standalone outputs through the figure workflow when figure changes affect them, keeping their labels and scientific information intact.
 Update only authorized deliverables after the relevant checks pass, and report unperformed checks and environment limitations explicitly.

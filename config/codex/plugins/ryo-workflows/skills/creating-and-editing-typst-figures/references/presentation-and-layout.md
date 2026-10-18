@@ -1,6 +1,6 @@
 # Presentation and Layout
 
-Read only the sections for the changed features, and use [Stage, Verify, and Update](data-and-provenance.md#stage-verify-and-update) before updating delivery.
+Read only the sections for the changed features, and use [Stage, Verify, and Update](data-and-verification.md#stage-verify-and-update) before updating affected outputs.
 For extraction/packaging alone, reproduce the original appearance; the improvement defaults below apply when figure creation or presentation adjustment is requested.
 Explicit user choices and publication requirements take precedence.
 Choose dimensions, panel count, palette, fonts, and stroke widths for the destination; no report-specific page format or arrangement is mandatory.
@@ -15,7 +15,7 @@ Retain internal IDs and provenance in source, comments, or provenance records, s
 
 The figure's `.typ` retains referenceable parameters, quantity definitions/units, conditions, and series mappings needed to write a caption, rather than finished caption text.
 Reuse the existing authoritative data, condition, and series definitions: expose or reference them through the figure's existing interface, without hand-copying values or maintaining a second active mapping.
-Adapt exported values, functions, compiler metadata, or source references to the bundle; do not require a new variable name, schema, or migration.
+Adapt exported values, functions, compiler metadata, or source references to the existing figure; do not require a new variable name, schema, or migration.
 The data flow is existing data/condition definitions → drawing and referenceable parameter information → a contextual caption composed by the receiving report.
 Standalone figures also retain access to these ingredients; do not restore explanatory prose inside the drawing to make them self-contained.
 If quantities, units, or conditions are unknown, report the missing information rather than filling it in by inference.
@@ -23,8 +23,9 @@ If quantities, units, or conditions are unknown, report the missing information 
 ## Appearance and Series
 
 Keep figure-specific dimensions, fonts, strokes, colors, and notation easy to edit in ordinary source; judge readability at the receiving size.
-Preserve scientific data bytes, stored conditions, selection, aggregation, normalization, and stored confidence intervals while changing appearance.
-Do not run simulations, estimation, bootstrap, or confidence-interval generation for presentation work.
+Use [Inputs and Baselines](data-and-verification.md#inputs-and-baselines) to preserve the scientific inputs while changing appearance.
+Bind color, shape, and line style to meaningful series identifiers or display roles, so reordering records keeps their meanings.
+Use the same mapping for the same meaning across compared figures, and distinguish a method from another quantity that happens to use the same algorithm.
 Distinguish categories such as methods from ordered quantities such as time or parameter values when choosing visual channels.
 For ordered quantities, use an appropriate colormap such as plasma, with a consistent value-to-color mapping and domain across compared figures.
 Show the mapping with a short legend or colorbar; identify what each visual channel encodes and keep it consistent across curves, markers, annotations, and legends.
@@ -34,9 +35,14 @@ Use short, meaningful method names and retain their definitions as caption ingre
 Choose legend placement and wrapping for the requested composition rather than requiring a centered, single-row legend.
 Check text, line, and marker discrimination at publication size; keep guides subdued enough not to obscure data.
 Hollow markers have transparent interiors, not white-filled interiors: the background and overlapping data must remain visible through them.
+Compare the apparent sizes of different shapes, their outlines, and legend samples at the final publication size.
 
 Choose curves, points, or tables according to the comparison readers need to make.
 Use contours primarily for spatial/field visualization; do not mechanically convert condition or method comparisons to contour plots.
+For discrete conditions, decide what a connecting line or interpolation means before adding it; a line must not imply unsupported intermediate conditions.
+For overlays or merged panels, reconcile every expected condition tuple, series, point, and interval endpoint against the inputs, including repeated displays.
+A total count alone can hide a missing condition offset by a duplicate.
+Keep any display offset distinct from the original coordinate and preserve the underlying selection and aggregation.
 
 ### Existing or Requested Default Emphasis
 
@@ -45,11 +51,14 @@ Determine membership from stored scientific conditions before unit conversion, l
 Retain all specified defaults and their expected multiplicity for each relevant method/panel; totals alone can hide missing and duplicated conditions.
 Match every relevant key, with equality/tolerance appropriate to storage semantics; do not substitute a nearby point for a missing default.
 Record intentionally absent defaults as part of the expected specification.
-Keep marker/legend meaning, point counts, and error bars consistent. No particular colors, shapes, fills, or one-point multiplicity are universal.
+Keep marker/legend meaning, point counts, and error bars consistent.
+No particular colors, shapes, fills, or one-point multiplicity are universal.
 
 ## Display Quantities and Axes
 
 Before changing a displayed quantity, confirm its formula, units, storage convention, and applicable series from observed inputs/settings.
+For sample-count to time conversion, check the actual integration step, saved-sample interval, index origin, and start/end inclusion convention.
+For example, elapsed span can be `(last_index - first_index) * saved_interval`; use this only when the saved indexing convention establishes it.
 Do not infer elapsed time from sample counts without knowing the convention, or normalize already nondimensional coordinates again.
 Distinguish notation-only changes from unit, coordinate, or scale conversions.
 Use mathematical notation for variables by default, and powers of ten rather than forms such as `1e+05`; display `10^0` as `1`.
@@ -71,8 +80,11 @@ It does not change x coordinates, stored conditions, or raw data; the plotting A
 
 For nonlinear conversion, transform the applicable error endpoints rather than assuming a symmetric error remains symmetric.
 For log axes, distinguish package-managed scaling from manually logged coordinates; do not apply both.
-Check finite coordinates and positive log inputs. Where offsets exist, use quantity conversion, then log coordinates if applicable, then presentation offsets; offsets do not redefine scientific values or theory.
+Check finite coordinates and positive log inputs.
+Where offsets exist, use quantity conversion, then log coordinates if applicable, then presentation offsets; offsets do not redefine scientific values or theory.
 Pair numeric tick positions with labels without changing the scale to obtain a preferred label, such as `1` instead of `10^0`.
+For linear RMSE axes, start at zero by default; explain the purpose and range of a magnified view when a different lower bound is needed.
+Keep zero out of logarithmic axes.
 
 ### Package-Specific Tick Fonts
 
@@ -151,17 +163,19 @@ Real records retain their scientific conditions and references, and may be loade
 An exporter may read compiler metadata using the environment's supported extraction API or read the same external condition source directly.
 Do not parse source text or hand-maintain a second active condition list; recorded provenance mappings are identified snapshots.
 Use meaningful, unique filenames consistent with the bundle's convention and document selector meanings, output location, commands, and overwrite behavior.
-Validate selections against the actual interface; for one-based single-integer selection, reject zero, out-of-range values, and lists. Named or other existing selectors keep their own validation rules.
+Validate selections against the actual interface; for one-based single-integer selection, reject zero, out-of-range values, and lists.
+Named or other existing selectors keep their own validation rules.
 
 Provide a batch exporter when batch export is requested, reusing an existing one where suitable.
-Resolve bundle paths independently of the caller's working directory, quote paths, and stop on compilation failure.
+Resolve figure and output paths independently of the caller's working directory, quote paths, and stop on compilation failure.
 An executable POSIX `export-panels.sh` with `set -eu` and an optional output directory is an example, not a prerequisite for single-panel export.
 
 ## Feature-Specific Verification
 
 For packaging alone, check fidelity to the original appearance rather than enforcing presentation improvements.
-Compile and inspect every affected delivered output at its receiving size, preserving scientific data bytes, normalization definitions/values, stored conditions/confidence intervals, selection, and aggregation for presentation changes.
-Capture input hashes and compare selected points/conditions and error endpoints with the baseline; do not regenerate estimates or intervals.
+Compile and inspect every affected output at its receiving size under the [Data and Verification](data-and-verification.md) contract.
+For revisions, compare selected points, condition tuples, and error endpoints with the identified baseline; for new figures, use the input definitions and expected coverage.
+Do not invent an old rendering as a fidelity baseline for a new figure.
 Verify standalone output and document inclusion separately when affected; rasterize the necessary outputs and inspect them at publication size.
 Apply only the rows for features that exist and are affected; a font-only edit does not require conversion, CSV reconstruction, upstream calculations, or selector-interface tests.
 
@@ -172,7 +186,7 @@ Apply only the rows for features that exist and are affected; a font-only edit d
 | Caption ingredients or visible information | Exact quantities/units/parameters/conditions/series meanings obtainable from the figure's existing definitions, sufficient for a report-side caption without duplicated values/mappings; no explanatory prose or internal IDs in the drawing, including standalone outputs |
 | Equivalent display quantity or axis scale | Confirmed formula/units and target scope; numerical correspondence of affected coordinates, error bounds, existing theory, ticks, limits, and annotations; unchanged other quantities; no double conversion |
 | Default emphasis | Raw-key membership and each expected condition's multiplicity; marker/legend meaning without inventing defaults |
-| Ranges, bands, or overlays | Requested endpoint/width/frame goal, required content/padding, band-to-interval correspondence and visibility, intended overlap order; comparable quantities/units/scales, distinguishable styles/widths/opacities, no missing series/conditions/points/error ranges |
+| Ranges, bands, or overlays | Requested endpoint/width/frame goal, required content/padding, band-to-interval correspondence and visibility, intended overlap order; comparable quantities/units/scales, distinguishable styles/widths/opacities, each expected condition tuple and series retains every point and error endpoint, with no missing/duplicate substitution |
 | Insets | Magnification bounds equal the marked main region, matching whole-inset background when tinted, and main data visible; different-quantity axes and caption ingredients without a spurious zoom frame; necessary symbols/units retained and redundant labels omitted |
 | Composition or standalone visibility | Requested arrangement and frame alignment, independent axis/legend information and caption ingredients, caller's paper/margins/body settings respected, fit and readability at intended size |
 | Selection or batch-export interface | Valid/invalid selectors under the existing contract, exact selector-condition-filename correspondence, unique filenames, preserved full output; for batch changes, every expected panel and relocation/from-outside invocation with spaced output paths |
@@ -180,5 +194,5 @@ Apply only the rows for features that exist and are affected; a font-only edit d
 If formula/units/conditions are unknown, report the gap and stop the dependent change rather than guess.
 Invalid coordinates, missing required defaults, clipping, and missing standalone information fail the affected check; repair and rerun it.
 Separate missing-font/compiler effects from intended presentation changes, and do not install dependencies without authorization.
-For partial failure or unverified outputs, preserve delivery and success records as required by [Stage, Verify, and Update](data-and-provenance.md#stage-verify-and-update).
-Keep verification candidates and diagnostics separately under `/tmp`, outside delivery; failed candidates never replace delivered files or successful records.
+For partial failure or unverified outputs, preserve delivery and success records as required by [Stage, Verify, and Update](data-and-verification.md#stage-verify-and-update).
+Keep verification candidates and diagnostics outside delivery as specified by the shared update procedure.

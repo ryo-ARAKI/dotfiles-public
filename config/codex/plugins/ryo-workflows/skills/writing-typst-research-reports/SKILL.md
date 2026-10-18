@@ -1,6 +1,6 @@
 ---
 name: writing-typst-research-reports
-description: Write, revise, or review Typst research reports, connecting research questions and scientific evidence with prose, tables, figures, and page composition. Excludes application documents, slides, and standalone figure-bundle maintenance.
+description: Use when writing, revising, or reviewing Typst research reports, their scientific claims, prose, tables, captions, figure selection, or page composition; excludes application documents, slides, figure implementation, and portable-bundle maintenance.
 ---
 
 # Write Typst Research Reports
@@ -29,7 +29,8 @@ Use for new reports, authorized revisions, or requested reviews; ordinary proofr
 | Figure selection, report display requirements, captions, placement, or rendered-document validation | [Report Composition](references/report-composition.md) |
 
 Read the relevant sections and combine them when a change crosses these concerns.
-The composition reference explains conditional cooperation with `export-editable-typst-figures`; that skill is not required for ordinary report work.
+The composition reference explains cooperation with `creating-and-editing-typst-figures` when a figure needs creating or changing, and `export-editable-typst-figures` when portability is requested.
+Existing figures used as-is need neither workflow; reading a technical reference does not activate another skill's entire procedure.
 
 ## Verify and Report
 
