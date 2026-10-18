@@ -8,8 +8,8 @@ do not split a narrow task whose remaining work is cheaper to finish in place.
 
 Write the handoff to `/tmp/codex-handoff.md` by replacing the whole file.
 Do not paste the handoff body into chat. After writing the file, reply only
-with the saved path and the recommended command or first prompt for the next
-session.
+with the saved path, the recommended launch command, a one-sentence selection
+reason, and the initial prompt for the next session.
 
 The user will specify one phase:
 
@@ -32,6 +32,14 @@ Create `/tmp/codex-handoff.md` with this structure:
   `review`
 - `handoff_reason:`
 - `recommended_profile:`
+- `recommended_model:` with the actual model ID
+- `recommended_reasoning_effort:` for normal execution
+- `recommended_plan_reasoning_effort:` for planning mode
+- `model_selection_reason:` tied to the next unresolved judgment
+- `delegation_authority:` with `not_granted` or the approved split and scope
+- `launch_config_check:` with the deployed config root, base/profile values,
+  overrides needed, and anything still unverified
+- `launch_command:` matching the profile, model, and both efforts
 - `recommended_mode:`
 - `cwd:`
 - `repo:`
@@ -71,14 +79,72 @@ note.
 
 ## Mode Guidance
 
-Use `recommended_profile:` for the CLI profile or model guidance. Choose the
-lowest effort that preserves unresolved judgment; do not inherit xhigh merely
-because the current session uses it. Use `default` for normal implementation
-with GPT-6 Astra at medium reasoning, and recommend `quick` when the remaining
-steps are mechanical with clear acceptance checks. Keep difficult scientific,
-security, design, or review judgment on a suitable high-effort profile and
-explain why. Record explicit model or effort overrides only when they are
-required for the remaining work.
+Separate profile, model, and the two reasoning efforts. Honor explicit user
+choices first; otherwise choose from the unresolved judgment and the benefit
+of parallel work, rather than inheriting the previous session's effort or
+using work volume alone:
+
+| Recommendation | Model | Normal / planning effort | Remaining work |
+| --- | --- | --- | --- |
+| `quick` | `gpt-6-luna` | medium / medium | Narrow routine steps with clear targets and acceptance checks |
+| `default` with high overrides | `gpt-6.1-sol` | high / high | Local fix with a known cause and approach |
+| `default` | `gpt-6.1-sol` | xhigh / max | Ordinary investigation, implementation, and verification |
+| `deep` | `gpt-6.1-sol` | max / max | Competing hypotheses, difficult design, or numerical validity |
+| `reviewer` | `gpt-6.1-sol` | high / high; max / max for difficult review | Independent read-only review |
+
+Recommend max from the start when difficult judgment is already apparent; do
+not require an xhigh failure first. Gather missing evidence before increasing
+effort. Permission, network, and runner failures alone, routine edit volume,
+and a planning phase alone do not justify a higher recommendation. The
+configured default planning effort remains max; distinguish it from the
+reason for selecting a model or normal effort. The xhigh default reflects
+usage and preference, not measured optimality. Effort-specific quality and
+usage-limit multipliers are unverified.
+
+Consider Sol ultra only when meaningful independent parts make parallel work
+useful. Describe the split and benefit, verify the installed client's model
+availability and selection method, and record both actual efforts. Do not
+assume CLI, API, and UI support match or infer delegation permission from
+ultra. Record `delegation_authority: not_granted` unless the user approved a
+split and scope. If ultra is unavailable or parallel work cannot help or is
+not authorized, consider available Sol max with sequential work. If max is
+unavailable, report the limitation and an available alternative explicitly.
+Never imply an unavailable setting succeeded or switch to Astra automatically.
+
+Astra is normally avoided because of its larger usage-limit cost. It requires
+a concrete Sol max limitation, a stated comparison purpose, and explicit
+approval for the target task. A profile name does not establish that approval.
+
+Before writing `launch_command`, inspect the actual base config and selected
+standalone profile under the launch environment's `CODEX_HOME` (normally
+`~/.codex`). Record the paths and effective model, normal effort, and planning
+effort in `launch_config_check`, along with differences from managed source.
+The loading order is base config, selected profile, then explicit CLI
+overrides. Source edits alone do not establish deployment. If a deployed
+value is different or unknown, explicitly override the model and each
+unconfirmed effort; do not recommend a bare old `deep` that still selects
+Astra. Confirm named profiles exist. For reviews, confirm the reviewer
+profile's read-only permissions and instructions; if missing or unverified,
+report the prerequisite and wait for configuration verification rather than
+substituting `deep`.
+
+Use `-m`, `-c 'model_reasoning_effort="..."'`, and
+`-c 'plan_mode_reasoning_effort="..."'` as needed. For example, these commands
+make both efforts explicit even with an older deployment:
+
+```fish
+# Local correction; default means no --profile argument.
+codex -C <cwd> -m gpt-6.1-sol -c 'model_reasoning_effort="high"' -c 'plan_mode_reasoning_effort="high"'
+# Deep investigation, after confirming deep.config.toml exists.
+codex -C <cwd> --profile deep -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
+# Difficult review keeps the verified read-only reviewer profile.
+codex -C <cwd> --profile reviewer -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
+```
+
+Only use ultra CLI overrides after verifying their syntax and support in the
+installed client. Otherwise give a verified Sol launch command and instruct
+the user to inspect `/model` and its More reasoning options before selecting
+ultra; mark ultra and its effective efforts as unverified until checked.
 
 Set `recommended_mode:` from the phase:
 
@@ -218,7 +284,8 @@ After creating `/tmp/codex-handoff.md`, reply in chat with only:
 ```text
 Created /tmp/codex-handoff.md.
 Recommended next session:
-<launch command matching recommended_profile, model, and reasoning effort>
+<launch_command matching recommended_profile, recommended_model, and both reasoning efforts>
+<one sentence explaining model_selection_reason and any selection still needing verification>
 
 Initial prompt:
 /tmp/codex-handoff.md を読んで、そこに書かれた recommended_mode、phase、handoff_path、goal_action、next に従って作業してください。recommended_mode が /goal なら active_goal と goal_action を確認し、必要なら goal と done_when から /goal を作成または選択してください。handoff_path が issue-goal なら issue_or_pr のissueも確認し、実装を妨げる未確定事項を対話的に詰めてから /goal を作成してください。まずcwd、git状態、source_of_truth、関連issue/PR状態を確認し、巨大出力は要約してください。
@@ -231,7 +298,8 @@ issue before creating the `/goal`. For `handoff_path: issue-only`, report the
 issue number and the recommended `/new` prompt for the future implementation
 session instead of implying that implementation should start immediately.
 
-Use `codex -C <cwd>` for `recommended_profile: default`; otherwise select the
-named profile with `--profile` and include any model or reasoning overrides
-recorded in the handoff. Explain a change from the current model or effort in
-one short sentence.
+For `recommended_profile: default`, use `codex -C <cwd>` without `--profile`;
+otherwise select the named profile with `--profile`. Include model and both
+effort overrides required by `launch_config_check`. Keep `--profile reviewer`
+for difficult reviews and set both efforts to max. Give the selection reason
+in one short sentence even when the model or effort stays the same.
