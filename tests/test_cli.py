@@ -213,8 +213,8 @@ class InstallCliTests(unittest.TestCase):
             (private / "config/codex/quick-private.config.toml").write_text(profile, encoding="utf-8")
             (hosts / "config/codex/quick-host.config.toml").write_text(profile.replace("private selected", "host selected"), encoding="utf-8")
             (private / "config/codex/deep-private.config.toml").write_text(
-                'model = "gpt-6-astra"\nmodel_reasoning_effort = "high"\nplan_mode_reasoning_effort = "xhigh"\n'
-                '[projects."/tmp/synthetic-private-trust"]\ntrust_level = "trusted"\n', encoding="utf-8"
+                (repo_root / "config/codex/deep.config.toml").read_text(encoding="utf-8")
+                + '\n[projects."/tmp/synthetic-private-trust"]\ntrust_level = "trusted"\n', encoding="utf-8"
             )
             homes = {}
             for context in ("local", "remote"):
@@ -223,6 +223,7 @@ class InstallCliTests(unittest.TestCase):
                 codex_home.mkdir(parents=True)
                 homes[context] = home
                 (codex_home / "config.toml").write_text(
+                    'model = "gpt-6.1-sol"\nmodel_reasoning_effort = "medium"\nplan_mode_reasoning_effort = "max"\n'
                     f'[mcp_servers.{context}-fixture]\ncommand = "fixture"\nenv = {{ TOKEN = "{context}-synthetic-secret" }}\n',
                     encoding="utf-8",
                 )
@@ -231,7 +232,9 @@ class InstallCliTests(unittest.TestCase):
                     encoding="utf-8",
                 )
                 (codex_home / "deep.config.toml").write_text(
-                    'model = "old-model"\n[projects."/tmp/synthetic-target-trust"]\ntrust_level = "trusted"\n',
+                    'model = "gpt-6-astra"\nmodel_reasoning_effort = "high"\nplan_mode_reasoning_effort = "xhigh"\n'
+                    '[projects."/tmp/synthetic-target-trust"]\ntrust_level = "trusted"\n'
+                    '[plugins."synthetic-deep"]\nenabled = true\n',
                     encoding="utf-8",
                 )
 
@@ -258,12 +261,13 @@ class InstallCliTests(unittest.TestCase):
             self.assertIn("/tmp/synthetic-private-trust", local_deep["projects"])
             self.assertIn("/tmp/synthetic-target-trust", local_deep["projects"])
             backup_root = homes["local"] / ".dotfiles-backup"
-            codex_backup_count = sum(1 for path in backup_root.rglob("*") if path.is_file() and path.name in {"config.toml", "quick.config.toml"})
+            codex_backup_count = sum(1 for path in backup_root.rglob("*") if path.is_file() and path.name in {"config.toml", "quick.config.toml", "deep.config.toml"})
             rerun = invoke("local", "--yes")
             self.assertEqual(rerun.returncode, 0, msg=rerun.stderr)
             self.assertIn("nochange: codex:", rerun.stdout)
+            self.assertIn("nochange: private: config/codex/deep-private.config.toml", rerun.stdout)
             self.assertEqual(
-                sum(1 for path in backup_root.rglob("*") if path.is_file() and path.name in {"config.toml", "quick.config.toml"}),
+                sum(1 for path in backup_root.rglob("*") if path.is_file() and path.name in {"config.toml", "quick.config.toml", "deep.config.toml"}),
                 codex_backup_count,
             )
             remote_dry = invoke("remote", "--dry-run", "--only", "quick.config.toml")
@@ -287,6 +291,7 @@ class InstallCliTests(unittest.TestCase):
             remote_rerun = invoke("remote", "--yes")
             self.assertEqual(remote_rerun.returncode, 0, msg=remote_rerun.stderr)
             self.assertIn("nochange: host: config/codex/quick-host.config.toml", remote_rerun.stdout)
+            self.assertIn("nochange: base: config/codex/deep.config.toml", remote_rerun.stdout)
             self.assertEqual(
                 sum(
                     1 for path in remote_backup_root.rglob("*")
@@ -295,6 +300,22 @@ class InstallCliTests(unittest.TestCase):
                 remote_codex_backup_count,
             )
             self.assertNotEqual((homes["local"] / ".codex/config.toml").read_text(encoding="utf-8"), local_config_before)
+            for context, standard, deep in (("local", local, local_deep), ("remote", remote, remote_deep)):
+                with self.subTest(context=context):
+                    self.assertEqual(standard["model"], "gpt-6.1-sol")
+                    self.assertEqual(standard["model_reasoning_effort"], "xhigh")
+                    self.assertEqual(standard["plan_mode_reasoning_effort"], "max")
+                    self.assertEqual(deep["model"], "gpt-6.1-sol")
+                    self.assertEqual(deep["model_reasoning_effort"], "max")
+                    self.assertEqual(deep["plan_mode_reasoning_effort"], "max")
+                    self.assertTrue(deep["plugins"]["synthetic-deep"]["enabled"])
+                    self.assertNotIn("synthetic-deep", standard.get("plugins", {}))
+                    self.assertNotIn("mcp_servers", deep)
+                    reviewer = tomllib.loads((homes[context] / ".codex/reviewer.config.toml").read_text(encoding="utf-8"))
+                    self.assertEqual(reviewer["model"], "gpt-6.1-sol")
+                    self.assertEqual(reviewer["model_reasoning_effort"], "high")
+                    self.assertEqual(reviewer["plan_mode_reasoning_effort"], "high")
+                    self.assertEqual(reviewer["default_permissions"], ":read-only")
 
     def test_install_generates_codex_agents_from_common_and_local_fragments(self) -> None:
         repo_root = Path(__file__).resolve().parents[1]
