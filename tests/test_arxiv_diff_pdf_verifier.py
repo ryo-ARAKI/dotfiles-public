@@ -137,7 +137,7 @@ class VerifierCliTests(unittest.TestCase):
             log = root / "candidate.log"
             output_dir = root / "verification"
             pdf.write_bytes(b"pdf")
-            log.write_text("clean\n", encoding="utf-8")
+            log.write_text("Output written on candidate.pdf (7 pages).\n", encoding="utf-8")
             exit_code = self.verifier.main(
                 ["--pdf", str(pdf), "--log", str(log), "--output-dir", str(output_dir)],
                 env={"PATH": ""},
@@ -161,5 +161,88 @@ class VerifierCliTests(unittest.TestCase):
             self.assertNotEqual(exit_code, 0)
             report = json.loads((output_dir / "verification.json").read_text())
             self.assertTrue(any("LaTeX Error" in item for item in report["errors"]))
+
+    def test_cli_rejects_unfinished_or_inconsistent_build_logs(self):
+        cases = {
+            "unfinished": "[1] [2]\n",
+            "tex-error": "! Undefined control sequence.\nOutput written on candidate.pdf (7 pages).\n",
+            "file-line-error": "./candidate.tex:12: Undefined control sequence.\nOutput written on candidate.pdf (7 pages).\n",
+            "page-mismatch": "Output written on candidate.pdf (77 pages).\n",
+        }
+        for name, content in cases.items():
+            with self.subTest(case=name), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                tools = root / "tools"
+                tools.mkdir()
+                self.make_fake_tools(tools)
+                pdf = root / "candidate.pdf"
+                pdf.write_bytes(b"pdf")
+                log = root / "candidate.log"
+                log.write_text(content, encoding="utf-8")
+                output = root / "verification"
+
+                result = self.verifier.main(
+                    ["--pdf", str(pdf), "--log", str(log), "--output-dir", str(output)],
+                    env={"PATH": str(tools)},
+                )
+
+                self.assertNotEqual(result, 0)
+                report = json.loads((output / "verification.json").read_text())
+                self.assertTrue(report["errors"])
+                self.assertEqual(report["rendered_images"], [])
+
+    def test_cli_accepts_wrapped_and_single_page_completion_summaries(self):
+        cases = (
+            (7, 'Output written on "long filename\nwith spaces.pdf" (7 pages,\n 12345 bytes).\n'),
+            (1, "Output written on candidate.pdf (1 page, 123 bytes).\n"),
+        )
+        for pages, content in cases:
+            with self.subTest(pages=pages), tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                tools = root / "tools"
+                tools.mkdir()
+                self.make_fake_tools(tools)
+                self.write_tool(tools, "pdfinfo", f'print("Pages: {pages}")\n')
+                pdf = root / "candidate.pdf"
+                pdf.write_bytes(b"pdf")
+                log = root / "candidate.log"
+                log.write_text(content, encoding="utf-8")
+                output = root / "verification"
+
+                result = self.verifier.main(
+                    ["--pdf", str(pdf), "--log", str(log), "--output-dir", str(output)],
+                    env={"PATH": str(tools)},
+                )
+
+                self.assertEqual(result, 0)
+                report = json.loads((output / "verification.json").read_text())
+                self.assertEqual(report["checks"]["log"]["page_count"], pages)
+
+    def test_cli_preserves_reviewable_log_and_structural_warnings(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            tools = root / "tools"
+            tools.mkdir()
+            self.make_fake_tools(tools)
+            self.write_tool(tools, "qpdf", 'print("warning"); raise SystemExit(3)\n')
+            pdf = root / "candidate.pdf"
+            pdf.write_bytes(b"pdf")
+            log = root / "candidate.log"
+            log.write_text(
+                "LaTeX Warning: Label old multiply defined.\n"
+                "Output written on candidate.pdf (7 pages).\n",
+                encoding="utf-8",
+            )
+            output = root / "verification"
+
+            result = self.verifier.main(
+                ["--pdf", str(pdf), "--log", str(log), "--output-dir", str(output)],
+                env={"PATH": str(tools)},
+            )
+
+            self.assertEqual(result, 0)
+            report = json.loads((output / "verification.json").read_text())
+            self.assertEqual(len(report["warnings"]), 2)
+            self.assertEqual(report["errors"], [])
 if __name__ == "__main__":
     unittest.main()

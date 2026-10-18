@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Verify a complete latexdiff PDF and prepare pages for visual inspection."""
+"""Check latexdiff build/PDF consistency and prepare pages for visual inspection."""
 
 from __future__ import annotations
 
@@ -19,8 +19,8 @@ class VerificationError(RuntimeError):
 
 
 FATAL_LOG_PATTERNS = (
-    r"^! LaTeX Error:",
-    r"^! Package .+ Error:",
+    r"^!",
+    r"^.+:\d+:\s",
     r"Fatal error occurred",
     r"Emergency stop",
     r"There were undefined references",
@@ -29,7 +29,6 @@ FATAL_LOG_PATTERNS = (
 
 WARNING_LOG_PATTERNS = (
     r"multiply defined",
-    r"There were multiply defined citations",
 )
 
 
@@ -52,6 +51,18 @@ def parse_pdfinfo(text: str) -> int:
     match = re.search(r"^Pages:\s+(\d+)\s*$", text, re.MULTILINE)
     if not match or int(match.group(1)) < 1:
         raise VerificationError("pdfinfo did not report a positive page count")
+    return int(match.group(1))
+
+
+def parse_log_page_count(text: str) -> int:
+    # TeX wraps long filenames and completion summaries across physical lines.
+    match = re.search(
+        r"^Output written on .+?\((\d+)\s+pages?(?:,\s*\d+\s+bytes)?\)\.",
+        text,
+        re.MULTILINE | re.DOTALL,
+    )
+    if not match or int(match.group(1)) < 1:
+        raise VerificationError("TeX log has no completed PDF output summary")
     return int(match.group(1))
 
 
@@ -101,7 +112,7 @@ def main(
     env: Mapping[str, str] | None = None,
 ) -> int:
     parser = argparse.ArgumentParser(
-        description="Verify a complete latexdiff PDF and render first/middle/last pages."
+        description="Check latexdiff build/PDF consistency and render first/middle/last pages."
     )
     parser.add_argument("--pdf", required=True, help="complete diff PDF")
     parser.add_argument("--log", required=True, help="LaTeX build log")
@@ -142,6 +153,8 @@ def main(
             report_path = write_report(output_dir, report)
             print(report_path)
             return 1
+        log_page_count = parse_log_page_count(log_text)
+        report["checks"]["log"]["page_count"] = log_page_count
 
         pdfinfo_result = run_command(["pdfinfo", str(pdf)], env=process_env)
         report["checks"]["pdfinfo"] = {
@@ -153,8 +166,12 @@ def main(
                 f"pdfinfo failed with exit code {pdfinfo_result.returncode}"
             )
         page_count = parse_pdfinfo(pdfinfo_result.stdout)
-        pages = inspection_pages(page_count)
         report["page_count"] = page_count
+        if page_count != log_page_count:
+            raise VerificationError(
+                f"PDF page count {page_count} does not match TeX log page count {log_page_count}"
+            )
+        pages = inspection_pages(page_count)
         report["inspection_pages"] = pages
 
         qpdf_result = run_command(["qpdf", "--check", str(pdf)], env=process_env)
