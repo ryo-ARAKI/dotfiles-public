@@ -4,12 +4,39 @@
 
 Map each research question to the relevant established finding, additional result, conditional answer, and supporting figure or table.
 A short list of question/answer pairs can expose this correspondence when several questions motivate the report; choose the structure that serves the argument.
-State the conditions under which the answer holds and distinguish observed trends from their interpretation.
+For each comparison, connect the saved statistic definition, reference value, comparison objects and direction, condition range, and supporting evidence before phrasing the answer.
+State the conditions under which the answer holds and distinguish observed trends from interpretation.
 Compare like quantities and identify changes in method, reference, sampling, or conditions that limit a comparison.
-Use the saved definition of each statistic, difference direction, interval, and uncertainty scope; an interval for one quantity is not evidence for a differently named quantity.
 Keep endpoint and zero-boundary decisions consistent with the supplied scientific contract rather than importing a rule from another experiment.
-If the definition or evidence is missing, identify the affected claim and the needed source instead of supplying a plausible number or stronger conclusion.
-Past requests to add appendices or exhaustive method inventories are not report-wide requirements; retain material according to its role in the current argument and the latest request.
+
+### Statistics and Counterexamples
+
+Read the definitions and condition-level saved values behind a claim, rather than inferring another statistic from a visually similar plot.
+RMSE alone does not establish bias or SD: locate the corresponding bias/SD results and their reference and uncertainty definitions before describing them.
+An interval for one quantity is not evidence for a differently named quantity.
+Check claims such as “all conditions,” “always,” or “larger/smaller” against the relevant directions, observation lengths, and other condition keys, including values that reverse the ordering.
+Retain counterexamples and narrow the claim to the supported range instead of extending one direction or length to the whole experiment.
+Replace “it depends on conditions” with the conditions and trends actually established by the saved results.
+If evidence or a definition is missing, hold or narrow only the dependent claim and continue independently supported work.
+
+### Meaning and Size of a Comparison
+
+Distinguish finite-lag reference quantities from their derivative limits; use the intended reference for each reported error.
+Keep a theoretical quantity's invariance under rescaling or standardization separate from finite-sample estimator error and its observed changes.
+Separate differences between methods at a given condition from changes within each method when a condition varies.
+When the question asks how much a choice matters, give the magnitude and range supported by the saved values as well as the ordering.
+For example, compare a method's saved values before and after a boundary-rule change with a stated denominator; that relative change is distinct from its difference from another method.
+A small observed change alone proves neither equivalence nor absence of a statistically significant difference.
+Use the existing inferential evidence for such claims; verifying arithmetic on saved values does not authorize recomputing estimators or confidence intervals.
+Choose precision and wording that answer the research question without turning this report's change rates into universal thresholds.
+
+### Current User Edits and Material Selection
+
+Use the latest user-edited text and request as the baseline for argument and tone.
+Identify what each section, table, or figure contributes to a question and retain evidence needed for the comparison, rather than restoring material from an old plan.
+Previously removed analyses and past appendix requests are history, not requirements to rebuild them.
+Distinguish omission from the manuscript, removal from Git tracking, and deletion of files; each has a different effect and authority requirement.
+A request to untrack data leaves the actual files in place; physical deletion needs authorization for those targets.
 
 ## Prose and Notation
 
