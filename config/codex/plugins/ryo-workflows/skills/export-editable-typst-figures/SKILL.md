@@ -1,50 +1,43 @@
 ---
 name: export-editable-typst-figures
-description: Use when packaging editable Typst figures from reports for conference slides or papers, or maintaining those bundles, their presentation, provenance, and panel exports.
+description: Use when packaging editable Typst figures for another location or maintaining a portable bundle's dependencies, provenance, relocation, or recipient integration; figure creation and visual revision belong to creating-and-editing-typst-figures.
 ---
 
 # Distribute Editable Typst Figures
 
-## Purpose
-
 Create or maintain a bundle that recipients can edit and compile without access to the original report repository.
-Support requested presentation, data, and export changes while preserving scientific meaning and traceable provenance.
-For extraction/packaging alone, preserve the original appearance.
-When figure creation or presentation adjustment is requested, apply [Presentation and Layout](references/presentation-and-layout.md), prioritizing explicit user choices and publication requirements.
-Keep this a figure-bundle workflow, without expanding it into a general plotting library or manuscript-writing workflow.
+For extraction or packaging alone, reproduce the authoritative appearance.
+Ordinary figure creation or visual revision belongs to [Create and Edit Typst Figures](../creating-and-editing-typst-figures/SKILL.md), including work inside an existing bundle.
+Reading that skill's technical references does not require its unrelated procedures or a new extraction.
 
-## Invariants
+## Bundle Contract
 
-- Keep ordinary Typst source editable and support `typst compile`; include all local rendering/editing dependencies and necessary asset-regeneration helpers, using relative loading paths without source-repository symlinks.
-- Preserve scientific quantities, stored conditions, selection, aggregation, and normalization except for explicitly requested scientific changes.
-  Presentation changes retain scientific data bytes, stored confidence intervals, and normalization definitions/values; display transformations do not replace saved data.
-  Do not rerun simulations, estimation, bootstrap, or confidence-interval generation for presentation work.
-- Preserve original generation/extraction history; distinguish current inputs and new verification from historical claims, and record unknown identities as gaps.
-- Share existing condition definitions and series meanings across full figures, standalone panels, legends, and exporters.
-  Preserve their existing storage location and selection interface unless changing them is requested.
-- Keep concise reader-facing information in the figure and retain referenceable caption ingredients in its `.typ`, derived from existing data/condition/series definitions.
-  The receiving report composes its own contextual caption; see [Figure Information and Caption Ingredients](references/presentation-and-layout.md#figure-information-and-caption-ingredients).
-- Work on a distribution copy, preserving original report/simulation data and user edits.
-  Validate affected outputs before replacing delivery and its success records; preserve prior successes on failure.
-- Cleanup covers run-created temporary artifacts; deleting pre-existing bundles requires authorization for that location.
-  Copy to a recipient repository only when requested; the skill grants no installation, Git, or external-write authority.
+- Keep ordinary Typst source editable and support `typst compile`, with local rendering/editing dependencies and necessary asset-regeneration helpers.
+  Use bundle-relative loading paths without source-repository symlinks.
+- Preserve original generation/extraction history and separate it from current inputs and new verification.
+  Record unknown identities as gaps rather than inferred revisions.
+- Work on a distribution copy, preserving source report/simulation inputs and user edits.
+  Use the shared [Data and Verification](../creating-and-editing-typst-figures/references/data-and-verification.md) contract for scientific preservation and candidate updates.
+- Preserve existing condition definitions, selector interfaces, and practical provenance formats.
+  Extraction alone does not authorize a schema or plotting API migration.
+- Cleanup covers run-created temporary artifacts; deletion of pre-existing bundles requires authorization for that location.
+  Copy to a recipient repository only when requested; the skill grants no installation, Git, deployment, or external-write authority.
 
 ## Read for This Operation
 
-Read only the relevant sections; combine them for changes affecting several features.
-
 | Operation | Reference |
 | --- | --- |
-| New extraction or dependency/inclusion changes | [Extraction and Portability](references/data-and-provenance.md#extraction-and-portability); [Unavailable Upstream Materials](references/data-and-provenance.md#unavailable-upstream-materials) when needed |
-| Scientific data or storage changes | [Storage and Scientific Data Changes](references/data-and-provenance.md#storage-and-scientific-data-changes) and [Provenance Records](references/data-and-provenance.md#provenance-records) |
-| Figure creation or presentation adjustment | Relevant sections of [Presentation and Layout](references/presentation-and-layout.md), including caption ingredients, and its [Feature-Specific Verification](references/presentation-and-layout.md#feature-specific-verification) |
-| Panel selection or batch export | [Panel Selection and Batch Export](references/presentation-and-layout.md#panel-selection-and-batch-export) and applicable [Feature-Specific Verification](references/presentation-and-layout.md#feature-specific-verification) |
+| New extraction, dependency or inclusion change | [Extraction and Portability](references/data-and-provenance.md#extraction-and-portability) |
+| Missing source repository or revision | [Unavailable Upstream Materials](references/data-and-provenance.md#unavailable-upstream-materials) |
+| CSV storage change | [Storage and Scientific Data Changes](references/data-and-provenance.md#storage-and-scientific-data-changes) |
+| Provenance maintenance or output update | [Provenance Records](references/data-and-provenance.md#provenance-records) and [Stage, Verify, and Update](references/data-and-provenance.md#stage-verify-and-update) |
+| Requested visual revision or panel export | Relevant [Presentation and Layout](../creating-and-editing-typst-figures/references/presentation-and-layout.md) sections and feature-specific checks |
 
-For affected output updates, follow [Stage, Verify, and Update](references/data-and-provenance.md#stage-verify-and-update).
-For TOML record edits, consult [Provenance Examples](references/provenance-examples.md); existing formats and loader keys need not migrate.
-Maintenance does not require a new extraction or unrelated data/provenance investigation.
+For record edits, consult [Provenance Examples](references/provenance-examples.md); existing formats and loader keys need not migrate.
+Maintenance does not require a new extraction or unrelated upstream investigation.
 
 ## Completion
 
-Deliver the editable source and validated affected outputs, with coherent identities and scoped verification records under the destination's tracking policy.
-Report bundle location, direct compilation/inclusion instructions, applicable selector/batch commands and meanings, checks performed, rendering environment, and unverified provenance or integration limits.
+Deliver editable source, data, settings, required helpers, and validated affected outputs under the destination's tracking policy.
+Verify relocation for new bundles or changed organization/loading/export paths, and recipient inclusion when that integration is affected.
+Report bundle location, direct compilation/inclusion instructions, applicable selector/batch commands and meanings, checked identities, rendering environment, and unverified provenance or integration limits.

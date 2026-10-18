@@ -37,10 +37,12 @@ config/codex/codex-handoff-prompt.md	~/.codex/codex-handoff-prompt.md	0644	local
 config/codex/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/SKILL.md	~/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/references/revtex-latexdiff-troubleshooting.md	~/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/references/revtex-latexdiff-troubleshooting.md	0644	local
 config/codex/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/scripts/verify_diff_pdf.py	~/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/scripts/verify_diff_pdf.py	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/SKILL.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/SKILL.md	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/references/data-and-verification.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/references/data-and-verification.md	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/references/presentation-and-layout.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/references/presentation-and-layout.md	0644	local
 config/codex/plugins/ryo-workflows/skills/dotfiles-deploy/SKILL.md	~/plugins/ryo-workflows/skills/dotfiles-deploy/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/SKILL.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	0644	local
-config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/presentation-and-layout.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/presentation-and-layout.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	0644	local
 config/codex/plugins/ryo-workflows/skills/extrip-to-ics/SKILL.md	~/plugins/ryo-workflows/skills/extrip-to-ics/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/extrip-to-ics/agents/openai.yaml	~/plugins/ryo-workflows/skills/extrip-to-ics/agents/openai.yaml	0644	local

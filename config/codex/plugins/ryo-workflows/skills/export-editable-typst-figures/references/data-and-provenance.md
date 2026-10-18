@@ -40,9 +40,8 @@ Update loaders while retaining the original selection and aggregation inputs, or
 Verify by splitting on the identifier and removing it to reconstruct every original header, row, and cell string.
 Distinguish original-byte hashes from table equality after reserialization; check actual file hashes, row counts, mappings, and normalization.
 
-For an authorized scientific data change, account for its delta against pre-edit inputs rather than requiring reconstruction of the old values.
-Record newly supplied data's source and available generation identity; the original extraction identity does not describe its origin.
-If normalization changes, preserve original settings as history and record the new settings and generation identity separately.
+For authorized scientific changes or supplied new data, use [Supplied Data and Scientific Changes](../../creating-and-editing-typst-figures/references/data-and-verification.md#supplied-data-and-scientific-changes).
+Keep the new source identity separate from the original extraction identity in the bundle's records.
 If data reduction is requested, explain the editing capabilities it removes.
 
 ## Provenance Records
@@ -67,25 +66,19 @@ Recheck historical claims before presenting them as current; reuse unaffected ev
 
 ## Stage, Verify, and Update
 
-Use the authoritative source for extraction and the pre-edit bundle for maintenance.
-For presentation changes, keep scientific data bytes, normalization definitions/values, stored conditions, selection, and aggregation unchanged; derived display coordinates do not replace saved data.
-Full and standalone outputs share the existing condition definitions wherever stored.
-The transformation and feature-specific checks are in [Presentation and Layout](presentation-and-layout.md#feature-specific-verification).
+Follow the shared [Stage, Verify, and Update](../../creating-and-editing-typst-figures/references/data-and-verification.md#stage-verify-and-update) for candidate generation, final loaded inputs, and preservation on partial failure.
+Use the authoritative source invocation for extraction and the identified local pre-edit bundle for maintenance.
+Apply the following bundle-specific conditions in addition to those common checks.
 
-1. Capture the relevant pre-edit source/helper and input identities and normalization settings.
-   Freshly compile the baseline; identify any saved-output/source mismatch separately from the requested change.
-   Compare baseline and candidates under the same compiler/package/font assumptions except for requested changes; separate other environment differences.
-2. Generate every affected delivered figure, panel, and format in a temporary copy.
-   Verify the requested delta and preserved scientific inputs/meaning, compile, and inspect the affected rendering at its receiving size.
-   For storage-only restructuring, investigate visual differences; for presentation edits, account for intended differences. PDF timestamps are not rendering differences.
-3. Prepare the verification append in the temporary copy, recording only performed checks in the existing format, with baseline, environment, changes, validated identities, and unresolved gaps.
-   Presentation-only work retains extraction and unchanged-data records; it adds verification without schema or loader migration, updating any needed shared-file identity outside that file.
-   If this changes a loaded input file, verify its final loaded scientific definitions/values and rerun affected loader/rendering checks before delivery; do not claim whole-file byte equality for that shared file.
-4. Only after the affected set and final inputs pass, update outputs and successful records coherently, following destination tracking policy.
-   Hash the actual validated files; subsequent source/input/output edits invalidate affected checks and identities, including metadata edits to loaded files.
+- New extraction compares source-revision or captured working-tree inputs and the observed rendering with the candidate bundle.
+  Use [Extraction and Portability](#extraction-and-portability) for dependencies, relocation, editability, and affected recipient integration.
+  Storage changes also require lossless table reconstruction as described above.
+- Prepare the verification append in the temporary copy using [Provenance Records](#provenance-records).
+  Keep original extraction history, current input identities, and this verification separate.
+  Presentation-only edits retain extraction and unchanged-data records without schema or loader migration.
+- If provenance shares a loaded input file, preserve its scientific definitions and loading behavior and verify the final loaded file through the common procedure.
+  Preserve historical snapshot hashes and record any needed final shared-file identity outside that file.
+- Update the affected delivery and successful records only after all required outputs and bundle-specific checks pass.
+  Record unavailable upstream comparison and recipient checks as gaps; local success does not establish upstream calculation correctness.
 
-If compilation, numeric correspondence, inspection, or a required panel/format fails, preserve previous delivery and successful records.
-Keep candidates and diagnostics separately; never replace success hashes with unverified candidates or mark unperformed checks as passed.
-A failed/incomplete observation may be recorded explicitly if the existing format supports it; partial success is not success of the affected set.
-Repair and rerun affected checks before updating delivery.
 Keep temporary checks outside delivery and avoid simulation reruns or full source-repository test suites solely for packaging.

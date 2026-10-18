@@ -15,7 +15,8 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 
 - `dotfiles-deploy`: managed-source generation, layered planning, and authorized deployment.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
-- `export-editable-typst-figures`: portable, editable Typst figure bundles with data provenance and scoped rendering checks.
+- `creating-and-editing-typst-figures`: new, added, or revised scientific figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
+- `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
 - `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
 
@@ -41,8 +42,14 @@ flowchart LR
 ```
 
 The workflows stay independent.
-Report work uses the figure workflow only when a bundle actually needs changing: report display requirements → verified bundle changes → report integration.
-Figure data, condition definitions, selectors, and provenance remain authoritative in the bundle; the report owns its argument, captions, and page composition.
+Report work owns research questions, evidence and claims, prose, tables, contextual captions, figure selection, and page composition.
+Its handoff is question and display requirements → figure creation/revision → verified outputs and referenceable caption ingredients → report integration and whole-document checks.
+Existing figures used as-is require only report-side inclusion and interpretation checks.
+Figure work uses the existing plotting source and authoritative data/condition/series definitions, without requiring a portable bundle.
+[Presentation and Layout](skills/creating-and-editing-typst-figures/references/presentation-and-layout.md) and [Data and Verification](skills/creating-and-editing-typst-figures/references/data-and-verification.md) are its technical sources of truth.
+When portability is requested, the export skill adds extraction, dependencies, provenance, relocation, and affected recipient-integration checks through [Data and Provenance](skills/export-editable-typst-figures/references/data-and-provenance.md).
+Reading a reference does not start every procedure in the owning skill.
+Existing selectors, provenance formats, and condition definitions stay authoritative without a new router, runtime, or mandatory schema.
 Dotfiles use the selected source layers and the existing installer rather than adding another deployment system.
 arXiv source trees and raw latexdiff output remain immutable; compatibility repairs belong to a separate copy.
 Travel conversion follows reservation Markdown → reviewed events JSON → ICS files; extraction remains with Codex because reservation prose varies.
@@ -66,6 +73,9 @@ Do not edit vendor caches to make a source change appear deployed.
 Codex's [skill documentation](https://learn.chatgpt.com/docs/build-skills) describes metadata-based discovery and optional supporting resources; no extra public router is needed.
 
 ## Evidence and improvement decisions (2026-10-18)
+
+This dated audit describes its historical baseline and decisions, including the five-skill inventory before the later three-way Typst split.
+The current responsibilities and file locations are specified above; the audit is not a current inventory or a ban on evidence-based revisions.
 
 The extended audit baseline `8c3ee5f` adds `extrip-to-ics` to `91b2023`: five skills, seven reference documents, two runtime Python helpers, and no hooks, MCP servers, or workflow runtime.
 Local report exports and recipient conference bundles contain editable Typst sources, normalization inputs, and panel exporters; these support retaining the portability and provenance contracts.
