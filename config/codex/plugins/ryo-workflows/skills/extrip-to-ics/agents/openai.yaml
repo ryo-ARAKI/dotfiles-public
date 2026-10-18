@@ -1,0 +1,4 @@
+interface:
+  display_name: "旅行予約 → ICS"
+  short_description: "旅行予約のMarkdownから地図リンク付きICSを生成・検証する"
+  default_prompt: "$extrip-to-ics を使って、指定した予約内容の .md から旅行別と一括取り込み用の .ics を作成してください。"

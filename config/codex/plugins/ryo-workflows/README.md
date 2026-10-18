@@ -8,6 +8,7 @@ Reusable Codex workflows with no personal repository paths or host names.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
 - `export-editable-typst-figures`: portable, editable Typst figure bundles with data provenance and scoped rendering checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
+- `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
 
 ## Source and deployment
 
