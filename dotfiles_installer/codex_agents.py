@@ -1,24 +1,13 @@
 from __future__ import annotations
 
-import shutil
-from dataclasses import dataclass
 from pathlib import Path
 
-from dotfiles_installer.reporting import read_text_if_exists
+from dotfiles_installer.codex_runtime import CodexFilePlan, plan_codex_file
 
 
 COMMON_FRAGMENT = Path("config/codex/AGENTS.common.md")
 LOCAL_EXTRA_FRAGMENT = Path("config/codex/AGENTS.local.extra.md")
 TARGET_PATH = Path("~/.codex/AGENTS.md")
-TARGET_MODE = 0o644
-
-
-@dataclass(frozen=True)
-class CodexAgentsPlan:
-    content: str
-    source_label: str
-    target_path: Path
-    target_label: str
 
 
 def _read_required_fragment(path: Path) -> str:
@@ -33,7 +22,7 @@ def plan_codex_agents(
     base_root: Path | None = None,
     home_root: Path | None = None,
     context: str = "local",
-) -> CodexAgentsPlan:
+) -> CodexFilePlan:
     if private_root is None and base_root is None:
         raise ValueError("dotfiles-private is required to generate Codex AGENTS.md")
 
@@ -52,27 +41,9 @@ def plan_codex_agents(
 
     content = "\n\n".join(fragment for fragment in fragments if fragment)
     expanded_home = home_root if home_root is not None else Path.home()
-    return CodexAgentsPlan(
+    return plan_codex_file(
         content=content,
         source_label=source_label,
         target_path=expanded_home / ".codex" / "AGENTS.md",
         target_label=str(TARGET_PATH),
     )
-
-
-def apply_codex_agents(plan: CodexAgentsPlan, *, backup_root: Path, dry_run: bool) -> str:
-    current_text = read_text_if_exists(plan.target_path)
-    if current_text == plan.content:
-        return "nochange"
-    if dry_run:
-        return "would_apply"
-
-    plan.target_path.parent.mkdir(parents=True, exist_ok=True)
-    if plan.target_path.exists():
-        backup_path = backup_root / plan.target_path.relative_to(plan.target_path.anchor)
-        backup_path.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(plan.target_path, backup_path)
-
-    plan.target_path.write_text(plan.content, encoding="utf-8")
-    plan.target_path.chmod(TARGET_MODE)
-    return "applied"

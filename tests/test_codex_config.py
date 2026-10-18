@@ -3,10 +3,9 @@ import tomllib
 import unittest
 from pathlib import Path
 
-from dotfiles_installer.codex_config import apply_codex_config
 from dotfiles_installer.codex_config import plan_codex_config
-from dotfiles_installer.codex_config import plan_codex_profile
-from dotfiles_installer.codex_runtime import apply_codex_runtime
+from dotfiles_installer.codex_runtime import plan_codex_runtime
+from dotfiles_installer.codex_runtime import apply_codex_file
 
 
 class CodexConfigTests(unittest.TestCase):
@@ -21,20 +20,20 @@ class CodexConfigTests(unittest.TestCase):
             )
             managed = 'approvals_reviewer = "user"\nmodel_provider = "ollama-local"\n'
             def plan():
-                return plan_codex_profile(
+                return plan_codex_runtime(
                     managed, target_path=target, source_label="fixture", target_label="profile",
                 )
             before = target.read_bytes()
-            apply_codex_runtime(plan(), backup_root=root / "backup", dry_run=True)
+            apply_codex_file(plan(), backup_root=root / "backup", dry_run=True)
             self.assertEqual(target.read_bytes(), before)
             self.assertFalse((root / "backup").exists())
-            apply_codex_runtime(plan(), backup_root=root / "backup", dry_run=False)
+            apply_codex_file(plan(), backup_root=root / "backup", dry_run=False)
             generated = tomllib.loads(target.read_text(encoding="utf-8"))
             self.assertEqual(generated["approvals_reviewer"], "user")
             self.assertEqual(generated["model_provider"], "ollama-local")
             self.assertEqual(generated["notice"]["model_migrations"], {"old": "new"})
             after = target.read_bytes()
-            apply_codex_runtime(plan(), backup_root=root / "backup", dry_run=False)
+            apply_codex_file(plan(), backup_root=root / "backup", dry_run=False)
             self.assertEqual(target.read_bytes(), after)
 
     def test_profile_lanes_balance_cost_and_quality(self) -> None:
@@ -180,7 +179,7 @@ class CodexConfigTests(unittest.TestCase):
             (home_codex / "config.toml").write_text(public_text, encoding="utf-8")
 
             plan = plan_codex_config(base_root, None, home_root=home_root)
-            status = apply_codex_config(plan, backup_root=backup_root, dry_run=False)
+            status = apply_codex_file(plan, backup_root=backup_root, dry_run=False)
 
             self.assertEqual(status, "nochange")
             self.assertFalse(backup_root.exists())
@@ -202,7 +201,7 @@ class CodexConfigTests(unittest.TestCase):
             (home_codex / "config.toml").write_text('model = "gpt-5.3-codex"\n', encoding="utf-8")
 
             plan = plan_codex_config(base_root, None, home_root=home_root)
-            status = apply_codex_config(plan, backup_root=backup_root, dry_run=False)
+            status = apply_codex_file(plan, backup_root=backup_root, dry_run=False)
 
             self.assertEqual(status, "applied")
             self.assertEqual((home_codex / "config.toml").read_text(encoding="utf-8"), 'model = "gpt-5.4"\n')

@@ -1,15 +1,8 @@
 from __future__ import annotations
 
 from difflib import unified_diff
-from pathlib import Path
 
 from dotfiles_installer.manifest import ManifestEntry
-
-
-def read_text_if_exists(path: Path) -> str | None:
-    if not path.exists():
-        return None
-    return path.read_text(encoding="utf-8")
 
 
 def summarize_plan_line(entry: ManifestEntry, prefix: str = "") -> str:

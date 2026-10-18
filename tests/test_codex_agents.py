@@ -2,7 +2,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from dotfiles_installer.codex_agents import apply_codex_agents
+from dotfiles_installer.codex_runtime import apply_codex_file
 from dotfiles_installer.codex_agents import plan_codex_agents
 
 
@@ -56,7 +56,7 @@ class CodexAgentsTests(unittest.TestCase):
             (home_codex / "AGENTS.md").write_text("# Old\n", encoding="utf-8")
 
             plan = plan_codex_agents(private_root, home_root=home_root)
-            status = apply_codex_agents(plan, backup_root=backup_root, dry_run=False)
+            status = apply_codex_file(plan, backup_root=backup_root, dry_run=False)
 
             self.assertEqual(status, "applied")
             self.assertEqual((home_codex / "AGENTS.md").read_text(encoding="utf-8"), "# New\n")

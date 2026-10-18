@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import patch
 
-from dotfiles_installer.codex_runtime import apply_codex_runtime
+from dotfiles_installer.codex_runtime import apply_codex_file
 from dotfiles_installer.codex_runtime import plan_codex_runtime
 
 
@@ -49,9 +49,9 @@ class CodexRuntimeTests(unittest.TestCase):
             self.assertEqual(tomllib.loads(plan.content)["hooks"]["state"]["private-hook@example"],
                              {"enabled": False, "trusted_hash": "synthetic-hash"})
             self.assertEqual(set(plan.preserved_keys), {"hooks.state.*.enabled", "hooks.state.*.trusted_hash"})
-            self.assertEqual(apply_codex_runtime(plan, backup_root=root / "backup", dry_run=False), "applied")
+            self.assertEqual(apply_codex_file(plan, backup_root=root / "backup", dry_run=False), "applied")
             fresh = plan_codex_runtime('model = "managed"\n', target_path=target, source_label="x", target_label="target")
-            self.assertEqual(apply_codex_runtime(fresh, backup_root=root / "backup", dry_run=True), "nochange")
+            self.assertEqual(apply_codex_file(fresh, backup_root=root / "backup", dry_run=True), "nochange")
 
     def test_managed_hook_state_wins_without_dropping_other_state(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
@@ -148,13 +148,13 @@ class CodexRuntimeTests(unittest.TestCase):
             target.chmod(0o600)
             backup = root / "backup"
             plan = plan_codex_runtime('model = "new"\n', target_path=target, source_label="x", target_label="target")
-            self.assertEqual(apply_codex_runtime(plan, backup_root=backup, dry_run=True), "would_apply")
+            self.assertEqual(apply_codex_file(plan, backup_root=backup, dry_run=True), "would_apply")
             self.assertEqual(target.read_text(encoding="utf-8"), 'model = "old"\n')
             self.assertFalse(backup.exists())
-            self.assertEqual(apply_codex_runtime(plan, backup_root=backup, dry_run=False), "applied")
+            self.assertEqual(apply_codex_file(plan, backup_root=backup, dry_run=False), "applied")
             self.assertEqual(target.stat().st_mode & 0o777, 0o600)
             new_plan = plan_codex_runtime('model = "new"\n', target_path=target, source_label="x", target_label="target")
-            self.assertEqual(apply_codex_runtime(new_plan, backup_root=backup, dry_run=False), "nochange")
+            self.assertEqual(apply_codex_file(new_plan, backup_root=backup, dry_run=False), "nochange")
             self.assertEqual(len([path for path in backup.rglob("*") if path.is_file()]), 1)
 
     def test_new_managed_config_is_stable_after_first_apply(self) -> None:
@@ -163,10 +163,10 @@ class CodexRuntimeTests(unittest.TestCase):
             target = root / "config.toml"
             managed = '# managed profile\nmodel = "managed"\n'
             first_plan = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
-            self.assertEqual(apply_codex_runtime(first_plan, backup_root=root / "backup", dry_run=False), "applied")
+            self.assertEqual(apply_codex_file(first_plan, backup_root=root / "backup", dry_run=False), "applied")
             second_plan = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
             self.assertEqual(second_plan.content, managed)
-            self.assertEqual(apply_codex_runtime(second_plan, backup_root=root / "backup", dry_run=True), "nochange")
+            self.assertEqual(apply_codex_file(second_plan, backup_root=root / "backup", dry_run=True), "nochange")
             self.assertEqual(target.read_text(encoding="utf-8"), managed)
 
     def test_stale_plan_and_backup_failure_preserve_target(self) -> None:
@@ -177,11 +177,11 @@ class CodexRuntimeTests(unittest.TestCase):
             plan = plan_codex_runtime('model = "new"\n', target_path=target, source_label="x", target_label="target")
             target.write_text('model = "changed"\n', encoding="utf-8")
             with self.assertRaisesRegex(ValueError, "changed after planning"):
-                apply_codex_runtime(plan, backup_root=root / "backup", dry_run=False)
+                apply_codex_file(plan, backup_root=root / "backup", dry_run=False)
             fresh = plan_codex_runtime('model = "new"\n', target_path=target, source_label="x", target_label="target")
             with patch("dotfiles_installer.codex_runtime.shutil.copy2", side_effect=OSError("synthetic failure")):
                 with self.assertRaises(OSError):
-                    apply_codex_runtime(fresh, backup_root=root / "backup", dry_run=False)
+                    apply_codex_file(fresh, backup_root=root / "backup", dry_run=False)
             self.assertEqual(target.read_text(encoding="utf-8"), 'model = "changed"\n')
 
     def test_atomic_replace_failure_keeps_old_target(self) -> None:
@@ -192,7 +192,7 @@ class CodexRuntimeTests(unittest.TestCase):
             plan = plan_codex_runtime('model = "new"\n', target_path=target, source_label="x", target_label="target")
             with patch("dotfiles_installer.codex_runtime.os.replace", side_effect=OSError("synthetic failure")):
                 with self.assertRaises(OSError):
-                    apply_codex_runtime(plan, backup_root=root / "backup", dry_run=False)
+                    apply_codex_file(plan, backup_root=root / "backup", dry_run=False)
             self.assertEqual(target.read_text(encoding="utf-8"), 'model = "old"\n')
 
 
