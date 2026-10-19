@@ -19,6 +19,9 @@ A smaller SD or RMSE alone does not establish reduced bias or error cancellation
 An interval for one quantity is not evidence for a differently named quantity.
 Check claims such as “all conditions,” “always,” or “larger/smaller” against the relevant directions, observation lengths, and other condition keys, including values that reverse the ordering.
 Retain condition-level counterexamples in the verification evidence while focusing the body on overall trends, scientific meaning, and essential conditions and representative values.
+During review, distinguish small local ranking reversals from exceptions that change the answer to the research question.
+Do not reject a supported overall trend solely because of a minor reversal; use “generally” or “tend to” when that accurately scopes the claim.
+Judge the difference's magnitude and relevance to the conclusion from the saved results rather than applying a universal numerical threshold.
 State conclusion-changing exceptions briefly or narrow the claim to the supported range instead of extending one direction or length to the whole experiment.
 Select qualifications by their relevance to the research question and effect on the claim, keeping necessary limitations close to that claim rather than listing generic unverified properties.
 Omitting detail from the body does not remove saved values or verification evidence.
@@ -33,6 +36,8 @@ Separate differences between methods at a given condition from changes within ea
 When the question asks how much a choice matters, give the magnitude and range supported by the saved values as well as the ordering, using representative values and essential conditions in the body.
 State the denominator for a relative change and distinguish it from a difference between methods.
 Exhaustive lists of condition-specific change rates and ranking reversals are not a default reporting format.
+Keep parameter values such as τ and k when they explain the conditions or their scientific meaning.
+List method-specific RMSE values only when the numerical comparison is needed for the argument; otherwise refer to the figure, using representative values or a range when useful.
 A small observed change alone proves neither equivalence nor absence of a statistically significant difference.
 Use the existing inferential evidence for such claims; verifying arithmetic on saved values does not authorize recomputing estimators or confidence intervals.
 Choose precision and wording that answer the research question without turning this report's change rates into universal thresholds.
@@ -52,13 +57,18 @@ A request to untrack data leaves the actual files in place; physical deletion ne
 
 ## Prose and Notation
 
-Normally explain a figure by introducing its subject and comparison, stating the main trend, and then giving the interpretation needed for the research question when supported by evidence.
+At a figure's first body reference, first identify the displayed quantities and comparison axes.
+State the main feature or trend in a subsequent sentence, then give the interpretation needed for the research question when supported by evidence.
+For example, introduce the comparison with “Figure … compares RMSE across methods as τ varies.”
+Follow with a supported observation, such as “The results show that RMSE generally decreases over the scanned range.”
 Cite the supporting figure or table explicitly from the body and adapt the opening and paragraph structure to the argument.
 Distinguish prior knowledge from what the new results establish.
 Use equations and algorithms for definitions and procedures, tables and captions for shared conditions, and the body for comparisons and interpretations.
 Refer explicitly to the existing equation, algorithm, table, or caption instead of repeating its definitions, steps, or common conditions.
 Restate a condition or explain a formula in the body when it changes the comparison's meaning or supplies a non-obvious interpretive link.
 Remove repeated explanations, unnecessary negative statements, and internal processing detail that do not help assess the finding, keeping decisive values, definitions, and scientific qualifications explicit.
+Leave work history such as “we performed additional analysis” or “we reused existing results” out of the body when it does not change the meaning of the results.
+Treat TODOs and outline notes as working material, separate from this rule for report prose.
 For Japanese section headings, prefer noun phrases that describe the section's content.
 
 Use one sentence per source line for natural language that you touch, including body text, captions, and explanatory lists.

@@ -32,7 +32,8 @@ Show the mapping with a short legend or colorbar; identify what each visual chan
 Verify sign, component-to-column correspondence, and units before renaming quantities.
 Align legend line and marker centers, matching actual series colors, line styles, and symbols; use marker-only legend samples for point-only series.
 Use short, meaningful method names and retain their definitions as caption ingredients.
-Choose legend placement and wrapping for the requested composition rather than requiring a centered, single-row legend.
+Choose legend placement and wrapping for available space and data overlap at publication size.
+A left-panel legend is an option when space permits; move it to another panel or outside the panels when it obscures data.
 Check text, line, and marker discrimination at publication size; keep guides subdued enough not to obscure data.
 Hollow markers have transparent interiors, not white-filled interiors: the background and overlapping data must remain visible through them.
 Compare the apparent sizes of different shapes, their outlines, and legend samples at the final publication size.
@@ -91,7 +92,9 @@ Check finite coordinates and positive log inputs.
 Where offsets exist, use quantity conversion, then log coordinates if applicable, then presentation offsets; offsets do not redefine scientific values or theory.
 Pair numeric tick positions with labels without changing the scale to obtain a preferred label, such as `1` instead of `10^0`.
 For linear RMSE axes, start at zero by default; explain the purpose and range of a magnified view when a different lower bound is needed.
+Choose a linear axis when the comparison concerns absolute differences, and consider a log axis when ratios or variation across orders of magnitude are the focus.
 Keep zero out of logarithmic axes.
+If required points or error intervals include zero or negative values, choose a representation that retains them rather than omitting them to use a log axis.
 
 ### Package-Specific Tick Fonts
 
@@ -130,7 +133,9 @@ When splitting layers, reuse the same precomputed values rather than changing co
 
 ### Overlay and Insets
 
-Combine series only on axes with the same meaning, units, and comparable scales.
+Consider reducing separate panels to an overlay when the axes have the same meaning and units and the scales are comparable.
+Choose panel count, axis scale, and legend placement together at the receiving size.
+For example, overlay several methods' RMSE on a linear axis to compare absolute differences, or on a log axis to compare ratios across a wide range of positive values; retain separate panels when the overlay obscures the comparison.
 Use line style, width, opacity, color, and symbols to preserve discrimination; split panels when overlays become crowded at publication size.
 Do not drop series, conditions, data points, or error ranges to achieve a compact composition.
 

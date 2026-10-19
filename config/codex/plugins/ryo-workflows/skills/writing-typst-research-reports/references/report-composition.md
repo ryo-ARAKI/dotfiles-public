@@ -6,6 +6,9 @@ Assign each figure, table, and section a research question and a comparison role
 Use figures for trends and method comparisons; consult [Conditions and Tables](writing-and-tables.md#conditions-and-tables) when deciding whether exact values or definitions need a table.
 Cite retained figures from the body in an order the reader can follow, explaining their contribution and supported conditional answer.
 Combine or omit redundant displays when the question remains answered, respecting the latest user edits and prior decisions to remove analyses.
+Omission from the body does not by itself justify moving a figure to an appendix.
+Give an appendix figure its own supporting role and check for redundant panels already shown in the body.
+When a brief textual statement supplies the needed information, do not add a figure.
 Omitting a display from the report does not authorize untracking or deleting its source, data, or standalone output.
 
 Before requesting a figure change, identify the required conditions, series and their provenance, displayed points, horizontal-axis meaning, quantity symbols and units, comparison directions, reference values, ranges, interval endpoints, receiving dimensions, and formats from the existing inputs.
@@ -35,8 +38,11 @@ Report PDF validation, figure-output validation, and portability/integration che
 ## Captions and Receiving Context
 
 Compose contextual captions from the figure's authoritative quantity, unit, condition, and series definitions, using its referenceable ingredients rather than a second hand-maintained mapping.
-State what rows, columns, panel identifiers, markers, line styles, and insets mean; keep legend samples consistent with the actual data display.
+Identify the meanings of rows, columns, panel identifiers, markers, line styles, and insets, using explicit shared references where appropriate; keep legend samples consistent with the actual data display.
 Put long explanations and redundant drawing titles in the body or caption and define shared conditions once with an explicit cross-reference.
+Do not repeat unchanged defaults, series counts, or every scanned value associated with markers in each caption.
+Reference an existing settings table or an earlier caption for shared definitions, keeping changed conditions and figure-specific meanings explicit.
+For example, “Shared settings and marker-to-τ mappings follow the caption of Figure …; here the horizontal axis varies k.”
 Retain the independently necessary quantities, units, and series information in standalone outputs when report captions permit shorter report labels.
 Use existing caller settings or wrappers to distinguish report and standalone display without imposing a new API.
 If those displays cannot be separated within scope, resolve the affected output requirement before removing standalone information.
