@@ -14,11 +14,13 @@ Keep endpoint and zero-boundary decisions consistent with the supplied scientifi
 ### Statistics and Counterexamples
 
 Read the definitions and condition-level saved values behind a claim, rather than inferring another statistic from a visually similar plot.
-RMSE alone does not establish bias or SD: locate the corresponding bias/SD results and their reference and uncertainty definitions before describing them.
+Keep RMSE, SD, and the mean's deviation from its specified reference distinct; use the corresponding saved results, reference definitions, and uncertainty definitions for claims about each.
+A smaller SD or RMSE alone does not establish reduced bias or error cancellation as a mechanism.
 An interval for one quantity is not evidence for a differently named quantity.
 Check claims such as “all conditions,” “always,” or “larger/smaller” against the relevant directions, observation lengths, and other condition keys, including values that reverse the ordering.
 Retain condition-level counterexamples in the verification evidence while focusing the body on overall trends, scientific meaning, and essential conditions and representative values.
 State conclusion-changing exceptions briefly or narrow the claim to the supported range instead of extending one direction or length to the whole experiment.
+Select qualifications by their relevance to the research question and effect on the claim, keeping necessary limitations close to that claim rather than listing generic unverified properties.
 Omitting detail from the body does not remove saved values or verification evidence.
 Replace “it depends on conditions” with the conditions and trends actually established by the saved results.
 If evidence or a definition is missing, hold or narrow only the dependent claim and continue independently supported work.
@@ -35,20 +37,28 @@ A small observed change alone proves neither equivalence nor absence of a statis
 Use the existing inferential evidence for such claims; verifying arithmetic on saved values does not authorize recomputing estimators or confidence intervals.
 Choose precision and wording that answer the research question without turning this report's change rates into universal thresholds.
 
+Connect physical or statistical interpretations to the relevant saved results, verified analytical relations, or established model properties, comparing related figures where they clarify the finding.
+Distinguish the observed trend, its interpretation, and a proposed mechanism, and limit any estimator guarantee to what the supporting evidence establishes.
+For an error scan that decreases, levels off, and then increases, explain the balance of variability and mean deviation when the saved components and error definition support that interpretation.
+Distinguish a low-error region or minimum among measured discrete settings from a generally optimal parameter or validated selection rule.
+
 ### Current User Edits and Material Selection
 
 Use the latest user-edited text and request as the baseline for argument and tone.
 Identify what each section, table, or figure contributes to a question and retain evidence needed for the comparison, rather than restoring material from an old plan.
-Previously removed analyses and past appendix requests are history, not requirements to rebuild them.
+Honor decisions to remove details, qualifications, analyses, or appendices; an older plan alone is no reason to restore them.
 Distinguish omission from the manuscript, removal from Git tracking, and deletion of files; each has a different effect and authority requirement.
 A request to untrack data leaves the actual files in place; physical deletion needs authorization for those targets.
 
 ## Prose and Notation
 
-Lead result paragraphs with the trend and its research meaning, then cite the supporting figure or table from the body.
-Distinguish prior knowledge from what the new results establish, and keep limitations close to the claims they qualify.
-Replace lists of fine numerical values and internal processing steps with the level of detail needed to assess the finding; retain decisive values and definitions where they matter.
-Remove repeated explanations and unnecessary negative statements, keeping necessary constraints and scientific qualifications explicit.
+Normally explain a figure by introducing its subject and comparison, stating the main trend, and then giving the interpretation needed for the research question when supported by evidence.
+Cite the supporting figure or table explicitly from the body and adapt the opening and paragraph structure to the argument.
+Distinguish prior knowledge from what the new results establish.
+Use equations and algorithms for definitions and procedures, tables and captions for shared conditions, and the body for comparisons and interpretations.
+Refer explicitly to the existing equation, algorithm, table, or caption instead of repeating its definitions, steps, or common conditions.
+Restate a condition or explain a formula in the body when it changes the comparison's meaning or supplies a non-obvious interpretive link.
+Remove repeated explanations, unnecessary negative statements, and internal processing detail that do not help assess the finding, keeping decisive values, definitions, and scientific qualifications explicit.
 For Japanese section headings, prefer noun phrases that describe the section's content.
 
 Use one sentence per source line for natural language that you touch, including body text, captions, and explanatory lists.
