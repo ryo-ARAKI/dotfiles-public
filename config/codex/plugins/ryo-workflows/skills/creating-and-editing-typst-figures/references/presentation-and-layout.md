@@ -30,7 +30,7 @@ Distinguish categories such as methods from ordered quantities such as time or p
 For ordered quantities, use an appropriate colormap such as plasma, with a consistent value-to-color mapping and domain across compared figures.
 Show the mapping with a short legend or colorbar; identify what each visual channel encodes and keep it consistent across curves, markers, annotations, and legends.
 Verify sign, component-to-column correspondence, and units before renaming quantities.
-Align legend line and marker centers, matching actual series colors, line styles, and symbols.
+Align legend line and marker centers, matching actual series colors, line styles, and symbols; use marker-only legend samples for point-only series.
 Use short, meaningful method names and retain their definitions as caption ingredients.
 Choose legend placement and wrapping for the requested composition rather than requiring a centered, single-row legend.
 Check text, line, and marker discrimination at publication size; keep guides subdued enough not to obscure data.
@@ -39,7 +39,13 @@ Compare the apparent sizes of different shapes, their outlines, and legend sampl
 
 Choose curves, points, or tables according to the comparison readers need to make.
 Use contours primarily for spatial/field visualization; do not mechanically convert condition or method comparisons to contour plots.
-For discrete conditions, decide what a connecting line or interpolation means before adding it; a line must not imply unsupported intermediate conditions.
+Base connections on data provenance and the meaning of the horizontal axis.
+For parameter studies comparing conditions from distinct calculations or experiments, use points without connecting lines by default, even when parameter values are ordered or the points form a smooth curve.
+Time series or energy spectra from the same calculation or experiment may be connected along the horizontal axis within their own series.
+Sharing a CSV, file, execution process, or batch does not establish that provenance.
+Treat theoretical/model curves, reference lines, and error bars separately from lines connecting condition points.
+If provenance is unknown, consult existing inputs and definitions; if unresolved, retain point display and report the gap rather than assume a shared calculation or experiment.
+A connection or interpolation must not imply unsupported intermediate conditions.
 For overlays or merged panels, reconcile every expected condition tuple, series, point, and interval endpoint against the inputs, including repeated displays.
 A total count alone can hide a missing condition offset by a duplicate.
 Keep any display offset distinct from the original coordinate and preserve the underlying selection and aggregation.
@@ -57,6 +63,7 @@ No particular colors, shapes, fills, or one-point multiplicity are universal.
 ## Display Quantities and Axes
 
 Before changing a displayed quantity, confirm its formula, units, storage convention, and applicable series from observed inputs/settings.
+Choose the displayed quantity for the research question: use observation time when duration is the comparison axis, and retain sample count when count itself is the question.
 For sample-count to time conversion, check the actual integration step, saved-sample interval, index origin, and start/end inclusion convention.
 For example, elapsed span can be `(last_index - first_index) * saved_interval`; use this only when the saved indexing convention establishes it.
 Do not infer elapsed time from sample counts without knowing the convention, or normalize already nondimensional coordinates again.
@@ -183,6 +190,7 @@ Apply only the rows for features that exist and are affected; a font-only edit d
 | --- | --- |
 | Fonts, labels, or appearance | Applicable text/math/ticks, powers of ten with `10^0` shown as `1` at unchanged positions, page count, clipping, and readability; preserve required language fallbacks |
 | Series, legends, or markers | Ordered color domain/value mapping consistent across compared figures and matching legend/colorbar; legend line/marker centers and actual series styles; hollow interiors transparent over a colored background and overlapping data |
+| Connections between data points | Provenance and horizontal-axis meaning support the point/line choice under [Appearance and Series](#appearance-and-series); point-only legend samples match; necessary theoretical/model curves, reference lines, and error bars retained independently of data-point connections |
 | Caption ingredients or visible information | Exact quantities/units/parameters/conditions/series meanings obtainable from the figure's existing definitions, sufficient for a report-side caption without duplicated values/mappings; no explanatory prose or internal IDs in the drawing, including standalone outputs |
 | Equivalent display quantity or axis scale | Confirmed formula/units and target scope; numerical correspondence of affected coordinates, error bounds, existing theory, ticks, limits, and annotations; unchanged other quantities; no double conversion |
 | Default emphasis | Raw-key membership and each expected condition's multiplicity; marker/legend meaning without inventing defaults |

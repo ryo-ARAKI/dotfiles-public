@@ -3,12 +3,14 @@
 ## Figure Selection and Display Requirements
 
 Assign each figure, table, and section a research question and a comparison role that the other material does not already provide.
+Use figures for trends and method comparisons; consult [Conditions and Tables](writing-and-tables.md#conditions-and-tables) when deciding whether exact values or definitions need a table.
 Cite retained figures from the body in an order the reader can follow, explaining their contribution and supported conditional answer.
 Combine or omit redundant displays when the question remains answered, respecting the latest user edits and prior decisions to remove analyses.
 Omitting a display from the report does not authorize untracking or deleting its source, data, or standalone output.
 
-Before requesting a figure change, identify the required conditions, series, displayed points, quantities, units, comparison directions, reference values, ranges, interval endpoints, receiving dimensions, and formats from the existing inputs.
+Before requesting a figure change, identify the required conditions, series and their provenance, displayed points, horizontal-axis meaning, quantity symbols and units, comparison directions, reference values, ranges, interval endpoints, receiving dimensions, and formats from the existing inputs.
 Choose a representation and panel grouping for the comparison and readability, without fixing the number of figures or panels from a previous report.
+Judge information density at the receiving dimensions; split crowded overlays or panels while retaining required conditions, series, and readable labels.
 Discrete condition comparisons do not automatically describe a continuous field suitable for contours or interpolation.
 Keep negative values, zero, small differences, and required endpoints visible where the comparison depends on them.
 A shorter report or aligned layout does not justify changing scientific quantities, selection, aggregation, or normalization.
@@ -20,8 +22,9 @@ Validate the body, caption, and receiving size without starting extraction, redi
 
 When a figure needs creation, addition, or revision, pass the question and display requirements above to [Create and Edit Typst Figures](../../creating-and-editing-typst-figures/SKILL.md).
 Use the existing manuscript and plotting code; a portable bundle is not a prerequisite.
-Receive the verified affected outputs, condition/point coverage evidence, identities, limitations, and referenceable caption ingredients, then check their integration into the report.
-The technical sources of truth are [Presentation and Layout](../../creating-and-editing-typst-figures/references/presentation-and-layout.md) for drawing and exports and [Data and Verification](../../creating-and-editing-typst-figures/references/data-and-verification.md) for input preservation and output updates.
+Receive the verified affected outputs, condition/point coverage evidence, identities, limitations, and caption ingredients referenceable through existing quantity, condition, and series definitions, then check their integration into the report.
+Use [Presentation and Layout](../../creating-and-editing-typst-figures/references/presentation-and-layout.md) for drawing and exports, including connection choices in [Appearance and Series](../../creating-and-editing-typst-figures/references/presentation-and-layout.md#appearance-and-series).
+[Data and Verification](../../creating-and-editing-typst-figures/references/data-and-verification.md) owns input preservation and output updates.
 Read only relevant sections; reference reading does not activate the other skill's entire workflow.
 If guidance or a definition is unavailable, identify the dependent operation and continue independent report work.
 
@@ -58,7 +61,8 @@ For an unresolved definition, missing evidence, numeric mismatch, or broken refe
 Continue independent work and preserve the jointly affected successful artifacts and records if one required output fails.
 After a change to a final loaded input or metadata, rerun affected checks before updating successful identities; reuse unaffected evidence when its inputs, target tree, and material environment assumptions remain unchanged.
 
-Check meaning as well as compilation: question/answer support, saved numbers and conditions, units, statistic names and scope, comparison direction, coverage, and body/caption/panel references.
+Check meaning as well as compilation: question/answer support, saved numbers and conditions, consistent quantity symbols and definitions across body/equations/axes/legends/captions, units, statistic names and scope, comparison direction, coverage, and body/caption/panel references.
+Distinguish notation-only changes from coordinate conversions; confirm conversion conventions and affected coordinates through [Display Quantities and Axes](../../creating-and-editing-typst-figures/references/presentation-and-layout.md#display-quantities-and-axes).
 For presentation-only changes, compare scientific input bytes before and after and reconcile displayed values and selections with the saved source; hashes alone do not establish numerical correctness.
 Check page count and dimensions with `pdfinfo`, extract text with `pdftotext` for omissions and unresolved references, and render with `pdftoppm` or equivalent for visual inspection.
 Inspect at the intended reading size for text and tick legibility, legend correspondence, clipping, excessive whitespace, missing content, and figure/table placement.

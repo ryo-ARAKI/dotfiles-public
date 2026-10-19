@@ -2,6 +2,8 @@
 
 ## Questions, Answers, and Evidence
 
+For a follow-up, read the preceding report's questions, established findings, unresolved issues, quantities and notation, and level of explanation, then identify the answer added here.
+Inherit that context subject to the latest user instructions and authoritative definitions.
 Map each research question to the relevant established finding, additional result, conditional answer, and supporting figure or table.
 A short list of question/answer pairs can expose this correspondence when several questions motivate the report; choose the structure that serves the argument.
 For each comparison, connect the saved statistic definition, reference value, comparison objects and direction, condition range, and supporting evidence before phrasing the answer.
@@ -15,7 +17,9 @@ Read the definitions and condition-level saved values behind a claim, rather tha
 RMSE alone does not establish bias or SD: locate the corresponding bias/SD results and their reference and uncertainty definitions before describing them.
 An interval for one quantity is not evidence for a differently named quantity.
 Check claims such as “all conditions,” “always,” or “larger/smaller” against the relevant directions, observation lengths, and other condition keys, including values that reverse the ordering.
-Retain counterexamples and narrow the claim to the supported range instead of extending one direction or length to the whole experiment.
+Retain condition-level counterexamples in the verification evidence while focusing the body on overall trends, scientific meaning, and essential conditions and representative values.
+State conclusion-changing exceptions briefly or narrow the claim to the supported range instead of extending one direction or length to the whole experiment.
+Omitting detail from the body does not remove saved values or verification evidence.
 Replace “it depends on conditions” with the conditions and trends actually established by the saved results.
 If evidence or a definition is missing, hold or narrow only the dependent claim and continue independently supported work.
 
@@ -24,8 +28,9 @@ If evidence or a definition is missing, hold or narrow only the dependent claim 
 Distinguish finite-lag reference quantities from their derivative limits; use the intended reference for each reported error.
 Keep a theoretical quantity's invariance under rescaling or standardization separate from finite-sample estimator error and its observed changes.
 Separate differences between methods at a given condition from changes within each method when a condition varies.
-When the question asks how much a choice matters, give the magnitude and range supported by the saved values as well as the ordering.
-For example, compare a method's saved values before and after a boundary-rule change with a stated denominator; that relative change is distinct from its difference from another method.
+When the question asks how much a choice matters, give the magnitude and range supported by the saved values as well as the ordering, using representative values and essential conditions in the body.
+State the denominator for a relative change and distinguish it from a difference between methods.
+Exhaustive lists of condition-specific change rates and ranking reversals are not a default reporting format.
 A small observed change alone proves neither equivalence nor absence of a statistically significant difference.
 Use the existing inferential evidence for such claims; verifying arithmetic on saved values does not authorize recomputing estimators or confidence intervals.
 Choose precision and wording that answer the research question without turning this report's change rates into universal thresholds.
@@ -48,7 +53,11 @@ For Japanese section headings, prefer noun phrases that describe the section's c
 
 Use one sentence per source line for natural language that you touch, including body text, captions, and explanatory lists.
 Leave code, raw data, and multiline equations in their appropriate syntax and layout.
-Use mathematical notation for quantities and powers of ten where it improves reading, with consistent symbols and defined units.
+Use mathematical notation for quantities and powers of ten where it improves reading.
+Keep quantity definitions, symbols, and units consistent across prose, equations, axes, legends, and captions.
+When observation duration is the question's axis, use time after confirming the saved-sample interval and count/index/endpoint convention; retain sample count when count itself is the question.
+For coefficients in theoretical formulas, use suitable general symbols after checking the assumptions and statistical denominators; state the current sample size separately as an experimental condition.
+Notation-only changes preserve numerical values and scientific meaning.
 Check that prose names for methods explain the relevant distinction rather than exposing opaque internal identifiers or implying unwarranted exactness.
 
 Keep reader-facing conditions and method distinctions visible.
@@ -57,7 +66,9 @@ Use the existing recording mechanism rather than adding a visible reproducibilit
 
 ## Conditions and Tables
 
-Introduce fixed conditions in the body and collect scanned conditions and reference values in a readable table.
+Present fixed and scanned conditions and reference values where they best support interpretation: body, caption, or table.
+Use a concise table when exact values, conditions, or definitions are needed for a decision or comparison, or when explicitly requested.
+Do not automatically add a condition table or a detailed numerical companion to a figure.
 Distinguish quantities with different roles, such as integration step and saved-sample interval, even when their numeric values coincide.
 Choose row/column orientation, headings, and widths for the reader's comparison; transpose only when it improves reading at the inherited page and text size.
 Shorten a crowded heading before shrinking the entire table.
@@ -65,10 +76,10 @@ Put symbols, meanings, and units where they can be found easily, using the capti
 Keep condition keys traceable to their saved values even when the visible labels are simplified.
 
 For a true scan range, a “Range” heading with minimum–maximum and an emphasized reference value can be concise.
-Retain discrete scan values or explicit selections when a range alone would imply nonexistent conditions or obscure the comparison.
+Identify discrete scans as discrete and show actual values or selections when needed to avoid implying nonexistent measured conditions or obscuring the comparison.
+An exhaustive scan listing is not required by default.
 Distinguish a selected baseline from the extrema and avoid implying that it was measured when it was only a reference.
 Use readable numbers or short terms in cells, mathematical powers instead of raw `1e+05` notation, and existing document conventions for emphasis.
 Explain empty cells when their meaning is ambiguous; do not invent a correspondence for an unmatched method.
 
-Retain a detailed table only when its values support a decision or comparison that the text and figures do not already communicate.
 Consolidate shared caption definitions and use an explicit cross-reference for details supplied elsewhere, keeping each table's identity and necessary interpretation clear.
