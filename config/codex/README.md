@@ -14,6 +14,7 @@ The implementation uses the Python standard library; TOML validation/retention r
 | Private `config.private.toml` and optional `config.private.local.toml` | Machine/user data; the local fragment is included only in local context. |
 | `*.config.toml` | Separate named profiles; a private/host manifest may replace a profile's complete source. The reviewer role points to the same reviewer file. |
 | `AGENTS.common.md` and private `AGENTS.local.extra.md` | Shared working agreements plus local-only guidance; consumed by `codex_agents.py`. An older private common file remains a supported complete override. |
+| `references/*.md` | On-demand model selection, worktree/Git, and execution diagnostics; ordinary manifest payloads in both contexts. |
 | `codex_runtime.py` | Validate/merge TOML with allowlisted same-target state; snapshot any generated Codex file; back up and replace it safely. |
 | `install` | Select sources, preflight selected files, confirm changes, apply them in order, and report status/errors. |
 | `apply.py`, `settings_fragments.py`, `reporting.py` | Ordinary manifest copying, optional editor/prompt fragment composition, and text/status presentation. |
@@ -39,6 +40,67 @@ Manifest precedence selects complete files, while runtime retention merges only 
 These are different contracts and must stay distinct.
 All selected Codex plans are built before any file is written, including ordinary files.
 Application order is ordinary payloads, base config, selected profiles, then AGENTS.
+
+## Working Agreements and references
+
+[Common Working Agreements](AGENTS.common.md) own the always-applicable policy:
+explicit model/effort choices and Astra conditions, authority and its continuity,
+preservation, source ownership, skill selection, and verification/review.
+The authority section governs approval and delegation across phases and skills;
+the verification section owns TDD, meaningful coverage, test scope, evidence
+reuse, and completion reporting.
+
+Read details when their operation is needed, rather than rereading every
+reference on every turn:
+
+| Managed source | Read when | Ordinary deployed target |
+| --- | --- | --- |
+| [Model selection and launch checks](references/model-selection.md) | Recommending model/effort, constructing a launch command, or preparing a handoff | `~/.codex/references/model-selection.md` |
+| [Worktree and Git procedures](references/worktree-and-git.md) | Creating a worktree or using commit/PR/merge procedures | `~/.codex/references/worktree-and-git.md` |
+| [Execution diagnostics](references/execution-diagnostics.md) | Diagnosing execution-environment failures or host-job liveness | `~/.codex/references/execution-diagnostics.md` |
+
+AGENTS is generated; these three references are copied unchanged by ordinary
+`manifest/base.tsv` rows (`0644`, `always`). Both local and remote contexts
+receive the same public references unless a private/host manifest overrides
+the target, following base < private < host. Relative `references/<name>.md`
+links resolve beside both the managed common file and generated
+`~/.codex/AGENTS.md`. The local-only
+[handoff template](codex-handoff-prompt.md) uses the same relative layout.
+References link only to portable documents or external sources; remote use
+does not assume the local-only workflow plugin exists.
+
+```text
+public AGENTS.common.md (or legacy private common override)
+  + private AGENTS.local.extra.md in local context only
+  -> generated ~/.codex/AGENTS.md
+selected config/codex/references/*.md
+  -> ordinary copies at ~/.codex/references/*.md in local and remote contexts
+```
+
+A legacy private `AGENTS.common.md` remains a complete override; public policy
+is not forced into it. Installing the references does not automatically migrate
+that old body. Local extra guidance is still appended only in local context.
+No model/permission settings, runtime retention, generated-file writer, or
+backup mechanism changes with this document layout.
+
+For initial installation and reference changes, follow the
+[two-stage update procedure](../../README.md#update-working-agreements-and-their-references)
+with the same source/context/overlays/HOME: dry-run, apply, and verify all
+references before dry-running and applying AGENTS. Concrete dotfiles procedures
+remain in the repository README and existing `dotfiles-deploy` skill when
+available; identify the selected checkout's documents if that plugin is absent.
+
+`--only config/codex/references/` selects the three public reference sources;
+`--only references/` can also select plugin references. `--only AGENTS.md`
+retains its existing AGENTS-only behavior and does not select dependencies.
+Missing or unreadable references must be reported with their paths: retain
+common protections and resolve the prerequisite before the affected operation,
+without guessing missing details. Unaffected investigation can continue.
+An apply failure, skip, or quit is not completion of the reference stage, even
+if the process exits zero after skipping. Do not continue that update to AGENTS.
+The CLI provides no automatic dependency block or multi-file transaction;
+earlier writes may remain after a later failure or quit, without automatic
+rollback. Inspect target files, summaries, and available backups when recovering.
 
 ## Contracts that justify the remaining machinery
 
