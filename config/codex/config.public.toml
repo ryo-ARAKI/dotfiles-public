@@ -10,7 +10,7 @@ plan_mode_reasoning_effort = "max"
 service_tier = "default"
 model_verbosity = "low"
 model_reasoning_summary = "concise"
-model_auto_compact_token_limit = 160000
+# Use each model's default auto-compaction threshold.
 model_auto_compact_token_limit_scope = "total"
 # Shared execution defaults. These persistent settings apply the same core
 # preset as Codex 0.147.0's --approve-for-me to every normal launch while the

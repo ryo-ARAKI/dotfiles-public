@@ -27,6 +27,8 @@ _PRESERVE_MAPS = {
 }
 _PRESERVE_PREFIXES = {("notice",), ("tui",), ("desktop",), ("projects",)}
 _HOOK_STATE_PREFIX = ("hooks", "state")
+# Remove retired defaults unless a managed source explicitly sets them.
+_RETIRED_MANAGED_SETTINGS = {("model_auto_compact_token_limit",)}
 
 
 @dataclass(frozen=True)
@@ -123,7 +125,7 @@ def _merge(managed: Any, existing: Any, path: tuple[str, ...], preserved: set[st
         result: dict[str, Any] = {}
         for key in old:
             child_path = (*path, key)
-            if key not in managed and not _allowed_existing(child_path):
+            if key not in managed and child_path not in _RETIRED_MANAGED_SETTINGS and not _allowed_existing(child_path):
                 raise ValueError(f"Unclassified existing Codex setting: {_display_path(child_path)}")
         for key, value in managed.items():
             child_path = (*path, key)
@@ -131,6 +133,8 @@ def _merge(managed: Any, existing: Any, path: tuple[str, ...], preserved: set[st
         for key, value in old.items():
             if key not in managed:
                 child_path = (*path, key)
+                if child_path in _RETIRED_MANAGED_SETTINGS:
+                    continue
                 _validate_preserved_type(child_path, value)
                 if isinstance(value, dict):
                     result[key] = _merge({}, value, child_path, preserved)
@@ -221,6 +225,10 @@ def plan_codex_runtime(
     changed: set[str] = set()
 
     def visit(managed_table: dict[str, Any], old_table: dict[str, Any], prefix: tuple[str, ...] = ()) -> None:
+        for key in old_table:
+            path = (*prefix, key)
+            if key not in managed_table and path in _RETIRED_MANAGED_SETTINGS:
+                changed.add(_display_path(path))
         for key, value in managed_table.items():
             path = (*prefix, key)
             old_value = old_table.get(key, object())

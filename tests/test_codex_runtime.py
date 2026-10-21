@@ -9,6 +9,38 @@ from dotfiles_installer.codex_runtime import plan_codex_runtime
 
 
 class CodexRuntimeTests(unittest.TestCase):
+    def test_removes_retired_compaction_limit_and_preserves_runtime_state(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            target = root / "config.toml"
+            target.write_text(
+                'model = "managed"\n'
+                'model_auto_compact_token_limit = 160000\n'
+                'model_auto_compact_token_limit_scope = "total"\n'
+                '[features]\nhooks = true\n',
+                encoding="utf-8",
+            )
+            managed = 'model = "managed"\nmodel_auto_compact_token_limit_scope = "total"\n'
+            plan = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
+            result = tomllib.loads(plan.content)
+            self.assertNotIn("model_auto_compact_token_limit", result)
+            self.assertEqual(result["model_auto_compact_token_limit_scope"], "total")
+            self.assertTrue(result["features"]["hooks"])
+            self.assertEqual(plan.changed_keys, ("model_auto_compact_token_limit",))
+            self.assertEqual(apply_codex_file(plan, backup_root=root / "backup", dry_run=False), "applied")
+            fresh = plan_codex_runtime(managed, target_path=target, source_label="x", target_label="target")
+            self.assertEqual(apply_codex_file(fresh, backup_root=root / "backup", dry_run=True), "nochange")
+
+    def test_explicit_managed_compaction_limit_remains_authoritative(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            target = Path(tmp) / "config.toml"
+            target.write_text('model_auto_compact_token_limit = 160000\n', encoding="utf-8")
+            plan = plan_codex_runtime(
+                'model_auto_compact_token_limit = 200000\n',
+                target_path=target, source_label="x", target_label="target",
+            )
+            self.assertEqual(tomllib.loads(plan.content)["model_auto_compact_token_limit"], 200000)
+
     def test_retains_hook_feature_and_managed_values_win(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             target = Path(tmp) / "config.toml"

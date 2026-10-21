@@ -294,8 +294,8 @@ An older private checkout's complete `AGENTS.common.md` remains a supported over
 
 Shared Codex defaults keep tool output history bounded at 4000 tokens, disable
 automatic plugin suggestions, and keep reasoning summaries concise. Automatic
-compaction starts at 160000 total context tokens, before the active model's
-context is nearly full. Experimental context management remains disabled.
+compaction uses the active model's default threshold and counts total context
+tokens. Experimental context management remains disabled.
 Memory generation remains enabled but is disabled for turns with external
 context and when rate-limit headroom is below 35 percent.
 
