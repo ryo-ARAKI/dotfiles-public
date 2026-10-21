@@ -6,7 +6,8 @@ Reusable Codex workflows with no personal repository paths or host names.
 
 Help Codex produce reproducible configuration, scientific documents, and travel-calendar files without rediscovering fragile domain details.
 Keep only guidance or executable checks that change a decision, protect a contract, or prevent a demonstrated failure.
-Completion means the requested output is verified at the affected scope, previous successful outputs survive failed candidates, and remaining gaps are explicit.
+Completion means the requested output is verified at the affected scope and remaining gaps are explicit.
+Preparation failures preserve previous outputs; ICS publication uses the per-file C1 contract below.
 
 Preserve managed sources and user edits, scientific and reservation data and meanings, provenance, existing interfaces, and the user's authority over deployment or other external writes.
 A skill supplies domain knowledge; it does not grant additional permissions or turn a review into implementation.
@@ -15,7 +16,7 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 
 - `dotfiles-deploy`: managed-source generation, layered planning, and authorized deployment.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
-- `creating-and-editing-typst-figures`: new, added, or revised scientific figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
+- `creating-and-editing-typst-figures`: creation, revision, or read-only scientific review of figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
 - `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
 - `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
@@ -46,6 +47,9 @@ Report work owns research questions, evidence and claims, prose, tables, context
 Its handoff is question and display requirements → figure creation/revision → verified outputs and referenceable caption ingredients → report integration and whole-document checks.
 Existing figures used as-is require only report-side inclusion and interpretation checks.
 Figure work uses the existing plotting source and authoritative data/condition/series definitions, without requiring a portable bundle.
+Read-only scientific figure review returns evidence-backed findings about displayed values, points, intervals, series, and legends; it leaves sources and delivered artifacts unchanged.
+Report arguments, contextual captions, and page composition stay with the report skill; extraction and portability stay with the export skill.
+Font-only edits and caption-only tasks retain their existing scope.
 [Presentation and Layout](skills/creating-and-editing-typst-figures/references/presentation-and-layout.md) and [Data and Verification](skills/creating-and-editing-typst-figures/references/data-and-verification.md) are its technical sources of truth.
 When portability is requested, the export skill adds extraction, dependencies, provenance, relocation, and affected recipient-integration checks through [Data and Provenance](skills/export-editable-typst-figures/references/data-and-provenance.md).
 Reading a reference does not start every procedure in the owning skill.
@@ -55,6 +59,15 @@ arXiv source trees and raw latexdiff output remain immutable; compatibility repa
 Travel conversion follows reservation Markdown → reviewed events JSON → ICS files; extraction remains with Codex because reservation prose varies.
 Keep source files, explicit offsets, checkout-day-inclusive stays, departure-station/hotel Maps links, stable IDs, and the existing CLI/JSON interface.
 Local file generation needs no calendar API, authentication, or automatic import.
+ICS C1 publication prepares and stages every complete body before publishing any final entry.
+Each file is replaced atomically with explicit overwrite or created atomically without clobbering; failed publication stops and reports published, failed, unattempted, observed, and uncertain outputs.
+The report and CLI distinguish a failing path/target recheck (`phase=pre-publication`, `failed_publication_attempted=false`) from an invoked publication without a successful return (`phase=publication`, `failed_publication_attempted=true`). Only the latter makes the failed file an uncertain publication; subsequent files remain separately unattempted.
+Already-published files remain complete and new; the batch may mix old, new, and absent files. There is no batch rollback or cross-file snapshot guarantee.
+Use a trusted output directory: path symlinks, dangling links, nonregular targets, and lexical `..` are rejected, including legitimate aliases. These checks do not eliminate malicious races.
+Atomic no-clobber requires same-filesystem hard-link support; unsupported filesystems fail without streaming into finals.
+Replacement preserves permission bits where supported but changes inode/hard-link relationships and may change ACLs or extended attributes.
+Interrupted processes, power loss, and noncooperating writers are outside the guarantee; private staging remnants may require owner inspection.
+Incomplete temporary cleanup is reported; a fully published batch returns normal counts with a cleanup warning, while failed publication returns nonzero.
 
 ## Source and deployment
 
@@ -68,7 +81,12 @@ Existing private marketplace registration and enablement continue to select that
 Use matching public/private source revisions and start a fresh Codex session after deployment.
 
 The flow is managed sources → manifest selection and optional private overrides → deployed plugin → local registration/enablement → Codex's discovered skill catalog.
-Source presence, deployed-file equality, and availability in a running session are separate evidence.
+Source presence, deployed-file equality, catalog visibility, and actual loaded-resource identity are separate evidence.
+For each public payload path, compare SHA-256 and file type, and check deployed mode `0644` separately from content identity.
+Record public/private revisions and approved override paths, origins, and exact hashes; distinguish missing, additional, and changed resources.
+A metadata version labels a release and does not prove content equality or refresh an active plugin cache.
+After separately authorized deployment and supported client refresh, inspect a fresh catalog and the paths/hashes actually read or executed in a task before claiming runtime use.
+The repository's audit identity/evaluation tools stay outside this runtime payload.
 Do not edit vendor caches to make a source change appear deployed.
 Codex's [skill documentation](https://learn.chatgpt.com/docs/build-skills) describes metadata-based discovery and optional supporting resources; no extra public router is needed.
 

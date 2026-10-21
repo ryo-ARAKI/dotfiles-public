@@ -28,6 +28,29 @@ Computer Use、Google Calendar API、アカウント認証は不要。
    Python 3.10以上の標準ライブラリのみを使う。
    既存ファイルがある場合は別の出力先を使うか、更新対象を確認して `--overwrite` を指定する。
 
+## File publication
+
+Use an owner-controlled, trusted output directory without noncooperating writers.
+The helper rejects output-path symlinks (including dangling leaves and parent aliases), nonregular targets, and lexical `..` components; legitimate aliases must be replaced by an explicit real directory path.
+Ordinary path checks do not eliminate malicious filesystem races.
+
+The helper validates and prepares all payloads, then stages and closes every file before publishing any final file.
+Preparation or staging failure leaves existing finals unchanged.
+Each final entry is published atomically on the same filesystem: replacement with `--overwrite`, or no-clobber hard-link creation without it.
+Unsupported no-clobber filesystems fail safely; there is no direct-streaming fallback.
+Existing permission bits are preserved for replacements where supported; new files follow the caller's umask. Inode identity, hard-link relationships, ACLs, and extended attributes may change.
+
+This is C1 per-file publication. A later publication failure stops the batch and may leave complete new individual files alongside old or absent outputs, including an old combined file.
+The CLI fails with a nonzero status and reports successful operation records, the failing output, whether its publication was attempted, unattempted subsequent names, post-failure observations, and cleanup uncertainty without exposing event bodies.
+In `PublicationError.report` and CLI diagnostics, `phase=pre-publication` and `failed_publication_attempted=false` mean a path/target recheck stopped the failing file before the publication helper was invoked; that file is not an uncertain publication.
+`phase=publication` and `failed_publication_attempted=true` mean the helper was invoked but did not return success; keep that file in `uncertain_names` even if inspection observes new content.
+`published_names` records successful returns, `failed_name` identifies the stopped file, and `unattempted_names` lists subsequent files for either publication phase. Failed staging still leaves every final unattempted. Observations remain separate and can flag uncertainty about the current contents of an already published file.
+Do not report the full batch as successful after partial publication.
+No batch rollback, cross-file snapshot consistency, crash recovery, power-loss durability, or isolation from noncooperating writers is provided.
+Cleanup removes only this run's named staging files; incomplete cleanup is reported with its private directory path.
+If all files were published but cleanup failed, the helper returns its normal counts with a `PublicationCleanupWarning` reporting `batch_completed=true`; it does not undo publication.
+
+
 ## 日時と記載内容
 
 - 列車の時刻は日本時間の `+09:00` で入力し、ICSにはUTCで出力する。
