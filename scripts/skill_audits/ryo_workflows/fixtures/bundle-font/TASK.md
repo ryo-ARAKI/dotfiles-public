@@ -1,0 +1,1 @@
+Change text, math and tick fonts to the already installed DejaVu Serif in this disposable bundle. Preserve paths, data, normalization, selectors and the existing provenance schema. Verify only the affected output; no extraction or relocation.

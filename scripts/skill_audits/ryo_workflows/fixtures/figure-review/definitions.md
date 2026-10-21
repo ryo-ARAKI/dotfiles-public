@@ -1,0 +1,1 @@
+All saved values are dimensionless. low/high are stored interval endpoints, not a newly estimated interval. Each (method, tau) tuple occurs once. Normalization is identity. No simulation or interval generation is authorized.

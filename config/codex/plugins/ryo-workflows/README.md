@@ -68,7 +68,12 @@ Existing private marketplace registration and enablement continue to select that
 Use matching public/private source revisions and start a fresh Codex session after deployment.
 
 The flow is managed sources → manifest selection and optional private overrides → deployed plugin → local registration/enablement → Codex's discovered skill catalog.
-Source presence, deployed-file equality, and availability in a running session are separate evidence.
+Source presence, deployed-file equality, catalog visibility, and actual loaded-resource identity are separate evidence.
+For each public payload path, compare SHA-256 and file type, and check deployed mode `0644` separately from content identity.
+Record public/private revisions and approved override paths, origins, and exact hashes; distinguish missing, additional, and changed resources.
+A metadata version labels a release and does not prove content equality or refresh an active plugin cache.
+After separately authorized deployment and supported client refresh, inspect a fresh catalog and the paths/hashes actually read or executed in a task before claiming runtime use.
+The repository's audit identity/evaluation tools stay outside this runtime payload.
 Do not edit vendor caches to make a source change appear deployed.
 Codex's [skill documentation](https://learn.chatgpt.com/docs/build-skills) describes metadata-based discovery and optional supporting resources; no extra public router is needed.
 
