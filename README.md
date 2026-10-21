@@ -208,59 +208,13 @@ The local profile must set `approvals_reviewer = "user"`.
 Raw `--oss` launches continue to inherit the base automatic reviewer;
 removing legacy profile selection does not change that approval setting.
 
-The managed Codex settings use the standard service tier and these model roles:
-
-| Selection | Model | Reasoning / planning | Use |
-| --- | --- | --- | --- |
-| default (no `--profile`) | `gpt-6.1-sol` | xhigh / max | Ordinary investigation, implementation, and verification |
-| `quick` | `gpt-6-luna` | medium / medium | Narrow routine work with clear acceptance checks |
-| Explicit Sol high override | `gpt-6.1-sol` | Record both overrides | Local fixes with a known cause and approach |
-| `deep` | `gpt-6.1-sol` | max / max | Difficult judgment, competing hypotheses, design, or numerical validity |
-| `subagent` and spawned defaults | `gpt-6-luna` | medium / medium for the profile; medium reasoning for spawned defaults | Bounded delegated work, when authorized |
-| `reviewer` role/profile | `gpt-6.1-sol` | high / high | Independent read-only review; use max / max overrides for difficult reviews |
-
-Choose from the judgment that remains. Recommend Sol max immediately when a
-hard problem is already apparent; an xhigh failure is not required. Gather
-missing evidence first, and do not raise effort solely for permission, network,
-or runner failures, a large volume of routine edits, or a planning phase.
-The xhigh default reflects usage and preference, not a measured optimum;
-quality differences and usage-limit multipliers by effort remain unverified.
-
-Consider Sol ultra when useful independent parts would benefit from parallel
-work. Explain the split and benefit, verify availability and selection in the
-installed client, and respect existing delegation authority. Model selection
-does not grant permission to spawn agents. Do not assume CLI, API, and UI
-support match or invent an unverified ultra launch flag. In the interactive
-CLI, inspect `/model` and its supported More reasoning options. If ultra is
-unavailable or parallel work is not useful or authorized, consider available
-Sol max with sequential work. If max is unavailable too, report the limitation
-and an available alternative without implying the requested setting worked.
-See the official [Models](https://learn.chatgpt.com/docs/models) and
-[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) guidance;
-account/client availability still needs checking.
-
-Astra is normally avoided because it consumes more of the usage limit. Never
-recommend or fall back to it automatically. Use it only after describing a
-specific Sol max limitation and the comparison purpose, with explicit approval
-for that task. Explicit user model and effort choices take precedence.
-Reviewers inspect requirements, diffs, and evidence and report findings without
-editing, committing, or pushing. Keep `reviewer` and its read-only permissions
-when increasing review effort; selecting `deep` would lose that profile's
-read-only restriction.
-
-The [handoff template](config/codex/codex-handoff-prompt.md) records profile,
-model ID, both efforts, selection reason, and delegation authority separately.
-Compare the deployed base and profile files with that recommendation, then add
-`-m` and `-c` overrides where needed. Editing these managed sources does not
-deploy them: an old deployed `deep` may still select Astra. For example, after
-confirming the named profile exists (and reviewer remains read-only):
-
-```fish
-# Deep investigation, including with an old Astra deep profile.
-codex --profile deep -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
-# Difficult review retains reviewer permissions.
-codex --profile reviewer -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
-```
+Model/profile roles, effort selection, launch examples, deployed-profile checks,
+and old `deep` handling are maintained in
+[Model selection and launch checks](config/codex/references/model-selection.md).
+Use that reference when making a recommendation or constructing a launch command.
+The [handoff template](config/codex/codex-handoff-prompt.md) records the resulting
+profile, actual model ID, both efforts, selection reason, delegation authority,
+and launch configuration checks separately.
 
 Normal Codex launches use automatic approval review with the `on-request`
 approval policy and workspace permissions. These persistent settings provide
@@ -435,6 +389,80 @@ Additional option notes:
 4. run the relevant validation
 5. apply the authorized changes and compare the deployed result with the source
 6. commit when requested
+
+### Update Working Agreements and their references
+
+Common policy lives in `config/codex/AGENTS.common.md`. On-demand details live
+in `config/codex/references/` and are copied to `~/.codex/references/` in both
+local and remote contexts. See the [Codex document map](config/codex/README.md#working-agreements-and-references)
+for responsibilities, source/target paths, composition, and failure contracts.
+Use the existing `dotfiles-deploy` skill when available and this workflow for
+generation/deployment; remote context does not require a local-only plugin.
+
+For initial installation or a reference change, use two stages: references
+first, then AGENTS. Keep the selected source checkout, context, private/host
+overlays, target account, and HOME identical across both stages. Apply only
+after explicit authorization for those targets. The following fish examples
+run on the intended target; substitute the selected checkout and context.
+For a sandbox verification, use an isolated HOME.
+
+1. Select the inputs and dry-run the references. Add any applicable overlay
+   arguments to `task_layers` (for example, `--private /path/to/private` and
+   `--hosts /path/to/hosts --host-name target-host`). Leave it empty for base only.
+
+   ```fish
+   set -l task_source /path/to/selected/dotfiles-public
+   set -l task_context local
+   set -l task_layers
+   "$task_source/install" --context "$task_context" $task_layers --dry-run --only config/codex/references/
+   ```
+
+2. Check that the plan selects all three intended references and their winning
+   sources. Apply the authorized references, then inspect the exit status and
+   summary. `applied` plus `nochange` must cover all three, with no skip or quit.
+
+   ```fish
+   "$task_source/install" --context "$task_context" $task_layers --only config/codex/references/
+   ```
+
+3. Verify all three targets are readable and match the selected sources and
+   modes, then dry-run the same references again and require three `nochange`
+   results. Resolve a missing/unreadable path, content mismatch, failure, skip,
+   or quit before proceeding; exit status zero alone is insufficient.
+
+   ```fish
+   for task_reference in model-selection.md worktree-and-git.md execution-diagnostics.md
+       if not test -r "$HOME/.codex/references/$task_reference"
+           printf 'Missing or unreadable: %s\n' "$HOME/.codex/references/$task_reference"
+       end
+   end
+   "$task_source/install" --context "$task_context" $task_layers --dry-run --only config/codex/references/
+   ```
+
+4. Only after the reference stage succeeds, dry-run AGENTS and inspect the
+   selected common/local fragments. Apply it after that preview is accepted,
+   and verify its content and relative reference links.
+
+   ```fish
+   "$task_source/install" --context "$task_context" $task_layers --dry-run --only AGENTS.md
+   ```
+
+   ```fish
+   "$task_source/install" --context "$task_context" $task_layers --only AGENTS.md
+   ```
+
+`--only` remains substring selection on source/target/supported fragment paths.
+Use `--only config/codex/references/` here: the broader `--only references/`
+can also select local plugin resources. `--only AGENTS.md` selects AGENTS alone
+and never auto-selects or verifies its references. The two-stage dependency is
+a workflow requirement, not an automatic CLI block or rollback mechanism.
+Ordinary payloads precede generated AGENTS in a full apply, but application is
+not a multi-file transaction. Failure or quit can leave earlier writes in place;
+skip is not successful application. Inspect the actual targets and backups
+before recovery. Installing references does not migrate a legacy private common
+override to the public agreements.
+
+### Codex configuration preservation
 
 The installer validates each selected Codex TOML before changing files and
 retains only known runtime state from that same target: plugin, MCP server, and

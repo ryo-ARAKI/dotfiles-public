@@ -79,72 +79,18 @@ note.
 
 ## Mode Guidance
 
-Separate profile, model, and the two reasoning efforts. Honor explicit user
-choices first; otherwise choose from the unresolved judgment and the benefit
-of parallel work, rather than inheriting the previous session's effort or
-using work volume alone:
+Read [Model selection and launch checks](references/model-selection.md) before
+recommending the next session's profile, model, efforts, or launch command.
+Use its roles, selection criteria, deployed-config checks, launch examples,
+old-profile handling, and reviewer prerequisites.
+If the reference is missing or unreadable, identify the path and resolve that
+prerequisite before constructing the recommendation; do not infer its details.
 
-| Recommendation | Model | Normal / planning effort | Remaining work |
-| --- | --- | --- | --- |
-| `quick` | `gpt-6-luna` | medium / medium | Narrow routine steps with clear targets and acceptance checks |
-| `default` with high overrides | `gpt-6.1-sol` | high / high | Local fix with a known cause and approach |
-| `default` | `gpt-6.1-sol` | xhigh / max | Ordinary investigation, implementation, and verification |
-| `deep` | `gpt-6.1-sol` | max / max | Competing hypotheses, difficult design, or numerical validity |
-| `reviewer` | `gpt-6.1-sol` | high / high; max / max for difficult review | Independent read-only review |
-
-Recommend max from the start when difficult judgment is already apparent; do
-not require an xhigh failure first. Gather missing evidence before increasing
-effort. Permission, network, and runner failures alone, routine edit volume,
-and a planning phase alone do not justify a higher recommendation. The
-configured default planning effort remains max; distinguish it from the
-reason for selecting a model or normal effort. The xhigh default reflects
-usage and preference, not measured optimality. Effort-specific quality and
-usage-limit multipliers are unverified.
-
-Consider Sol ultra only when meaningful independent parts make parallel work
-useful. Describe the split and benefit, verify the installed client's model
-availability and selection method, and record both actual efforts. Do not
-assume CLI, API, and UI support match or infer delegation permission from
-ultra. Record `delegation_authority: not_granted` unless the user approved a
-split and scope. If ultra is unavailable or parallel work cannot help or is
-not authorized, consider available Sol max with sequential work. If max is
-unavailable, report the limitation and an available alternative explicitly.
-Never imply an unavailable setting succeeded or switch to Astra automatically.
-
-Astra is normally avoided because of its larger usage-limit cost. It requires
-a concrete Sol max limitation, a stated comparison purpose, and explicit
-approval for the target task. A profile name does not establish that approval.
-
-Before writing `launch_command`, inspect the actual base config and selected
-standalone profile under the launch environment's `CODEX_HOME` (normally
-`~/.codex`). Record the paths and effective model, normal effort, and planning
-effort in `launch_config_check`, along with differences from managed source.
-The loading order is base config, selected profile, then explicit CLI
-overrides. Source edits alone do not establish deployment. If a deployed
-value is different or unknown, explicitly override the model and each
-unconfirmed effort; do not recommend a bare old `deep` that still selects
-Astra. Confirm named profiles exist. For reviews, confirm the reviewer
-profile's read-only permissions and instructions; if missing or unverified,
-report the prerequisite and wait for configuration verification rather than
-substituting `deep`.
-
-Use `-m`, `-c 'model_reasoning_effort="..."'`, and
-`-c 'plan_mode_reasoning_effort="..."'` as needed. For example, these commands
-make both efforts explicit even with an older deployment:
-
-```fish
-# Local correction; default means no --profile argument.
-codex -C <cwd> -m gpt-6.1-sol -c 'model_reasoning_effort="high"' -c 'plan_mode_reasoning_effort="high"'
-# Deep investigation, after confirming deep.config.toml exists.
-codex -C <cwd> --profile deep -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
-# Difficult review keeps the verified read-only reviewer profile.
-codex -C <cwd> --profile reviewer -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
-```
-
-Only use ultra CLI overrides after verifying their syntax and support in the
-installed client. Otherwise give a verified Sol launch command and instruct
-the user to inspect `/model` and its More reasoning options before selecting
-ultra; mark ultra and its effective efforts as unverified until checked.
+Keep the output fields above unchanged. Record the next unresolved judgment in
+`model_selection_reason`, actual delegation authority in `delegation_authority`,
+and the deployed config root, base/profile values, required overrides, and
+unverified checks in `launch_config_check`. Make `launch_command` agree with the
+profile, actual model ID, and both recorded efforts.
 
 Set `recommended_mode:` from the phase:
 
@@ -298,8 +244,7 @@ issue before creating the `/goal`. For `handoff_path: issue-only`, report the
 issue number and the recommended `/new` prompt for the future implementation
 session instead of implying that implementation should start immediately.
 
-For `recommended_profile: default`, use `codex -C <cwd>` without `--profile`;
-otherwise select the named profile with `--profile`. Include model and both
-effort overrides required by `launch_config_check`. Keep `--profile reviewer`
-for difficult reviews and set both efforts to max. Give the selection reason
-in one short sentence even when the model or effort stays the same.
+Construct the command using the reference's
+[launch and handoff checks](references/model-selection.md#launch-and-handoff-checks)
+and the recorded `launch_config_check`. Give the selection reason in one short
+sentence even when the model or effort stays the same.
