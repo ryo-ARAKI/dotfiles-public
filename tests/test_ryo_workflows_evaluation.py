@@ -13,6 +13,13 @@ spec.loader.exec_module(evaluation)
 
 
 class EvaluationTests(unittest.TestCase):
+    def test_original_prompts_match_historical_stage1(self):
+        original = evaluation.original_prompts()
+        baseline = ROOT / 'config/codex/docs/skill-audits/ryo-workflows/stage1/03_baseline.md'
+        self.assertEqual(original['prompts'], evaluation.extract_prompts(baseline.read_text()))
+        self.assertEqual(len(original['prompts']), 12)
+        self.assertEqual(evaluation.sha256(baseline), original['source_sha256'])
+
     def test_explicit_prefix_is_the_only_prompt_change(self):
         implicit = evaluation.prompt_for('B-02', 'implicit')
         self.assertEqual(evaluation.prompt_for('B-02', 'disabled'), implicit)

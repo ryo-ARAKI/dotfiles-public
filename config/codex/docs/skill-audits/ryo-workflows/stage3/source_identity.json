@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "source": {
+    "repo": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1",
+    "head": "737ba2926d72ad51dccfc0cf6b26cd4d2994a44d",
+    "status": "M config/codex/plugins/ryo-workflows/.codex-plugin/plugin.json\n M config/codex/plugins/ryo-workflows/README.md\n M config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/SKILL.md\n M config/codex/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/SKILL.md\n M config/codex/plugins/ryo-workflows/skills/extrip-to-ics/SKILL.md\n M config/codex/plugins/ryo-workflows/skills/extrip-to-ics/scripts/build_ics.py",
+    "manifest_sha256": "7f6531c8a96889ae5c790b6ae922359d215545b62c138e6e11f5afec9cfb973d",
+    "payload_sha256": "9fb05b6cec98d4e57624706ebe11fcffafeb21017665386fad4d2d212385feeb",
+    "metadata_version": "0.1.1",
+    "resources": {
+      "skills/creating-arxiv-diff-pdfs/SKILL.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 3352,
+        "mtime_ns": 1792560468268693915,
+        "sha256": "e239bd63709d7dcd4616efa52dcb90cbffb85667ac82e8b65a6dfc0d2d8d0765"
+      },
+      "skills/creating-arxiv-diff-pdfs/references/revtex-latexdiff-troubleshooting.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 4264,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "9b21ea50446588432054af1b002d25b94e3346a1804056baaed43bcc66b1aefd"
+      },
+      "skills/creating-arxiv-diff-pdfs/scripts/verify_diff_pdf.py": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 7907,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "630dced7984395e93f831eb01258cf9b482f8f290da9c958a95b8ddff14b32e1"
+      },
+      "skills/creating-and-editing-typst-figures/SKILL.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 3780,
+        "mtime_ns": 1792560468268489117,
+        "sha256": "419772def17d6ce07e1c0bb37ec8498128d579cec1ddb036a36e146798101324"
+      },
+      "skills/creating-and-editing-typst-figures/references/data-and-verification.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 6559,
+        "mtime_ns": 1792559711224037441,
+        "sha256": "c589db9978315f5f48f895168e135aa89c4ec2df92c4606354a4d87891877fdb"
+      },
+      "skills/creating-and-editing-typst-figures/references/presentation-and-layout.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 20277,
+        "mtime_ns": 1792559711224202493,
+        "sha256": "40f798cb7f273d19a74da791683af50baba6a9d26f3b0a80aa3e56eb7aa70b04"
+      },
+      "skills/dotfiles-deploy/SKILL.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 1970,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "b842c242776534e188700961a900cf985720b8e3fbd796c37ad0ae377a67ce3d"
+      },
+      "skills/export-editable-typst-figures/SKILL.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 3541,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "8150bcb2c461098d0334225c603e145ecb882fafa52e348e3262852222c5c19e"
+      },
+      "skills/export-editable-typst-figures/references/data-and-provenance.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 7801,
+        "mtime_ns": 1792559711225255782,
+        "sha256": "08f73002ab04e1195630e4334f0dfd188346decd90d5af85124c91496ad80145"
+      },
+      "skills/export-editable-typst-figures/references/provenance-examples.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 5129,
+        "mtime_ns": 1792559711225433261,
+        "sha256": "310c3c3712319e70f22874cca8c2eae09e789bc79c32e574299e22694ab9dab1"
+      },
+      "skills/extrip-to-ics/SKILL.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 5446,
+        "mtime_ns": 1792560468268826525,
+        "sha256": "8caa006e6b79ad65818b7898c7504e4caf32f3074df42b8a9cbe5ddcdf942891"
+      },
+      "skills/extrip-to-ics/agents/openai.yaml": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 312,
+        "mtime_ns": 1792559711225712405,
+        "sha256": "db202ca67d2456d5ac2ca77fe198dc55ba599d01af60fb58c1aa8934b193cc2b"
+      },
+      "skills/extrip-to-ics/references/events-schema.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 2187,
+        "mtime_ns": 1792559711225712405,
+        "sha256": "eb113e1983e5f469ce4065d52a7c3e04a6cabc1df78a53a2539a406a0098301b"
+      },
+      "skills/extrip-to-ics/scripts/build_ics.py": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 12424,
+        "mtime_ns": 1792560685790898212,
+        "sha256": "d605d25aab64d108ae21b71f3e591cfdef73caa75efd3f22123e1f9c30c3aff7"
+      },
+      "skills/writing-typst-research-reports/SKILL.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 3193,
+        "mtime_ns": 1792559711225712405,
+        "sha256": "9ee906754251beea61dd868cb48661cb561b1e512c053a010047481f7835d061"
+      },
+      "skills/writing-typst-research-reports/references/writing-and-tables.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 11039,
+        "mtime_ns": 1792559711226436348,
+        "sha256": "a288d096f485815addaa4813621c8a5e02bdefa84b94f5da660a52868290abb0"
+      },
+      "skills/writing-typst-research-reports/references/report-composition.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 9063,
+        "mtime_ns": 1792559711226216864,
+        "sha256": "6914b1410ae843c5abb3dec8f41f87198a2d439bd377419a29642eaa04510cd9"
+      },
+      ".codex-plugin/plugin.json": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 1683,
+        "mtime_ns": 1792560468269322115,
+        "sha256": "4f48f56b0fd4ebe69cca627c989fe41c796e083c75ac714d7ea1a105be67d41d"
+      },
+      "README.md": {
+        "type": "regular",
+        "mode": "0664",
+        "size": 12309,
+        "mtime_ns": 1792560468269068151,
+        "sha256": "e0c4f283e7646b8808f8d59a4b44dff5b64d98d0e510696637d395be64ac5bb4"
+      }
+    },
+    "problems": []
+  },
+  "observed": {
+    "root": "/tmp/ryo-workflows-stage3-oyi6eyba/packaging-check/plugin",
+    "payload_sha256": "9fb05b6cec98d4e57624706ebe11fcffafeb21017665386fad4d2d212385feeb",
+    "metadata_version": "0.1.1",
+    "resources": {
+      "": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930785770660
+      },
+      ".codex-plugin": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930785489164
+      },
+      ".codex-plugin/plugin.json": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 1683,
+        "mtime_ns": 1792560468269322115,
+        "sha256": "4f48f56b0fd4ebe69cca627c989fe41c796e083c75ac714d7ea1a105be67d41d"
+      },
+      "README.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 12309,
+        "mtime_ns": 1792560468269068151,
+        "sha256": "e0c4f283e7646b8808f8d59a4b44dff5b64d98d0e510696637d395be64ac5bb4"
+      },
+      "skills": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930784661623
+      },
+      "skills/creating-and-editing-typst-figures": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930781883081
+      },
+      "skills/creating-and-editing-typst-figures/SKILL.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 3780,
+        "mtime_ns": 1792560468268489117,
+        "sha256": "419772def17d6ce07e1c0bb37ec8498128d579cec1ddb036a36e146798101324"
+      },
+      "skills/creating-and-editing-typst-figures/references": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930782171408
+      },
+      "skills/creating-and-editing-typst-figures/references/data-and-verification.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 6559,
+        "mtime_ns": 1792559711224037441,
+        "sha256": "c589db9978315f5f48f895168e135aa89c4ec2df92c4606354a4d87891877fdb"
+      },
+      "skills/creating-and-editing-typst-figures/references/presentation-and-layout.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 20277,
+        "mtime_ns": 1792559711224202493,
+        "sha256": "40f798cb7f273d19a74da791683af50baba6a9d26f3b0a80aa3e56eb7aa70b04"
+      },
+      "skills/creating-arxiv-diff-pdfs": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930781239058
+      },
+      "skills/creating-arxiv-diff-pdfs/SKILL.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 3352,
+        "mtime_ns": 1792560468268693915,
+        "sha256": "e239bd63709d7dcd4616efa52dcb90cbffb85667ac82e8b65a6dfc0d2d8d0765"
+      },
+      "skills/creating-arxiv-diff-pdfs/references": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930780819634
+      },
+      "skills/creating-arxiv-diff-pdfs/references/revtex-latexdiff-troubleshooting.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 4264,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "9b21ea50446588432054af1b002d25b94e3346a1804056baaed43bcc66b1aefd"
+      },
+      "skills/creating-arxiv-diff-pdfs/scripts": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930781239058
+      },
+      "skills/creating-arxiv-diff-pdfs/scripts/verify_diff_pdf.py": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 7907,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "630dced7984395e93f831eb01258cf9b482f8f290da9c958a95b8ddff14b32e1"
+      },
+      "skills/dotfiles-deploy": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930782447594
+      },
+      "skills/dotfiles-deploy/SKILL.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 1970,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "b842c242776534e188700961a900cf985720b8e3fbd796c37ad0ae377a67ce3d"
+      },
+      "skills/export-editable-typst-figures": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930783002331
+      },
+      "skills/export-editable-typst-figures/SKILL.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 3541,
+        "mtime_ns": 1792559711224683262,
+        "sha256": "8150bcb2c461098d0334225c603e145ecb882fafa52e348e3262852222c5c19e"
+      },
+      "skills/export-editable-typst-figures/references": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930783282706
+      },
+      "skills/export-editable-typst-figures/references/data-and-provenance.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 7801,
+        "mtime_ns": 1792559711225255782,
+        "sha256": "08f73002ab04e1195630e4334f0dfd188346decd90d5af85124c91496ad80145"
+      },
+      "skills/export-editable-typst-figures/references/provenance-examples.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 5129,
+        "mtime_ns": 1792559711225433261,
+        "sha256": "310c3c3712319e70f22874cca8c2eae09e789bc79c32e574299e22694ab9dab1"
+      },
+      "skills/extrip-to-ics": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930784388729
+      },
+      "skills/extrip-to-ics/SKILL.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 5446,
+        "mtime_ns": 1792560468268826525,
+        "sha256": "8caa006e6b79ad65818b7898c7504e4caf32f3074df42b8a9cbe5ddcdf942891"
+      },
+      "skills/extrip-to-ics/agents": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930783833155
+      },
+      "skills/extrip-to-ics/agents/openai.yaml": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 312,
+        "mtime_ns": 1792559711225712405,
+        "sha256": "db202ca67d2456d5ac2ca77fe198dc55ba599d01af60fb58c1aa8934b193cc2b"
+      },
+      "skills/extrip-to-ics/references": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930784112179
+      },
+      "skills/extrip-to-ics/references/events-schema.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 2187,
+        "mtime_ns": 1792559711225712405,
+        "sha256": "eb113e1983e5f469ce4065d52a7c3e04a6cabc1df78a53a2539a406a0098301b"
+      },
+      "skills/extrip-to-ics/scripts": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930784388729
+      },
+      "skills/extrip-to-ics/scripts/build_ics.py": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 12424,
+        "mtime_ns": 1792560685790898212,
+        "sha256": "d605d25aab64d108ae21b71f3e591cfdef73caa75efd3f22123e1f9c30c3aff7"
+      },
+      "skills/writing-typst-research-reports": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930784944094
+      },
+      "skills/writing-typst-research-reports/SKILL.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 3193,
+        "mtime_ns": 1792559711225712405,
+        "sha256": "9ee906754251beea61dd868cb48661cb561b1e512c053a010047481f7835d061"
+      },
+      "skills/writing-typst-research-reports/references": {
+        "type": "directory",
+        "mode": "0775",
+        "size": 4096,
+        "mtime_ns": 1792560930785216428
+      },
+      "skills/writing-typst-research-reports/references/report-composition.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 9063,
+        "mtime_ns": 1792559711226216864,
+        "sha256": "6914b1410ae843c5abb3dec8f41f87198a2d439bd377419a29642eaa04510cd9"
+      },
+      "skills/writing-typst-research-reports/references/writing-and-tables.md": {
+        "type": "regular",
+        "mode": "0644",
+        "size": 11039,
+        "mtime_ns": 1792559711226436348,
+        "sha256": "a288d096f485815addaa4813621c8a5e02bdefa84b94f5da660a52868290abb0"
+      }
+    }
+  },
+  "approved_overlays": {},
+  "differences": {
+    "missing": [],
+    "unexpected": [],
+    "modified": [],
+    "wrong_types": [],
+    "mode_mismatches": []
+  },
+  "file_identity_matches": true,
+  "catalog_visibility": "unverified",
+  "actual_loaded_resources": "unverified"
+}
