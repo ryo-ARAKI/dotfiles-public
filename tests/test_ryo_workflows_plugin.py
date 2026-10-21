@@ -1,13 +1,12 @@
 import json
-import re
 import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
-from urllib.parse import unquote
 
 from dotfiles_installer.apply import apply_entry
 from dotfiles_installer.manifest import load_manifest
+from markdown_links import assert_markdown_links
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -77,23 +76,7 @@ class PluginDistributionTests(unittest.TestCase):
             self.assertTrue(expected)
             self.assertEqual(discovered, expected)
 
-            for document in deployed.rglob("*.md"):
-                links = re.findall(r"\[[^\]]+\]\(([^\s)]+)\)", document.read_text())
-                for link in links:
-                    if link.startswith(("https:", "http:")):
-                        continue
-                    with self.subTest(document=str(document.relative_to(deployed)), link=link):
-                        path, _, fragment = unquote(link).partition("#")
-                        reference = (document.parent / path).resolve() if path else document
-                        self.assertTrue(reference.is_relative_to(deployed))
-                        self.assertTrue(reference.is_file(), f"Missing resource: {link}")
-                        if fragment:
-                            headings = re.findall(r"^#{1,6} (.+)$", reference.read_text(), re.MULTILINE)
-                            anchors = {
-                                re.sub(r"[^\w -]", "", heading.lower()).replace(" ", "-")
-                                for heading in headings
-                            }
-                            self.assertIn(fragment, anchors, f"Missing heading: {link}")
+            assert_markdown_links(self, deployed.rglob("*.md"), deployed)
 
 
 if __name__ == "__main__":
