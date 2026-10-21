@@ -1,0 +1,19 @@
+{
+  "source_revision": "737ba2926d72ad51dccfc0cf6b26cd4d2994a44d",
+  "source_sha256": "f5f2945b0e573e7270c433717ff484446a1beb76003dd4aae8e709a47a84f3fa",
+  "prompts_sha256": "aa6ea58c2c85635c8857590fc5a5f956cc8cfd8cc00d6593889b888c19a6deb9",
+  "prompts": {
+    "P-01": "指定したsource worktreeとprivate・host overlayから、fake HOME内のfish設定だけの候補を生成し、差分とdry-runを確認してください。apply、SSH、service reloadは行わないでください。",
+    "P-02": "添付fixtureの公式arXiv source v1/v2を、指定command `latexdiff --type=CFONT old/main.tex new/main.tex` で比較し、全文の差分PDFを作成してください。raw出力を保持し、必要な互換修正、本文・bibliography・appendixの範囲、検証結果を示してください。",
+    "P-03": "F-figureの既存Typst図のtext・math・tick fontを指定のインストール済みfontへ変更してください。保存済みdata、条件、normalization、点と区間端を保ち、必要な出力だけ再生成して受領サイズで確認してください。bundle化と科学的再計算は不要です。",
+    "P-04": "F-bundleのreportから指定図を、別の場所でも編集・compileできる配布copyへ抽出してください。見た目と全dataを保持し、必要なhelperと来歴を添え、移設先およびrecipient最小文書で検証してください。",
+    "P-05": "F-reportの本文とcaptionを保存済み結果に基づいて改訂してください。「方法Bは全条件でRMSEが小さい」という主張の範囲、RMSE・SD・mean deviationの区別、図と本文の対応を確認し、既存templateを保ってPDFを検証してください。新しい推定や区間生成は行わないでください。",
+    "P-06": "F-travelの2旅行のMarkdownから、旅行別と一括のICSを専用outputへ作成してください。年越し・深夜着・複数ホテルと未確定列車を原文どおりに扱い、宿泊はcheckout日も含む終日予定とし、出発駅とホテルのMapsリンクを付けてください。Calendarへの登録はしないでください。",
+    "N-01": "このfish設定sourceをread-onlyでレビューし、気になる点を行番号付きで報告してください。生成やdeploymentは依頼していません。",
+    "N-02": "この一般向けMarkdownの日本語の誤字だけを指摘してください。Typst化、図表、研究内容の変更は不要です。",
+    "N-03": "既存Google Calendarの明日の会議予定をread-onlyで一覧にしてください。予約Markdownの変換やICS作成は不要です。",
+    "B-01": "既存editable bundleの図のfontだけを変え、配布済みの該当PDFを検証してください。source構成・path・来歴schema・dataは変更不要です。",
+    "B-02": "このstandalone Typst図をread-onlyでレビューし、保存値と表示点・区間端・legendの対応を確認してください。sourceや成果物は変更しないでください。",
+    "B-03": "既存図PDFをそのまま使い、研究報告のcaptionと配置だけを調整してください。図のsource、bundle、データには変更不要です。"
+  }
+}

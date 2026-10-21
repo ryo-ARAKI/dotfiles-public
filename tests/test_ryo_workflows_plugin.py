@@ -1,10 +1,12 @@
 import json
 import re
+import shutil
 import tempfile
 import unittest
 from dataclasses import replace
 from pathlib import Path
 from urllib.parse import unquote
+from unittest.mock import patch
 
 from dotfiles_installer.apply import apply_entry
 from dotfiles_installer.manifest import load_manifest
@@ -48,6 +50,29 @@ class PluginDistributionTests(unittest.TestCase):
             for entry in plugin_entries()
         }
         self.assertEqual(actual, expected)
+
+    def test_distribution_boundary_rejects_audit_files_and_missing_resources(self):
+        with tempfile.TemporaryDirectory(prefix="distribution-negative-", dir="/tmp") as folder:
+            root = Path(folder)
+            shutil.copytree(ROOT / PLUGIN_SOURCE, root / PLUGIN_SOURCE)
+            (root / "manifest").mkdir()
+            shutil.copyfile(ROOT / "manifest/base.tsv", root / "manifest/base.tsv")
+            extra = root / PLUGIN_SOURCE / "skills/stage1/unexpected-audit.md"
+            extra.parent.mkdir()
+            extra.write_text("audit documents must stay outside runtime")
+            strict = self.test_manifest_deploys_all_plugin_resources_in_local_context
+            with patch(__name__ + ".ROOT", root), self.assertRaises(AssertionError):
+                strict()
+            extra.unlink()
+            (root / PLUGIN_SOURCE / "skills/extrip-to-ics/SKILL.md").unlink()
+            with patch(__name__ + ".ROOT", root), self.assertRaises(AssertionError):
+                strict()
+
+    def test_public_architecture_has_exactly_the_original_six_skills(self):
+        names = {path.parent.name for path in (ROOT / PLUGIN_SOURCE / "skills").glob("*/SKILL.md")}
+        self.assertEqual(names, {"dotfiles-deploy", "creating-arxiv-diff-pdfs",
+                               "creating-and-editing-typst-figures", "export-editable-typst-figures",
+                               "writing-typst-research-reports", "extrip-to-ics"})
 
     def test_deployed_plugin_discovers_every_skill_and_resolves_references(self):
         with tempfile.TemporaryDirectory(prefix="workflow-distribution-", dir="/tmp") as directory:

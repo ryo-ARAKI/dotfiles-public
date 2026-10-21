@@ -1,0 +1,22 @@
+{
+  "source_revision": "737ba2926d72ad51dccfc0cf6b26cd4d2994a44d",
+  "resources": {
+    "skills/creating-and-editing-typst-figures/SKILL.md": "cf0f3a744426303469a4ac807925c3ce2e9db856564c0f9fba4134bae6137435",
+    "skills/creating-and-editing-typst-figures/references/data-and-verification.md": "c589db9978315f5f48f895168e135aa89c4ec2df92c4606354a4d87891877fdb",
+    "skills/creating-and-editing-typst-figures/references/presentation-and-layout.md": "40f798cb7f273d19a74da791683af50baba6a9d26f3b0a80aa3e56eb7aa70b04",
+    "skills/creating-arxiv-diff-pdfs/SKILL.md": "9d5ce09c2028c9698b1ddb9c2d7c949c61b5c7be4d2b9fef2d171177d585740c",
+    "skills/creating-arxiv-diff-pdfs/references/revtex-latexdiff-troubleshooting.md": "9b21ea50446588432054af1b002d25b94e3346a1804056baaed43bcc66b1aefd",
+    "skills/creating-arxiv-diff-pdfs/scripts/verify_diff_pdf.py": "630dced7984395e93f831eb01258cf9b482f8f290da9c958a95b8ddff14b32e1",
+    "skills/dotfiles-deploy/SKILL.md": "b842c242776534e188700961a900cf985720b8e3fbd796c37ad0ae377a67ce3d",
+    "skills/export-editable-typst-figures/SKILL.md": "8150bcb2c461098d0334225c603e145ecb882fafa52e348e3262852222c5c19e",
+    "skills/export-editable-typst-figures/references/data-and-provenance.md": "08f73002ab04e1195630e4334f0dfd188346decd90d5af85124c91496ad80145",
+    "skills/export-editable-typst-figures/references/provenance-examples.md": "310c3c3712319e70f22874cca8c2eae09e789bc79c32e574299e22694ab9dab1",
+    "skills/extrip-to-ics/SKILL.md": "39ebd739ca47b0ec945e40ea2d513a56fa1026e24270f894aa6457a8cf54f450",
+    "skills/extrip-to-ics/agents/openai.yaml": "db202ca67d2456d5ac2ca77fe198dc55ba599d01af60fb58c1aa8934b193cc2b",
+    "skills/extrip-to-ics/references/events-schema.md": "eb113e1983e5f469ce4065d52a7c3e04a6cabc1df78a53a2539a406a0098301b",
+    "skills/extrip-to-ics/scripts/build_ics.py": "11a1fe2048cef61610cb419faa87431d468cc0c20deba6eca021c7ab4533d0a5",
+    "skills/writing-typst-research-reports/SKILL.md": "9ee906754251beea61dd868cb48661cb561b1e512c053a010047481f7835d061",
+    "skills/writing-typst-research-reports/references/report-composition.md": "6914b1410ae843c5abb3dec8f41f87198a2d439bd377419a29642eaa04510cd9",
+    "skills/writing-typst-research-reports/references/writing-and-tables.md": "a288d096f485815addaa4813621c8a5e02bdefa84b94f5da660a52868290abb0"
+  }
+}

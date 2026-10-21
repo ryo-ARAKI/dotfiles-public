@@ -1,0 +1,1 @@
+Use the existing figure.pdf unchanged. Clarify the caption: tau=1 favors B, while tau=2 reverses; intervals are stored endpoints. Move the figure directly after the opening sentence. Preserve source data, figure.typ and delivered figure.pdf. Writes only to this disposable report copy.
