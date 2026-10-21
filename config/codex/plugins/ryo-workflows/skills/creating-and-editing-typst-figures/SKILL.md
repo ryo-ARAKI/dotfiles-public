@@ -1,6 +1,6 @@
 ---
 name: creating-and-editing-typst-figures
-description: Use when creating, adding, or revising scientific Typst figures in a report, standalone source, or existing editable bundle; ordinary plotting does not require a portable bundle; packaging for another location belongs to export-editable-typst-figures.
+description: Use when creating, revising, or performing a read-only review of scientific Typst figures in reports, standalone sources, or existing editable bundles; portable packaging belongs to export-editable-typst-figures, and report prose, captions, or page composition belongs to writing-typst-research-reports.
 ---
 
 # Create and Edit Typst Figures
@@ -14,7 +14,9 @@ Read the request, applicable guidance, current source and inputs, and latest use
 Identify the question, required conditions and series, points and interval endpoints, quantities and units, reference values, receiving dimensions, and output formats.
 For a new figure, establish expected coverage from the supplied inputs rather than an imagined previous PDF.
 For a revision, distinguish the requested delta from any saved-output/source mismatch.
-For a read-only review, report findings and leave sources and delivered outputs unchanged.
+For a read-only review, inspect the relevant plotting sources and scientific data; check displayed values, points, interval endpoints, series, and legends within the requested scope.
+Return findings with source/data evidence and leave sources and delivered outputs unchanged.
+If compilation is necessary, use disposable outputs without replacing delivered artifacts.
 
 A figure request alone does not authorize simulations, estimation, bootstrap, or confidence-interval generation.
 Use saved inputs or explicitly supplied new data within the authorized scope.
@@ -24,6 +26,7 @@ A missing definition blocks the dependent claim or transformation; continue inde
 
 | Operation | Reference |
 | --- | --- |
+| Read-only scientific figure review | [Data and Verification](references/data-and-verification.md) and checks for the requested display features; return findings only |
 | New figure, revision baseline, supplied data, or output update | [Data and Verification](references/data-and-verification.md) |
 | Axes, units, appearance, legends, overlays, or caption ingredients | Relevant sections of [Presentation and Layout](references/presentation-and-layout.md) |
 | Panel selection or export interface | [Panel Selection and Batch Export](references/presentation-and-layout.md#panel-selection-and-batch-export) and its feature-specific checks |
@@ -35,8 +38,8 @@ Preserve existing condition definitions, selectors, storage, and record formats 
 
 ## Return Verified Outputs
 
-Generate candidates and validate the affected output set through [Stage, Verify, and Update](references/data-and-verification.md#stage-verify-and-update).
-Return the verified figures and referenceable caption ingredients derived from their existing definitions.
+For authorized creation or revision, generate candidates and validate the affected output set through [Stage, Verify, and Update](references/data-and-verification.md#stage-verify-and-update).
+Return verified figures and referenceable caption ingredients for authorized edits; for read-only review, return evidence-backed findings and concrete verification gaps.
 The report owns contextual captions, figure selection, argument, and page composition through [Writing Typst Research Reports](../writing-typst-research-reports/SKILL.md).
 Report input identities, changes, checks actually performed, environment, and concrete gaps using the existing recording mechanism.
 Preserve successful artifacts and records on failure; this skill adds no environment, Git, deployment, or external-write authority.

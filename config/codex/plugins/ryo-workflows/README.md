@@ -15,7 +15,7 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 
 - `dotfiles-deploy`: managed-source generation, layered planning, and authorized deployment.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
-- `creating-and-editing-typst-figures`: new, added, or revised scientific figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
+- `creating-and-editing-typst-figures`: creation, revision, or read-only scientific review of figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
 - `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
 - `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
@@ -46,6 +46,9 @@ Report work owns research questions, evidence and claims, prose, tables, context
 Its handoff is question and display requirements → figure creation/revision → verified outputs and referenceable caption ingredients → report integration and whole-document checks.
 Existing figures used as-is require only report-side inclusion and interpretation checks.
 Figure work uses the existing plotting source and authoritative data/condition/series definitions, without requiring a portable bundle.
+Read-only scientific figure review returns evidence-backed findings about displayed values, points, intervals, series, and legends; it leaves sources and delivered artifacts unchanged.
+Report arguments, contextual captions, and page composition stay with the report skill; extraction and portability stay with the export skill.
+Font-only edits and caption-only tasks retain their existing scope.
 [Presentation and Layout](skills/creating-and-editing-typst-figures/references/presentation-and-layout.md) and [Data and Verification](skills/creating-and-editing-typst-figures/references/data-and-verification.md) are its technical sources of truth.
 When portability is requested, the export skill adds extraction, dependencies, provenance, relocation, and affected recipient-integration checks through [Data and Provenance](skills/export-editable-typst-figures/references/data-and-provenance.md).
 Reading a reference does not start every procedure in the owning skill.
