@@ -6,7 +6,8 @@ Reusable Codex workflows with no personal repository paths or host names.
 
 Help Codex produce reproducible configuration, scientific documents, and travel-calendar files without rediscovering fragile domain details.
 Keep only guidance or executable checks that change a decision, protect a contract, or prevent a demonstrated failure.
-Completion means the requested output is verified at the affected scope, previous successful outputs survive failed candidates, and remaining gaps are explicit.
+Completion means the requested output is verified at the affected scope and remaining gaps are explicit.
+Preparation failures preserve previous outputs; ICS publication uses the per-file C1 contract below.
 
 Preserve managed sources and user edits, scientific and reservation data and meanings, provenance, existing interfaces, and the user's authority over deployment or other external writes.
 A skill supplies domain knowledge; it does not grant additional permissions or turn a review into implementation.
@@ -55,6 +56,15 @@ arXiv source trees and raw latexdiff output remain immutable; compatibility repa
 Travel conversion follows reservation Markdown → reviewed events JSON → ICS files; extraction remains with Codex because reservation prose varies.
 Keep source files, explicit offsets, checkout-day-inclusive stays, departure-station/hotel Maps links, stable IDs, and the existing CLI/JSON interface.
 Local file generation needs no calendar API, authentication, or automatic import.
+ICS C1 publication prepares and stages every complete body before publishing any final entry.
+Each file is replaced atomically with explicit overwrite or created atomically without clobbering; failed publication stops and reports published, failed, unattempted, observed, and uncertain outputs.
+The report and CLI distinguish a failing path/target recheck (`phase=pre-publication`, `failed_publication_attempted=false`) from an invoked publication without a successful return (`phase=publication`, `failed_publication_attempted=true`). Only the latter makes the failed file an uncertain publication; subsequent files remain separately unattempted.
+Already-published files remain complete and new; the batch may mix old, new, and absent files. There is no batch rollback or cross-file snapshot guarantee.
+Use a trusted output directory: path symlinks, dangling links, nonregular targets, and lexical `..` are rejected, including legitimate aliases. These checks do not eliminate malicious races.
+Atomic no-clobber requires same-filesystem hard-link support; unsupported filesystems fail without streaming into finals.
+Replacement preserves permission bits where supported but changes inode/hard-link relationships and may change ACLs or extended attributes.
+Interrupted processes, power loss, and noncooperating writers are outside the guarantee; private staging remnants may require owner inspection.
+Incomplete temporary cleanup is reported; a fully published batch returns normal counts with a cleanup warning, while failed publication returns nonzero.
 
 ## Source and deployment
 

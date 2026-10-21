@@ -3,8 +3,13 @@
 import argparse
 from datetime import date, datetime, timezone
 import json
+import errno
+import os
 from pathlib import Path
 import re
+import stat
+import tempfile
+import warnings
 from urllib.parse import urlencode
 import uuid
 
@@ -81,28 +86,187 @@ def calendar(events):
     return '\r\n'.join(fold(line) for line in lines) + '\r\n'
 
 
+class PublicationError(OSError):
+    """A failed C1 batch. Successful operation records are separate from observations."""
+
+    def __init__(self, report, cause):
+        self.report = report
+        for key, value in report.items():
+            setattr(self, key, value)
+        super().__init__(getattr(cause, 'errno', None) or errno.EIO, _report_message(report))
+
+
+class PublicationCleanupWarning(UserWarning):
+    """All outputs were published, but run-owned temporary cleanup was incomplete."""
+
+    def __init__(self, report):
+        self.report = report
+        for key, value in report.items():
+            setattr(self, key, value)
+        super().__init__(_report_message(report))
+
+
+def _report_message(report):
+    return (f'C1 phase={report["phase"]}; batch_completed={str(report["batch_completed"]).lower()}; '
+            f'published={json.dumps(report["published_names"])}; failed={report["failed_name"]}; '
+            f'failed_publication_attempted={str(report["failed_publication_attempted"]).lower()}; '
+            f'unattempted={json.dumps(report["unattempted_names"])}; '
+            f'uncertain={json.dumps(report["uncertain_names"])}; '
+            f'observed={json.dumps(report["observed_states"], sort_keys=True)}; '
+            f'cleanup={json.dumps(report["cleanup_errors"])}; staging_dir={report["staging_dir"]}; '
+            'atomic no-clobber requires same-filesystem hard-link support when overwrite=False')
+
+
+def _check_output_directory(path):
+    # Inspect the specified path without resolving away aliases. A trusted directory
+    # without noncooperating writers is required; these checks do not eliminate races.
+    if '..' in path.parts:
+        raise ValueError('output path must not contain lexical .. components')
+    absolute = path.absolute()
+    for component in (*reversed(absolute.parents), absolute):
+        try:
+            info = component.lstat()
+        except FileNotFoundError:
+            continue
+        if stat.S_ISLNK(info.st_mode):
+            raise ValueError(f'output path symlink is not allowed: {component}')
+        if not stat.S_ISDIR(info.st_mode):
+            raise NotADirectoryError(errno.ENOTDIR, 'output path component is not a directory', str(component))
+
+
+def _check_target(path, overwrite):
+    try:
+        info = path.lstat()
+    except FileNotFoundError:
+        return None
+    if stat.S_ISLNK(info.st_mode):
+        raise ValueError(f'output target symlink is not allowed: {path.name}')
+    if not stat.S_ISREG(info.st_mode):
+        raise OSError(errno.EINVAL, 'output target must be a regular file', str(path))
+    if not overwrite:
+        raise FileExistsError(errno.EEXIST, 'choose another directory or explicitly use --overwrite', str(path))
+    return stat.S_IMODE(info.st_mode)
+
+
+def _write_stage(path, body):
+    # The directory is private (0700). New file permissions retain the caller's
+    # normal umask. Apply replacement permission bits after content verification.
+    with path.open('xb') as stream:
+        if stream.write(body) != len(body):
+            raise OSError(errno.EIO, 'short staging write')
+
+
+def _publish_one(stage, final, overwrite):
+    if overwrite:
+        os.replace(stage, final)
+    else:
+        # Atomic create-if-absent. Never fall back to streaming into a final file.
+        os.link(stage, final)
+
+
+def _cleanup_staging(staging, names):
+    errors = []
+    for name in names:
+        try:
+            (staging / name).unlink(missing_ok=True)
+        except OSError as error:
+            errors.append(f'{name}:{type(error).__name__}:{error.errno}')
+    try:
+        # Do not recursively remove unexpected files, even inside this private dir.
+        staging.rmdir()
+    except OSError as error:
+        errors.append(f'directory:{type(error).__name__}:{error.errno}')
+    return tuple(errors)
+
+
+def _observe_outputs(output_dir, payloads):
+    states = {}
+    for name, body in payloads.items():
+        try:
+            _check_output_directory(output_dir)
+            path = output_dir / name
+            info = path.lstat()
+            if stat.S_ISLNK(info.st_mode):
+                states[name] = 'symlink'
+            elif not stat.S_ISREG(info.st_mode):
+                states[name] = 'nonregular'
+            else:
+                states[name] = 'new-content' if path.read_bytes() == body else 'other-content'
+        except FileNotFoundError:
+            states[name] = 'absent'
+        except (OSError, ValueError):
+            states[name] = 'unavailable'
+    return states
+
+
 def generate(events, output_dir, combined='trips.ics', overwrite=False):
-    # Validate the whole batch and all destination names before any writes.
+    # Validate and construct every complete payload before touching output paths.
     validate(events)
     if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9_.-]*\.ics', combined):
         raise ValueError('combined: expected a simple .ics filename')
     groups = {}
     for event in events:
         groups.setdefault(event['group'], []).append(event)
-    payloads = {group + '.ics': calendar(items) for group, items in groups.items()}
+    payloads = {group + '.ics': calendar(items).encode('utf-8') for group, items in groups.items()}
     if combined in payloads:
         raise ValueError('combined filename collides with a group filename')
-    payloads[combined] = calendar(events)
+    payloads[combined] = calendar(events).encode('utf-8')
     output_dir = Path(output_dir)
-    if not overwrite:
-        for name in payloads:
-            if (output_dir / name).exists():
-                raise FileExistsError(f'{output_dir / name} exists; choose another directory or explicitly use --overwrite')
+    _check_output_directory(output_dir)
+    modes = {name: _check_target(output_dir / name, overwrite) for name in payloads}
     output_dir.mkdir(parents=True, exist_ok=True)
-    for name, body in payloads.items():
-        with (output_dir / name).open('wb' if overwrite else 'xb') as stream:
-            stream.write(body.encode('utf-8'))
-    return {name: body.count('BEGIN:VEVENT\r\n') for name, body in payloads.items()}
+    _check_output_directory(output_dir)
+
+    staging, published, failed_name = None, [], None
+    phase, failure, cleanup_errors = 'staging', None, ()
+    try:
+        staging = Path(tempfile.mkdtemp(prefix='.extrip-to-ics-', dir=output_dir))
+        for name, body in payloads.items():
+            failed_name = name
+            _write_stage(staging / name, body)
+            if (staging / name).read_bytes() != body:
+                raise OSError(errno.EIO, 'staged content verification failed')
+            if modes[name] is not None:
+                (staging / name).chmod(modes[name])
+        for name in payloads:
+            failed_name = name
+            phase = 'pre-publication'
+            _check_output_directory(output_dir)
+            _check_target(output_dir / name, overwrite)
+            phase = 'publication'
+            _publish_one(staging / name, output_dir / name, overwrite)
+            published.append(name)  # Record only an operation that returned success.
+        failed_name = None
+    except (OSError, ValueError) as error:
+        failure = error
+    finally:
+        if staging is not None:
+            try:
+                cleanup_errors = _cleanup_staging(staging, payloads)
+            except OSError as error:
+                cleanup_errors = (f'{type(error).__name__}:{error.errno}',)
+
+    if failure or cleanup_errors:
+        observed = _observe_outputs(output_dir, payloads)
+        uncertain = [name for name in published if observed[name] != 'new-content']
+        if failure and phase == 'publication':
+            # The failing operation has no successful return record. Inspection
+            # may observe new content, but is not proof of who published it.
+            uncertain.append(failed_name)
+        names = list(payloads)
+        # The failed file has its own record, even when its precheck prevented
+        # invocation. Keep subsequent files separate from that failed file.
+        unattempted = names[len(published) + 1:] if phase in ('pre-publication', 'publication') and failure else names if failure else []
+        report = dict(phase=phase if failure else 'cleanup', published_names=tuple(published),
+                      failed_name=failed_name, failed_publication_attempted=bool(failure and phase == 'publication'),
+                      unattempted_names=tuple(unattempted),
+                      batch_completed=len(published) == len(payloads),
+                      uncertain_names=tuple(uncertain), observed_states=observed,
+                      cleanup_errors=cleanup_errors, staging_dir=str(staging) if cleanup_errors else None)
+        if failure:
+            raise PublicationError(report, failure) from failure
+        warnings.warn(PublicationCleanupWarning(report), stacklevel=2)
+    return {name: body.count(b'BEGIN:VEVENT\r\n') for name, body in payloads.items()}
 
 
 def main():
