@@ -1,0 +1,35 @@
+{
+  "B-02": {
+    "required_findings": [
+      "A,tau=1 upper endpoint is displayed as 2.4 instead of stored 2.2",
+      "Legend colors for methods A and B are reversed"
+    ],
+    "invariants": [
+      "All four condition tuples occur once",
+      "No new interval estimates",
+      "Input sources and delivered PDF unchanged"
+    ]
+  },
+  "B-01": {
+    "requested_font": "DejaVu Serif",
+    "invariants": [
+      "CSV byte and tuple/interval preservation",
+      "No extraction or relocation",
+      "Only affected PDFs regenerated"
+    ]
+  },
+  "B-03": {
+    "invariants": [
+      "Caption supports tau=1 B advantage and tau=2 reversal",
+      "figure.pdf and figure.typ unchanged",
+      "Report composition visually checked"
+    ]
+  },
+  "N-01": {
+    "finding": "PATH assignment replaces inherited search paths",
+    "invariants": [
+      "Findings with line references only",
+      "No installer execution or writes"
+    ]
+  }
+}

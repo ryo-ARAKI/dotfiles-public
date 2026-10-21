@@ -1,0 +1,2 @@
+schema = "fixture-existing"
+source = "synthetic-local-baseline"

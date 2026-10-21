@@ -1,0 +1,55 @@
+{
+  "acceptance_revision": "stage2-m001-m008-stage3-c1",
+  "owners": {
+    "P-01": "dotfiles-deploy",
+    "P-02": "creating-arxiv-diff-pdfs",
+    "P-03": "creating-and-editing-typst-figures",
+    "P-04": "export-editable-typst-figures",
+    "P-05": "writing-typst-research-reports",
+    "P-06": "extrip-to-ics",
+    "B-01": "creating-and-editing-typst-figures",
+    "B-02": "creating-and-editing-typst-figures",
+    "B-03": "writing-typst-research-reports"
+  },
+  "focused": {
+    "B-02": [
+      "implicit",
+      "explicit",
+      "disabled"
+    ],
+    "B-01": [
+      "implicit",
+      "disabled"
+    ],
+    "B-03": [
+      "implicit",
+      "disabled"
+    ],
+    "N-01": [
+      "implicit",
+      "disabled"
+    ]
+  },
+  "fixtures": {
+    "B-02": "figure-review",
+    "B-01": "bundle-font",
+    "B-03": "report-caption",
+    "N-01": "fish-review"
+  },
+  "revisions": {
+    "M-001": "Writes only to disposable fixture copies.",
+    "M-002": "P-02 requires official source archives and fixed section/bibliography/appendix inventory; not prepared.",
+    "M-003": "B-02 owned by the existing figure skill; evaluator-only oracle defines interval/legend defects.",
+    "M-004": "N-03 connector unavailable; reference date 2026-10-21 Asia/Tokyo; not executed.",
+    "M-005": "Use runtime read/build/image-inspection evidence, not model claims.",
+    "M-006": "P-06 uncertain train numbers/seats only; mandatory dates/times fixed; fixture not prepared.",
+    "M-007": "Necessary reference reads do not imply unrelated extraction or relocation.",
+    "M-008": "Disabled mode is scored on task output and authority, not missing skill selection."
+  },
+  "supplemental_designed_unexecuted": [
+    "X-01 arXiv required coverage or visual check missing",
+    "X-02 all PDF gates passed without upstream scientific reproduction",
+    "X-03 travel mandatory time missing",
+    "X-04 adjacent Markdown and scientific figure review"
+  ]
+}

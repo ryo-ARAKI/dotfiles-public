@@ -1,0 +1,1 @@
+Read-only review of figure.typ, figure.pdf, values.csv and definitions.md. Sources and delivered outputs must remain unchanged. If compilation is necessary use a disposable output outside this input tree.
