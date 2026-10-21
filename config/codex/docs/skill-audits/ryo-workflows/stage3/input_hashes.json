@@ -1,0 +1,42 @@
+[
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/plugins/ryo-workflows/skills/stage1/01_inventory.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage1/01_inventory.md",
+    "sha256": "0533998aa7eaabf44dbc5d87b9ad5a6019cd0573e61377045c6632ead061d1f0"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/plugins/ryo-workflows/skills/stage1/02_diagnosis.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage1/02_diagnosis.md",
+    "sha256": "b571e6df45b3939cf373cdcc426eaa66560361d19d24670270104473bb8a5631"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/plugins/ryo-workflows/skills/stage1/03_baseline.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage1/03_baseline.md",
+    "sha256": "f5f2945b0e573e7270c433717ff484446a1beb76003dd4aae8e709a47a84f3fa"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/plugins/ryo-workflows/skills/stage1/04_handoff.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage1/04_handoff.md",
+    "sha256": "d6022c477fcfcecf09b1162b907ff187d0be5140abdc802c4d8710ed77c921cf"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/docs/skill-audits/ryo-workflows/stage2/01_design_options.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage2/01_design_options.md",
+    "sha256": "24b072bed75e37641e4e0303fcbd080e69a146c2f2c11bd29ba5cf3fcf1ddc8a"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/docs/skill-audits/ryo-workflows/stage2/02_update_plan.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage2/02_update_plan.md",
+    "sha256": "c85c25b00f648e9b36457b24566958d3274f07dcab53ee7fc35e326575a2f7a8"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/docs/skill-audits/ryo-workflows/stage2/03_validation_plan.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage2/03_validation_plan.md",
+    "sha256": "574b316ad155bb06d1650e44a43b755edb61d096091f5f719ff9a0271ae9d675"
+  },
+  {
+    "source": "/home/ryo/github/dotfiles-public/config/codex/docs/skill-audits/ryo-workflows/stage2/04_review_and_handoff.md",
+    "copy": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1/config/codex/docs/skill-audits/ryo-workflows/stage2/04_review_and_handoff.md",
+    "sha256": "147ea39158574f2ffaedc5e2ecefffec01e7d995ca5329f70ec6de0f7fcee5c9"
+  }
+]
