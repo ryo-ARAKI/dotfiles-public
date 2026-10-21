@@ -26,4 +26,12 @@ When the raw build hangs or fails, read [REVTeX and latexdiff troubleshooting](r
 
 ## Completion
 
-Report absolute artifact paths, exact latexdiff command, compile passes, raw-source checksum and reproduction evidence, compatibility repairs, structural checks, log status, page count, and visual findings for first/middle/last pages. State any unverified item; do not claim completion while one remains.
+Mandatory acceptance for the requested complete diff PDF includes official-source identities and original-version baselines (fresh evidence may be reused), the exact latexdiff command and immutable raw-output checksum, required section/bibliography/appendix coverage, final log/PDF consistency, fatal and relevant reference/citation warning checks, PDF structure, and actual first/middle/last visual inspection.
+Apply the existing troubleshooting criteria to reviewable warnings; record their reasons and counts.
+Inspect additional pages when a suspected coverage or rendering problem affects a required check.
+Helper success and generated sample images do not substitute for source coverage or visual inspection.
+
+Report absolute artifact paths, exact latexdiff command, compile passes, raw-source checksum and reproduction evidence, compatibility repairs, structural checks, log status, page count, and visual findings.
+State every unverified item and its effect on the requested PDF.
+Do not claim completion while a mandatory acceptance check for that PDF is unverified or fails.
+Optional investigation and work outside the request, such as reproducing upstream scientific calculations, are reported limitations unless needed to establish a mandatory check.
