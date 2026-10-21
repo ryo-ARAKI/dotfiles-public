@@ -1,0 +1,344 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-21",
+  "status": "deterministic-source-validation-passed",
+  "environment": {
+    "python": "3.12.3",
+    "git": "2.43.0",
+    "typst": "0.15.1 (unknown commit)",
+    "filesystem_stat_type": "ext2/ext3",
+    "installed_fonts": [
+      "DejaVu Sans",
+      "DejaVu Serif"
+    ],
+    "independent_llm_model": null,
+    "normal_effort": null,
+    "planning_effort": null
+  },
+  "source": {
+    "repo": "/home/ryo/github/dotfiles-public/.worktrees/ryo-workflows-stage3-c1",
+    "base_head": "737ba2926d72ad51dccfc0cf6b26cd4d2994a44d",
+    "dirty_tree": true,
+    "metadata_version": "0.1.1",
+    "public_payload_sha256": "9fb05b6cec98d4e57624706ebe11fcffafeb21017665386fad4d2d212385feeb",
+    "public_files": 19
+  },
+  "unit_results": [
+    {
+      "suite": "test_extrip_to_ics.py",
+      "tests": 7,
+      "failures": 0,
+      "errors": 0,
+      "executed": true
+    },
+    {
+      "suite": "test_arxiv_diff_pdf_verifier.py",
+      "tests": 12,
+      "failures": 0,
+      "errors": 0,
+      "executed": true
+    },
+    {
+      "suite": "test_ryo_workflows_plugin.py",
+      "tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "executed": true
+    },
+    {
+      "suite": "test_extrip_publication.py",
+      "tests": 19,
+      "failures": 0,
+      "errors": 0,
+      "executed": true
+    },
+    {
+      "suite": "test_ryo_workflows_identity.py",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "executed": true
+    },
+    {
+      "suite": "test_ryo_workflows_evaluation.py",
+      "tests": 11,
+      "failures": 0,
+      "errors": 0,
+      "executed": true
+    }
+  ],
+  "unit_command_evidence": [
+    "python3 -B -m unittest discover -s tests -p test_extrip_publication.py -v",
+    "python3 -B -m unittest discover -s tests -p test_extrip_to_ics.py -v",
+    "python3 -B -m unittest discover -s tests -p test_arxiv_diff_pdf_verifier.py -v",
+    "python3 -B -m unittest discover -s tests -p 'test_ryo_workflows*.py' -v",
+    "python3 -B -m unittest discover -s tests -p test_ryo_workflows_evaluation.py -v"
+  ],
+  "unit_total": 65,
+  "preserved_baseline_tests": 22,
+  "new_tests": 43,
+  "c1_test_methods": [
+    "test_f01_invalid_event_name_collision_and_payload_fail_before_publication",
+    "test_f02_later_stage_write_failure_preserves_all_finals",
+    "test_f02_readback_failure_preserves_all_finals",
+    "test_f03_stage_all_and_close_before_same_filesystem_atomic_replacement",
+    "test_f03_write_only_permissions_are_applied_after_staged_verification",
+    "test_f04_partial_publication_preserves_new_and_untouched_old_files",
+    "test_f04_ambiguous_operation_records_observation_without_claiming_success",
+    "test_f05_existing_no_clobber_conflict_has_no_publication",
+    "test_f05_publication_time_no_clobber_conflict_is_preserved",
+    "test_f06_combined_failure_has_complete_individuals_and_old_combined",
+    "test_f07_leaf_and_dangling_symlinks_are_rejected_in_both_modes",
+    "test_f07_output_directory_and_relevant_parent_symlinks_are_rejected",
+    "test_f07_nonregular_targets_and_lexical_traversal_are_rejected",
+    "test_f07_hardlink_target_replacement_does_not_modify_external_inode",
+    "test_f08_cleanup_failure_after_partial_publication_is_reported",
+    "test_f08_cleanup_failure_after_complete_batch_warns_without_rollback",
+    "test_f08_unrelated_file_inside_private_staging_is_not_removed",
+    "test_f09_cli_publication_failure_is_nonzero_and_reports_partial_state",
+    "test_f10_unsupported_no_clobber_fails_without_final_streaming_fallback"
+  ],
+  "packaging": {
+    "disposable_installer_files": 19,
+    "file_identity_matches": true,
+    "differences": {
+      "missing": [],
+      "unexpected": [],
+      "modified": [],
+      "wrong_types": [],
+      "mode_mismatches": []
+    },
+    "active_deployment_performed": false
+  },
+  "frontmatter": [
+    {
+      "skill": "creating-and-editing-typst-figures",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "creating-arxiv-diff-pdfs",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "dotfiles-deploy",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "export-editable-typst-figures",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "extrip-to-ics",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    },
+    {
+      "skill": "writing-typst-research-reports",
+      "exit_code": 0,
+      "output": "Skill is valid!"
+    }
+  ],
+  "fixture_preparation": {
+    "runs_prepared": 9,
+    "compiled_pdf_count": 9,
+    "workspace_manifests": {
+      "B-02-implicit": {
+        "TASK.md": "fee8f74221370b99cd63aded6a6416ed26370a84635e5272d653d5d8cd301a52",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "42b454db78e42d544a0c677e3422e96418a86f360f7d15ed45a542b55c760e1a",
+        "figure.typ": "78d03f8d6f6c50e258c8bf68fb18206700148ebf46253600e57809b48bd7acde",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "B-02-explicit": {
+        "TASK.md": "fee8f74221370b99cd63aded6a6416ed26370a84635e5272d653d5d8cd301a52",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "42b454db78e42d544a0c677e3422e96418a86f360f7d15ed45a542b55c760e1a",
+        "figure.typ": "78d03f8d6f6c50e258c8bf68fb18206700148ebf46253600e57809b48bd7acde",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "B-02-disabled": {
+        "TASK.md": "fee8f74221370b99cd63aded6a6416ed26370a84635e5272d653d5d8cd301a52",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "61da317d603084deff67d7a47ca8106b6f762d93ca2f08cefc76ce2f10562d85",
+        "figure.typ": "78d03f8d6f6c50e258c8bf68fb18206700148ebf46253600e57809b48bd7acde",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "B-01-implicit": {
+        "TASK.md": "849a2b1371836899a897fd6f13d27b28c888a6e7f4cb7a56ee02dfef8e63beda",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "b3d6f6b76bc99fc779dd59d2be157dec9211dc4e83436713600081f4bd99fc80",
+        "figure.typ": "c34afa09795e053908035bfb7612799c520cad74df5ba869ad7d0e7ea5578a5e",
+        "normalization.toml": "d961698e1a0c181db22878dd049cf66d75d2cfa740bf2bb92d604140d0d1a5c1",
+        "provenance.toml": "e20481cbda787ed82a2e17aa1e8f760afbd4f488602472e5ff55e36aef0e7a02",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "B-01-disabled": {
+        "TASK.md": "849a2b1371836899a897fd6f13d27b28c888a6e7f4cb7a56ee02dfef8e63beda",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "87d28a5db226fef10d3b8191cc856d72b8501bbb8a425f57527dd4fd5eeaf27a",
+        "figure.typ": "c34afa09795e053908035bfb7612799c520cad74df5ba869ad7d0e7ea5578a5e",
+        "normalization.toml": "d961698e1a0c181db22878dd049cf66d75d2cfa740bf2bb92d604140d0d1a5c1",
+        "provenance.toml": "e20481cbda787ed82a2e17aa1e8f760afbd4f488602472e5ff55e36aef0e7a02",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "B-03-implicit": {
+        "TASK.md": "115f9ebf2fd082e7d63f1fe25e7979628e04cf3a25847c568443eea8837dbea5",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "020964153c67bcf9142ecd23f1ffd42112b35097194adb5e66523538b3fe4f2c",
+        "figure.typ": "c34afa09795e053908035bfb7612799c520cad74df5ba869ad7d0e7ea5578a5e",
+        "report.pdf": "a1dde5466932a3ebb1340e2807a9393ed7a8b7814f035d6d8baffee9716605ef",
+        "report.typ": "c2138697a5953db9f51d7c6d0334fccb510d9007c281530906b48cc163c15afa",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "B-03-disabled": {
+        "TASK.md": "115f9ebf2fd082e7d63f1fe25e7979628e04cf3a25847c568443eea8837dbea5",
+        "definitions.md": "b9e48d7eb433d8213894d391b1676b7e6630cd7fb03c2d63e9150ce191e2e152",
+        "figure.pdf": "2e061419aede8fe91c69297a4e4184de7644b6e48d5b77e8e04ab497127ac65c",
+        "figure.typ": "c34afa09795e053908035bfb7612799c520cad74df5ba869ad7d0e7ea5578a5e",
+        "report.pdf": "1433e5960ac49b061f2df19e764f65571e02d804fe41c445b9fa36b6e8e97aa8",
+        "report.typ": "c2138697a5953db9f51d7c6d0334fccb510d9007c281530906b48cc163c15afa",
+        "values.csv": "31e42c274d176eb58fed2718b09b25836c5ed14d6c94efafbe916422d6b26d5b"
+      },
+      "N-01-implicit": {
+        "TASK.md": "c9402830dde3983c572a4534e335325ba6a47256d654a233ecae9b93cf1a9d0f",
+        "config.fish": "17b21bfc107fec1e62be05ca8702fc75a336f8872e2458a8e79a461fce4b0db9"
+      },
+      "N-01-disabled": {
+        "TASK.md": "c9402830dde3983c572a4534e335325ba6a47256d654a233ecae9b93cf1a9d0f",
+        "config.fish": "17b21bfc107fec1e62be05ca8702fc75a336f8872e2458a8e79a461fce4b0db9"
+      }
+    },
+    "visually_inspected_representatives": [
+      "B-02-implicit/input/figure.pdf",
+      "B-01-implicit/input/figure.pdf",
+      "B-03-implicit/input/report.pdf"
+    ]
+  },
+  "llm": {
+    "runs": 0,
+    "usage": null,
+    "comparison_improvement_claimed": false,
+    "preflight": {
+      "prerequisites_satisfied": false,
+      "blockers": [
+        "authentication_boundary",
+        "authentication_evidence",
+        "budget",
+        "budget_evidence",
+        "client_binary_sha256",
+        "client_version",
+        "disabled_readable_root_boundary",
+        "disabled_readable_roots",
+        "disposable_root",
+        "effective_model",
+        "execution_authorization",
+        "isolation_evidence",
+        "normal_effort",
+        "permissions_evidence",
+        "planning_effort",
+        "requested_model",
+        "runtime_evidence",
+        "target_readable_root_boundary",
+        "target_readable_roots",
+        "target_resource_identity"
+      ],
+      "llm_executed": false,
+      "scope": "Offline validation of supplied evidence. Independently review runner enforcement before execution."
+    }
+  },
+  "catalog_visibility": "unverified",
+  "actual_loaded_resources": "unverified",
+  "final_checks": {
+    "primary_preservation": {
+      "checked_files": 136,
+      "changed_files": [],
+      "head_unchanged": true,
+      "status_unchanged": true,
+      "index_unchanged": true
+    },
+    "audit_migration": [
+      {
+        "stage": "stage1",
+        "file": "01_inventory.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage1",
+        "file": "02_diagnosis.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage1",
+        "file": "03_baseline.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage1",
+        "file": "04_handoff.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage2",
+        "file": "01_design_options.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage2",
+        "file": "02_update_plan.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage2",
+        "file": "03_validation_plan.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      },
+      {
+        "stage": "stage2",
+        "file": "04_review_and_handoff.md",
+        "original_hash_matches": true,
+        "copy_matches_permitted_relocation": true
+      }
+    ],
+    "calendar_function_ast_unchanged": {
+      "escape": true,
+      "fold": true,
+      "required": true,
+      "validate": true,
+      "calendar": true
+    },
+    "unchanged_regression_and_arxiv_files": {
+      "tests/test_extrip_to_ics.py": true,
+      "tests/test_arxiv_diff_pdf_verifier.py": true,
+      "config/codex/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/scripts/verify_diff_pdf.py": true,
+      "config/codex/plugins/ryo-workflows/skills/creating-arxiv-diff-pdfs/references/revtex-latexdiff-troubleshooting.md": true
+    },
+    "audit_and_tool_links": {
+      "checked": 66,
+      "errors": []
+    },
+    "git_diff_check": {
+      "exit_code": 0,
+      "output": ""
+    },
+    "new_file_trailing_whitespace": []
+  },
+  "full_unrelated_repository_suite_executed": false,
+  "prohibited_operations_performed": [],
+  "self_review": {
+    "completed": true,
+    "tracked_changed_files": 7,
+    "scope": "Tracked diff and all new tool, test, fixture and audit files; no subagents.",
+    "unresolved_critical_deterministic_findings": []
+  }
+}
