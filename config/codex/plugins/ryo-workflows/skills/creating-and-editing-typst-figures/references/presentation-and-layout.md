@@ -112,6 +112,10 @@ This fragment was checked with Typst 0.15.1 and Lilaq 0.6.0; recheck APIs in a d
 
 Preserve existing data/condition selection and share rendering logic between full and standalone outputs; let callers control dimensions and visibility.
 Use the requested panel arrangement rather than assuming two rows or two columns.
+For multi-panel plots, use only the panel identifier, such as `(a)`, as the panel heading by default; keep direction and condition explanations in report captions.
+Place it outside the plotting frame, above the y-axis tick labels and to the left of the y-axis, rather than centered above or inside the frame.
+Adapt the horizontal offset and top spacing to the actual tick-label widths, font size, and receiving dimensions; a fixed offset from one figure is not a universal value.
+Keep placement consistent across panels and leave enough outer space to avoid clipping or collisions with axis labels, legends, and neighbouring panels.
 Respect the caller's paper, margins, and body settings; figure code must not change manuscript-wide settings.
 Resolve fit through placement or panel splitting, without casually enlarging paper, shrinking margins, or scaling down the entire composition.
 Keep explanatory prose in captions rather than adding it to the drawing to solve layout problems.
@@ -193,6 +197,7 @@ Apply only the rows for features that exist and are affected; a font-only edit d
 
 | Changed feature | Additional checks |
 | --- | --- |
+| Panel identifiers | Identifiers only; above the y-axis tick labels outside the frame, consistent across panels, with no clipping or collisions at receiving size; explicit user/publication placement takes precedence |
 | Fonts, labels, or appearance | Applicable text/math/ticks, powers of ten with `10^0` shown as `1` at unchanged positions, page count, clipping, and readability; preserve required language fallbacks |
 | Series, legends, or markers | Ordered color domain/value mapping consistent across compared figures and matching legend/colorbar; legend line/marker centers and actual series styles; hollow interiors transparent over a colored background and overlapping data |
 | Connections between data points | Provenance and horizontal-axis meaning support the point/line choice under [Appearance and Series](#appearance-and-series); point-only legend samples match; necessary theoretical/model curves, reference lines, and error bars retained independently of data-point connections |
