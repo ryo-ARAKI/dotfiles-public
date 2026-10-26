@@ -24,6 +24,7 @@ from dotfiles_installer.context import detect_context
 from dotfiles_installer.manifest import ManifestEntry
 from dotfiles_installer.manifest import load_manifest
 from dotfiles_installer.planner import build_plan_report
+from dotfiles_installer.plugin_cache import PLUGIN_TARGET, refresh_workflows_cache
 from dotfiles_installer.settings_fragments import fragment_for, plan_private_settings
 from dotfiles_installer.reporting import (
     render_text_diff,
@@ -292,6 +293,19 @@ def main() -> int:
             applied_targets.append(plan.target_label)
         elif status == "nochange":
             nochange += 1
+    plugin_selected = context == "local" and any(
+        entry.target.startswith(PLUGIN_TARGET) for entry in generic_plan.values()
+    )
+    if plugin_selected:
+        if skipped:
+            print("plugin cache skipped: deployment has declined changes; rerun after completing deployment")
+        else:
+            try:
+                print(refresh_workflows_cache(Path.home(), dry_run=args.dry_run))
+            except Exception as exc:
+                print(f"Plugin cache refresh failed ({type(exc).__name__}: {exc}); deployed files remain in place.", file=sys.stderr)
+                print("Retry this install after resolving the Codex CLI/registration problem.", file=sys.stderr)
+                return 1
     for entry in filtered_overridden:
         if args.dry_run:
             print(summarize_overridden_line(entry))

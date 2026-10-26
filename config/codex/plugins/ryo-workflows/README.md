@@ -68,10 +68,18 @@ Registration and enablement remain explicit local setup, separate from copying t
 An optional private layer can add repository-specific skills and replace this plugin's
 metadata without changing the plugin directory or duplicating the shared skill sources.
 Existing private marketplace registration and enablement continue to select that combined plugin.
-Use matching public/private source revisions and start a fresh Codex session after deployment.
+Use matching public/private source revisions.
+When local deployment selects this plugin, the installer refreshes its Codex cache if the local marketplace registration points to this directory and the plugin is already enabled.
+It uses `codex plugin add`, verifies the cached payload against the deployed files, and reports failures without undoing deployment.
+This also refreshes a stale cache when deployed files already match the sources.
+Dry-run only previews the refresh; remote context, unrelated targets, disabled/unregistered plugins, and deployments with declined changes do not refresh it.
+Registration and enablement are never created by this refresh.
+Start a fresh Codex session after deployment.
 
 The flow is managed sources → manifest selection and optional private overrides → deployed plugin → local registration/enablement → Codex's discovered skill catalog.
 Source presence, deployed-file equality, and availability in a running session are separate evidence.
+Keep this plugin's skills out of `~/.codex/skills/` to avoid duplicate discovery; that directory is for standalone skills and Codex-managed `.system/` entries.
+Archive an existing duplicate outside skill discovery directories before removing it, preserving local edits and verifying the plugin copy.
 Do not edit vendor caches to make a source change appear deployed.
 Codex's [skill documentation](https://learn.chatgpt.com/docs/build-skills) describes metadata-based discovery and optional supporting resources; no extra public router is needed.
 

@@ -502,6 +502,21 @@ and travel reservation Markdown to ICS conversion.
 The private layer adds repository-specific skills and retains its existing marketplace
 registration, plugin ID, and enablement. Update both source checkouts together.
 Public-only users can register and enable the deployed plugin through their local plugin setup.
+Local installs selecting `~/plugins/ryo-workflows/` automatically refresh and verify the
+Codex cache for the already-enabled plugin registered from that directory.
+Dry-run previews the refresh; remote or unrelated installs do not run it.
+For a scoped local update of the combined plugin:
+
+```fish
+./install --context local --private ../dotfiles-private --only plugins/ryo-workflows/ --yes
+```
+
+Use `--dry-run` first to inspect the selected files and refresh command.
+If refreshing fails, the installer returns an error and leaves the deployed files in place;
+resolve the CLI/registration problem and rerun the same command.
+Start a new Codex session to verify discovery.
+Do not also install these skills under `~/.codex/skills/`; preserve that directory for
+standalone skills and Codex-managed `.system/` entries.
 
 VS Code keybindings, extension IDs, and the two managed UI visibility keys are public.
 The public manifest also installs `ui-state.json` and `restore-ui-state.py` together under
