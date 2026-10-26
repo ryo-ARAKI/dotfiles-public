@@ -54,6 +54,11 @@ if status --is-interactive
     abbr aui "sudo apt-fast install"
     abbr aar "sudo apt-fast autoremove"
 
+    # Package updates (continue checking/updating other managers after a failure).
+    # juliaup status shows installed channels; it is not an update check for juliaup itself.
+    abbr pkgcheck 'apt list --upgradable; rustup check; cargo install-update --list; juliaup status; npm outdated -g; flatpak remote-ls --updates; snap refresh --list'
+    abbr pkgupdate 'sudo apt upgrade; rustup update; cargo install-update --all; juliaup update; juliaup self update; npm update -g; flatpak update; sudo snap refresh'
+
     # Julia
     abbr jlp "julia --project=. --startup-file=no"
     abbr jlt "julia --project=. --startup-file=no -e 'using Pkg; Pkg.test()'"
