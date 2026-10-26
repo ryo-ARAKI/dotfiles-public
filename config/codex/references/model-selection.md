@@ -16,7 +16,7 @@ Managed settings use the standard service tier (`service_tier = "default"`).
 
 | Selection | Model | Normal / planning effort | Remaining work |
 | --- | --- | --- | --- |
-| `quick` | `gpt-6-luna` | medium / medium | Narrow routine steps with clear targets and acceptance checks |
+| `quick` | `gpt-6.1-terra` | medium / medium | Everyday writing, visual inspection, computer use, and fixes with a known approach |
 | `default` with explicit high overrides | `gpt-6.1-sol` | high / high | Local fix with a known cause and approach; routine reviews still keep `reviewer` |
 | `default` (no `--profile`) | `gpt-6.1-sol` | xhigh / max | Ordinary investigation, implementation, and verification requiring existing specifications |
 | `deep` | `gpt-6.1-sol` | max / max | Difficult judgment, competing hypotheses, design tradeoffs, or numerical validity; reviews keep `reviewer` with max overrides |
@@ -62,6 +62,9 @@ max. Do not substitute `deep` for the reviewer profile.
    exist. Loading order is base config, selected profile, then explicit CLI
    overrides. Compare these with managed source values; source edits alone do
    not establish deployment.
+   The deployed base may retain the previous session's model, effort, or service
+   tier selections. Differences from managed defaults are expected runtime state,
+   not by themselves a deployment error; do not reset them merely to match source.
 2. Record profile, actual model ID, normal and planning efforts, the next
    unresolved judgment explaining the recommendation, and delegation authority
    separately in the handoff. Record the deployed config root, paths, effective

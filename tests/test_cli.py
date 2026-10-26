@@ -131,7 +131,7 @@ class InstallCliTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertEqual(profile.stat().st_mode & 0o777, 0o600)
             generated = tomllib.loads(profile.read_text(encoding="utf-8"))
-            self.assertEqual(generated["model"], "gpt-6-luna")
+            self.assertEqual(generated["model"], "gpt-6.1-terra")
             self.assertEqual(generated["notice"]["model_migrations"]["old-model"], "new-model")
             self.assertIn("applied: base: config/codex/quick.config.toml", result.stdout)
             self.assertNotIn("config.toml -> ~/.codex/config.toml", result.stdout)

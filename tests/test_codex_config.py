@@ -55,7 +55,7 @@ class CodexConfigTests(unittest.TestCase):
         self.assertEqual(standard["agents"]["reviewer"]["config_file"], "reviewer.config.toml")
         for profile in (quick, deep, subagent, reviewer):
             self.assertEqual(profile["service_tier"], "default")
-        self.assertEqual(quick["model"], "gpt-6-luna")
+        self.assertEqual(quick["model"], "gpt-6.1-terra")
         self.assertEqual(quick["model_reasoning_effort"], "medium")
         self.assertEqual(quick["plan_mode_reasoning_effort"], "medium")
         self.assertEqual(deep["model"], "gpt-6.1-sol")
