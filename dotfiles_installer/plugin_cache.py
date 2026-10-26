@@ -2,8 +2,12 @@
 import json
 import os
 import subprocess
-import tomllib
 from pathlib import Path
+
+try:
+    import tomllib
+except ModuleNotFoundError:  # Python < 3.11 can still use unrelated installer paths.
+    tomllib = None
 
 PLUGIN_NAME = "ryo-workflows"
 PLUGIN_TARGET = "~/plugins/ryo-workflows/"
@@ -23,6 +27,8 @@ def refresh_workflows_cache(home: Path, *, dry_run: bool) -> str:
     config_path = home / ".codex/config.toml"
     if not marketplace_path.is_file() or not config_path.is_file():
         return "plugin cache skipped: no local registration or Codex config"
+    if tomllib is None:
+        raise ValueError("Workflow plugin cache refresh requires Python 3.11 or newer (tomllib)")
     marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
     marketplace_name = marketplace["name"]
     plugin_id = f"{PLUGIN_NAME}@{marketplace_name}"

@@ -80,6 +80,17 @@ class PluginCacheTests(unittest.TestCase):
 
 
 class PluginCacheCliTests(unittest.TestCase):
+    def test_help_works_without_tomllib(self):
+        import sys
+        repo = Path(__file__).resolve().parents[1]
+        result = subprocess.run([
+            sys.executable, "-c",
+            "import runpy, sys; sys.modules['tomllib'] = None; "
+            "sys.argv = ['install', '--help']; runpy.run_path('install', run_name='__main__')",
+        ], cwd=repo, capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn('--dry-run', result.stdout)
+
     setUp = PluginCacheTests.setUp
 
     def test_cli_refresh_scope_dry_run_and_failure(self):
