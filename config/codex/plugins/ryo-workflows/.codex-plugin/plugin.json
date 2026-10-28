@@ -1,7 +1,7 @@
 {
   "name": "ryo-workflows",
   "version": "0.1.1",
-  "description": "Reusable dotfiles, arXiv diff PDF, Typst research reports, scientific figure creation/editing/review and packaging, and travel-calendar workflows.",
+  "description": "Reusable dotfiles, arXiv diff PDF, research result packaging, Typst research reports, scientific figure creation/editing/review and packaging, and travel-calendar workflows.",
   "author": {
     "name": "Ryo"
   },
@@ -20,13 +20,15 @@
     "pdf",
     "travel",
     "calendar",
-    "ics"
+    "ics",
+    "data",
+    "provenance"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Ryo Workflows",
     "shortDescription": "Reusable dotfiles, document, and travel workflows for Codex.",
-    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, writing or reviewing Typst research reports, creating, editing, or reviewing scientific Typst figures without modifying artifacts in review mode, portable editable figure bundles, and calendar files from travel reservation Markdown.",
+    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, packing saved research results for transfer and local reporting, writing or reviewing Typst research reports, creating, editing, or reviewing scientific Typst figures without modifying artifacts in review mode, portable editable figure bundles, and calendar files from travel reservation Markdown.",
     "developerName": "Ryo",
     "category": "Productivity",
     "capabilities": [
@@ -41,7 +43,8 @@
       "Create, edit, or review a scientific Typst figure",
       "Package editable Typst figures",
       "Write or review a Typst research report",
-      "Create calendar files from travel reservations"
+      "Create calendar files from travel reservations",
+      "Package saved research calculation results for transfer"
     ],
     "brandColor": "#334155",
     "screenshots": []

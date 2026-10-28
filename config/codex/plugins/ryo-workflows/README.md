@@ -16,6 +16,7 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 - `dotfiles-deploy`: managed-source generation, layered planning, and authorized deployment.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
 - `creating-and-editing-typst-figures`: creation, revision, or read-only scientific review of figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
+- `pack-research-results`: saved calculation results packaged for transfer and local plotting/regrouping, with individual values, original metadata, provenance, and relocation verification; also supports remote-agent instructions.
 - `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
 - `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
