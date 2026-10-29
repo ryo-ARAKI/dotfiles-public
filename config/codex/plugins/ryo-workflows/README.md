@@ -16,7 +16,7 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 - `dotfiles-deploy`: managed-source generation, layered planning, and authorized deployment.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
 - `creating-and-editing-typst-figures`: creation, revision, or read-only scientific review of figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
-- `pack-research-results`: saved calculation results packaged for transfer and local plotting/regrouping, with individual values, original metadata, provenance, and relocation verification; also supports remote-agent instructions.
+- `pack-research-results`: selection and transfer preparation of saved calculation results, receipt validation, and integration with existing inputs; retains individual values, original metadata, provenance, and relocation checks, and supports instructions-only requests.
 - `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
 - `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
@@ -43,6 +43,9 @@ flowchart LR
 ```
 
 The workflows stay independent.
+Research-result work selects necessary saved inputs, retains omitted originals at source with identities, and validates received candidates before updating adopted references.
+Current input inventories remain separate from original delivery history; shared payload references preserve all sources and conflicting values stop adoption.
+Its completion covers the requested instructions, sealed bundle, or verified input integration; scientific recomputation, figure production, and manuscript changes require their own scope.
 Report work owns research questions, evidence and claims, prose, tables, contextual captions, figure selection, and page composition.
 Its handoff is question and display requirements → figure creation/revision → verified outputs and referenceable caption ingredients → report integration and whole-document checks.
 Existing figures used as-is require only report-side inclusion and interpretation checks.

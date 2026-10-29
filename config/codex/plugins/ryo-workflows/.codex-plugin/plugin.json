@@ -1,7 +1,7 @@
 {
   "name": "ryo-workflows",
   "version": "0.1.1",
-  "description": "Reusable dotfiles, arXiv diff PDF, research result packaging, Typst research reports, scientific figure creation/editing/review and packaging, and travel-calendar workflows.",
+  "description": "Reusable dotfiles, arXiv diff PDF, research result packaging and integration, Typst research reports, scientific figure creation/editing/review and packaging, and travel-calendar workflows.",
   "author": {
     "name": "Ryo"
   },
@@ -28,7 +28,7 @@
   "interface": {
     "displayName": "Ryo Workflows",
     "shortDescription": "Reusable dotfiles, document, and travel workflows for Codex.",
-    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, packing saved research results for transfer and local reporting, writing or reviewing Typst research reports, creating, editing, or reviewing scientific Typst figures without modifying artifacts in review mode, portable editable figure bundles, and calendar files from travel reservation Markdown.",
+    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, selecting and packing saved research results for transfer, validating receipts and integrating them with existing inputs, drafting remote-agent instructions for these operations, writing or reviewing Typst research reports, creating, editing, or reviewing scientific Typst figures without modifying artifacts in review mode, portable editable figure bundles, and calendar files from travel reservation Markdown.",
     "developerName": "Ryo",
     "category": "Productivity",
     "capabilities": [
@@ -44,7 +44,7 @@
       "Package editable Typst figures",
       "Write or review a Typst research report",
       "Create calendar files from travel reservations",
-      "Package saved research calculation results for transfer"
+      "Package or receive and integrate saved research results"
     ],
     "brandColor": "#334155",
     "screenshots": []

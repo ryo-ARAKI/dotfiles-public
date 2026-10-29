@@ -45,6 +45,8 @@ config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/ref
 config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/references/presentation-and-layout.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-figures/references/presentation-and-layout.md	0644	local
 config/codex/plugins/ryo-workflows/skills/dotfiles-deploy/SKILL.md	~/plugins/ryo-workflows/skills/dotfiles-deploy/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/pack-research-results/SKILL.md	~/plugins/ryo-workflows/skills/pack-research-results/SKILL.md	0644	local
+config/codex/plugins/ryo-workflows/skills/pack-research-results/references/data-contract.md	~/plugins/ryo-workflows/skills/pack-research-results/references/data-contract.md	0644	local
+config/codex/plugins/ryo-workflows/skills/pack-research-results/references/receive-and-integrate.md	~/plugins/ryo-workflows/skills/pack-research-results/references/receive-and-integrate.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/SKILL.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/SKILL.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/data-and-provenance.md	0644	local
 config/codex/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	~/plugins/ryo-workflows/skills/export-editable-typst-figures/references/provenance-examples.md	0644	local
