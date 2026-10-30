@@ -19,6 +19,7 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 - `pack-research-results`: selection and transfer preparation of saved calculation results, receipt validation, and integration with existing inputs; retains individual values, original metadata, provenance, and relocation checks, and supports instructions-only requests.
 - `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
+- `proofreading-english-papers`: proofreading and polishing existing English scientific manuscripts while preserving scientific meaning and evidential scope, with Japanese explanations or requested original/revised comparisons.
 - `extrip-to-ics`: Google Calendar importable ICS files from Japanese train and hotel reservation Markdown, with departure-station and hotel Google Maps links.
 
 ## Responsibilities and data flow
@@ -49,6 +50,10 @@ Its completion covers the requested instructions, sealed bundle, or verified inp
 Report work owns research questions, evidence and claims, prose, tables, contextual captions, figure selection, and page composition.
 Its handoff is question and display requirements → figure creation/revision → verified outputs and referenceable caption ingredients → report integration and whole-document checks.
 Existing figures used as-is require only report-side inclusion and interpretation checks.
+English proofreading owns language revision within the requested manuscript scope, preserving claim strength, conditions, and references; ambiguous meaning stays unresolved pending an author question.
+It returns the full revised scope and important Japanese reasons by default, or original/revised/reason comparisons when requested.
+It does not translate Japanese-only notes, draft new sections, or design document structure.
+English-only proofreading of a Typst manuscript does not require report composition or PDF/layout validation; full report production retains those responsibilities with the report skill.
 Figure work uses the existing plotting source and authoritative data/condition/series definitions, without requiring a portable bundle.
 Read-only scientific figure review returns evidence-backed findings about displayed values, points, intervals, series, and legends; it leaves sources and delivered artifacts unchanged.
 Report arguments, contextual captions, and page composition stay with the report skill; extraction and portability stay with the export skill.
