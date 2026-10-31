@@ -91,3 +91,12 @@ config/codex/plugins/ryo-workflows/README.md	~/plugins/ryo-workflows/README.md	0
 config/Code/ui-state.json	~/.config/Code/ui-state.json	0644	local
 config/Code/restore-ui-state.py	~/.config/Code/restore-ui-state.py	0644	local
 bin/workbook-dashboard-launch	~/.local/bin/workbook-dashboard-launch	0755	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/SKILL.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/SKILL.md	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/cascade-and-flows.typ	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/cascade-and-flows.typ	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/information-decomposition.typ	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/information-decomposition.typ	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/iterative-selection.typ	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/iterative-selection.typ	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/multiscale.typ	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/examples/multiscale.typ	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/layout-mockup.html	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/assets/layout-mockup.html	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/references/diagram-design.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/references/diagram-design.md	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/references/layout-mockups.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/references/layout-mockups.md	0644	local
+config/codex/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/references/typst-recipes.md	~/plugins/ryo-workflows/skills/creating-and-editing-typst-schematics/references/typst-recipes.md	0644	local
