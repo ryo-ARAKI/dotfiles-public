@@ -1,7 +1,7 @@
 {
   "name": "ryo-workflows",
   "version": "0.1.1",
-  "description": "Reusable dotfiles, arXiv diff PDF, research result packaging and integration, Typst research reports, English paper proofreading, scientific figure creation/editing/review and packaging, and travel-calendar workflows.",
+  "description": "Reusable dotfiles, arXiv diff PDF, research result packaging and integration, Typst research reports, English paper proofreading, scientific figure creation/editing/review and packaging, browser-editable Typst schematics, and travel-calendar workflows.",
   "author": {
     "name": "Ryo"
   },
@@ -25,13 +25,16 @@
     "calendar",
     "ics",
     "data",
-    "provenance"
+    "provenance",
+    "schematics",
+    "diagrams",
+    "layout"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "Ryo Workflows",
     "shortDescription": "Reusable dotfiles, document, and travel workflows for Codex.",
-    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, selecting and packing saved research results for transfer, validating receipts and integrating them with existing inputs, drafting remote-agent instructions for these operations, writing or reviewing Typst research reports, proofreading existing English scientific manuscripts while preserving scientific meaning and explaining important changes in Japanese, creating, editing, or reviewing scientific Typst figures without modifying artifacts in review mode, portable editable figure bundles, and calendar files from travel reservation Markdown.",
+    "longDescription": "Reusable workflows for managed dotfiles deployment, complete arXiv source-version diff PDFs, selecting and packing saved research results for transfer, validating receipts and integrating them with existing inputs, drafting remote-agent instructions for these operations, writing or reviewing Typst research reports, proofreading existing English scientific manuscripts while preserving scientific meaning and explaining important changes in Japanese, creating, editing, or reviewing scientific Typst figures without modifying artifacts in review mode, scientific Typst schematics with static composition proposals, direct browser layout editing and versioned JSON handoff, portable editable figure bundles, and calendar files from travel reservation Markdown.",
     "developerName": "Ryo",
     "category": "Productivity",
     "capabilities": [
@@ -48,7 +51,8 @@
       "Write or review a Typst research report",
       "Proofread an English paper and explain changes in Japanese",
       "Create calendar files from travel reservations",
-      "Package or receive and integrate saved research results"
+      "Package or receive and integrate saved research results",
+      "Create, edit, or review a Typst schematic with browser-editable layout drafts"
     ],
     "brandColor": "#334155",
     "screenshots": []

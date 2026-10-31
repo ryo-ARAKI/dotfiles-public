@@ -1,12 +1,14 @@
 ---
 name: creating-and-editing-typst-figures
-description: Use when creating, revising, or performing a read-only review of scientific Typst figures in reports, standalone sources, or existing editable bundles; portable packaging belongs to export-editable-typst-figures, and report prose, captions, or page composition belongs to writing-typst-research-reports.
+description: Use when creating, revising, or performing a read-only review of numerical scientific Typst figures in reports, standalone sources, or existing editable bundles; relationship schematics belong to creating-and-editing-typst-schematics, portable packaging to export-editable-typst-figures, and report prose, captions, or page composition belongs to writing-typst-research-reports.
 ---
 
 # Create and Edit Typst Figures
 
 Make the requested scientific comparison readable while keeping the correspondence between inputs and displayed quantities verifiable.
 Work with the existing plotting code and data definitions; creating a portable bundle is a separate requested result.
+Use [Create and Edit Typst Schematics](../creating-and-editing-typst-schematics/SKILL.md) for hierarchy, processes, flows, sets, and annotated image relationships.
+For a mixed figure, this skill verifies numerical inputs/quantities while the schematic skill owns relationship meaning and overall layout.
 
 ## Establish the Figure Contract
 
