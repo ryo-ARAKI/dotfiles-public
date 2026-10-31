@@ -21,6 +21,8 @@ Identify the question, required elements, relationships and directions, containm
 Use existing specifications or notes for this contract; require no new scientific schema.
 Ask only result-changing missing information, one question at a time, and continue independent parts.
 Do not invent a direction, causal claim, area interpretation, missing image, or mathematical definition.
+Omit in-figure titles and supplemental prose by default, including generic notes that the figure is schematic or not quantitative; include them only when explicitly requested.
+Keep the axis labels, region names, equations, legends and relation labels needed to read the diagram.
 
 ## Read for the operation
 
