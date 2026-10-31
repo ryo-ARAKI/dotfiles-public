@@ -60,6 +60,25 @@ The user attaches the saved file or specifies its location; exporting does not s
 Keep the user's exported file unchanged as the accepted composition revision before cleanup.
 Do not pass the review checkpoint based on a screenshot, browser-local state, or an agent's fixture export.
 
+## Canvas, aspect ratio, and whitespace
+
+Use a fixed default outer padding of 20 draft units per side for schematics.
+Keep padding, canvas-width/height, aspect-ratio, and output-scale controls out of the browser editor.
+The user tells Codex the desired aspect ratio; Codex recomposes the mockup, updates its frame/render/export settings together, and handles the physical output size and scale.
+Use the latest exported state when recomposing, retaining its text, styles and deletions and preserving positions where compatible with the requested layout change.
+Existing element editing, deletion, history, reset and handoff behavior remains the same.
+
+For automatic frame fitting, use the visible content bounds plus the default padding and expand the shorter dimension as needed to retain the Codex-selected aspect ratio.
+The default padding is a minimum; retaining the aspect ratio can add whitespace on one axis.
+Keep object coordinates, sizes, text sizes and stroke widths unchanged during fitting; do not stretch the drawing or compact gaps between objects.
+Include text, curve extents, strokes, arrowheads, group frames and region bands in the bounds; exclude the full-canvas background, selection highlights, handles and tangent guides.
+Recompute after valid field edits and deletion, and after a drag finishes so the frame stays stable during the gesture.
+Keep the last valid frame for an empty variant.
+Use the same fitted frame for the browser preview, PNG export, retained JSON and Typst handoff; preserve it through history, reset and reload.
+
+The current supplied starters still use fixed 960 × 540 frames and fixed-size PNG export.
+Automatic frame fitting described here is the agreed design target, not an implemented starter capability; do not report it as working until the render/export/snapshot paths are updated and verified together.
+
 ## Color selection
 
 Both starters offer the 18 [Typst predefined colors](https://typst.app/docs/reference/visualize/color/#predefined-colors), with color names and actual swatches in every menu option and the selected value; omit color codes from the menu (palette checked 2026-10-31).
@@ -195,6 +214,6 @@ The [iteration example](../assets/examples/iterative-selection.typ) demonstrates
 The example's `候補 α`/`Candidates` and `選択へ`/`select` line breaks correspond to the edited test fixture.
 The starter uses centered SVG text at 30.9 draft units, which becomes about 7 pt at this 76.8 mm publication width; keep separately edited text sizes when transferring a real snapshot.
 These fixture exports are verification inputs, not a claim of user approval.
-Compare accepted PNG and Typst at the same 16:9 canvas ratio, excluding standalone page margins.
+Compare accepted PNG and Typst at the same agreed canvas aspect ratio (16:9 in this fixture), excluding standalone page margins.
 Record the chosen physical scale, rounding increments, maximum shifts, text and relation preservation, and any intentional typesetting difference.
 If cleanup causes a visible composition change, show both images and wait for the affected user adjustment instead of adopting a different layout.
