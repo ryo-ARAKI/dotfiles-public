@@ -160,9 +160,22 @@ function render(){
 const displayNames={'stage-1':'候補','stage-2':'選択','stage-3':'更新','stop':'終了','cycle':'探索グループ','label-1':'候補の文字','label-2':'選択の文字','label-3':'更新の文字','label-4':'終了の文字','group-label':'探索の見出し','edge-label':'選択の接続ラベル','loop-label':'反復の接続ラベル','stop-label':'停止条件のラベル','flow-12':'候補 → 選択','flow-23':'選択 → 更新','return':'更新 → 候補（反復）','exit':'更新 → 終了'};
 const typeNames={elements:'要素',groups:'グループ',labels:'ラベル',connections:'接続'};
 function options(){const v=$('variant');v.replaceChildren(...doc.variants.map(x=>new Option(x.title,x.id)));v.value=doc.selected_variant_id;const s=$('selection');s.replaceChildren(...categories.flatMap(k=>current()[k].map(o=>new Option(typeNames[k]+' · '+(displayNames[o.id]||o.id),o.id))));if(!find(selected))selected=current().elements[0].id;s.value=selected;}
+// Keep the scene/export precise; round only values presented in the editor.
+function displayNumber(value){return String(Number(value.toFixed(2)));}
+function displayPoints(points){return points.map(p=>displayNumber(p.x)+', '+displayNumber(p.y)).join('\n');}
+function enteredNumber(value,original){
+ const number=Number(value);
+ return Number.isFinite(original)&&number===Number(displayNumber(original))?original:number;
+}
+function formatEditorField(control){
+ if(control.disabled||control.getAttribute('aria-invalid')==='true')return;
+ const o=find(selected);
+ if(control.type==='number'&&typeof o[control.id]==='number')control.value=displayNumber(o[control.id]);
+ else if(['points','waypoints'].includes(control.id)&&o[control.id])control.value=displayPoints(o[control.id]);
+}
 function form(){
  for(const control of $('editor').querySelectorAll('[aria-invalid]'))control.removeAttribute('aria-invalid');
-const o=find(selected),k=kind(selected),edge=k==='connections',label=k==='labels';colorForm(o,k);$('dimensions').classList.toggle('hidden',!['elements','groups'].includes(k));$('label-fields').classList.toggle('hidden',!label);$('edge-fields').classList.toggle('hidden',!edge);for(const id of ['x','y']){$(id).disabled=edge;$(id).required=!edge;$(id).value=edge?0:o[id];}for(const id of ['width','height','fontSize']){$(id).value=o[id]??1;$(id).disabled=id==='fontSize'?!label:!['elements','groups'].includes(k);} $('text').value=o.text??'';$('waypoints').value=(o.waypoints||[]).map(p=>p.x+', '+p.y).join('\n');$('coordinates').textContent=edge?'経由点と接続ラベルは図全体の座標。端点・方向は固定。':(o.group_id||o.owner_id)?'所属先を原点とする相対座標。文字サイズはグループ拡縮と独立。':'図全体の左上原点、右向きX・下向きY。';}
+const o=find(selected),k=kind(selected),edge=k==='connections',label=k==='labels';colorForm(o,k);$('dimensions').classList.toggle('hidden',!['elements','groups'].includes(k));$('label-fields').classList.toggle('hidden',!label);$('edge-fields').classList.toggle('hidden',!edge);for(const id of ['x','y']){$(id).disabled=edge;$(id).required=!edge;$(id).value=edge?0:displayNumber(o[id]);}for(const id of ['width','height','fontSize']){$(id).value=displayNumber(o[id]??1);$(id).disabled=id==='fontSize'?!label:!['elements','groups'].includes(k);} $('text').value=o.text??'';$('waypoints').value=displayPoints(o.waypoints||[]);$('coordinates').textContent=edge?'経由点と接続ラベルは図全体の座標。端点・方向は固定。':(o.group_id||o.owner_id)?'所属先を原点とする相対座標。文字サイズはグループ拡縮と独立。':'図全体の左上原点、右向きX・下向きY。';}
 let fieldEdit=null;
 const undoStack=[],redoStack=[];
 function historyButtons(){for(const [id,stack] of [['undo',undoStack],['redo',redoStack]])$(id).disabled=!!drag||stack.length===0;}
@@ -190,16 +203,16 @@ document.addEventListener('keydown',e=>{
   e.preventDefault();$(id).click();
 });
 function resizeGroup(g,w,h){const sx=w/g.width,sy=h/g.height;for(const e of current().elements.filter(e=>e.group_id===g.id)){e.x*=sx;e.y*=sy;e.width*=sx;e.height*=sy;for(const l of current().labels.filter(l=>l.owner_id===e.id)){l.x*=sx;l.y*=sy;}}for(const l of current().labels.filter(l=>l.owner_id===g.id)){l.x*=sx;l.y*=sy;}g.width=w;g.height=h;}
-function fieldNumber(control){
+function fieldNumber(control,original){
  if(control.value.trim()===''||!Number.isFinite(control.valueAsNumber))throw Error('数値を入力してください');
- return control.valueAsNumber;
+ return enteredNumber(control.value,original);
 }
-function fieldPoints(value,allowEmpty){
+function fieldPoints(value,allowEmpty,original){
  if(!value.trim()&&allowEmpty)return [];
- return value.trim().split('\n').map(line=>{
+ return value.trim().split('\n').map((line,i)=>{
   const a=line.split(',').map(v=>v.trim());
   if(a.length!==2||a.some(v=>v===''))throw Error('各行は X, Y');
-  return {x:Number(a[0]),y:Number(a[1])};
+  return {x:enteredNumber(a[0],original[i]?.x),y:enteredNumber(a[1],original[i]?.y)};
  });
 }
 function reflectField(e){
@@ -207,11 +220,11 @@ function reflectField(e){
  if(!control.matches('input,textarea')||control.disabled||e.isComposing)return;
  const before=structuredClone(doc),o=find(selected),k=kind(selected);
  try{
-  if(control.id==='waypoints')o.waypoints=fieldPoints(control.value,true);
+  if(control.id==='waypoints')o.waypoints=fieldPoints(control.value,true,o.waypoints);
   else if(control.id==='text')o.text=control.value;
   else if(k==='groups'&&['width','height'].includes(control.id)){
-   const value=fieldNumber(control);resizeGroup(o,control.id==='width'?value:o.width,control.id==='height'?value:o.height);
-  }else o[control.id]=fieldNumber(control);
+   const value=fieldNumber(control,o[control.id]);resizeGroup(o,control.id==='width'?value:o.width,control.id==='height'?value:o.height);
+  }else o[control.id]=fieldNumber(control,o[control.id]);
   validate(doc);control.removeAttribute('aria-invalid');
   if(!same(before.variants,doc.variants)){
    const grouped=fieldEdit?.id===selected&&fieldEdit.field===control.id&&fieldEdit.entry===undoStack.at(-1)&&!redoStack.length;
@@ -231,7 +244,7 @@ function reflectField(e){
 $('editor').onsubmit=e=>e.preventDefault();
 $('editor').addEventListener('input',reflectField);
 $('editor').addEventListener('compositionend',reflectField);
-$('editor').addEventListener('focusout',()=>{fieldEdit=null;});
+$('editor').addEventListener('focusout',e=>{fieldEdit=null;formatEditorField(e.target);});
 $('selection').onchange=()=>{selected=$('selection').value;render();form();};
 $('variant').onchange=()=>{const before=structuredClone(doc);doc.selected_variant_id=$('variant').value;changed(before);refresh();};
 $('reset').onclick=()=>{const before=structuredClone(doc);const v=doc.variants.find(v=>v.id===doc.selected_variant_id);v.current=structuredClone(v.initial);changed(before);refresh();$('status').textContent='この案だけを生成直後へ戻しました。他案の編集は保持しています。';};
