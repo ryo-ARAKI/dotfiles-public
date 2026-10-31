@@ -19,6 +19,8 @@ if status --is-interactive
     abbr gdif "git diff --color-words --no-textconv -G '^'"
     abbr gdh "git diff --color-words --no-textconv -G '^' HEAD^...HEAD"
     abbr gdc "git diff --color-words --no-textconv -G '^' --cached"
+    abbr gdw 'git diff --no-color --no-ext-diff --no-textconv --word-diff=plain'
+    abbr gdwm 'git diff --no-color --no-ext-diff --no-textconv --word-diff=plain main...HEAD'
     abbr gchk "git checkout"
     abbr gust "git restore --staged"
     abbr gsav "git stash push -u"
