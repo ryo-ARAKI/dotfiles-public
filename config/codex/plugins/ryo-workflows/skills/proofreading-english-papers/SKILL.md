@@ -31,13 +31,13 @@ Use these as judgment criteria, not seven mandatory report sections.
 
 | Lens | Decision |
 | --- | --- |
-| Sentence role | Distinguish definitions, assumptions, aims, methods, derivations, observations, interpretations, and predictions. Choose verbs accordingly; an aim expressed with “to demonstrate” is not a reported result. |
+| Sentence role | Distinguish definitions, assumptions, aims, methods, derivations, observations, interpretations, and predictions. Choose verbs accordingly; “to observe” or “to demonstrate” can state a valid aim. Report an achieved result only when the supplied evidence establishes it. |
 | Evidence and claim | Match the claim to supplied evidence. “Is consistent with” does not establish causation. Finite measurements alone do not establish a limit or mechanism. Preserve supported assertions without adding may/suggest merely for caution. |
-| Comparisons and conditions | Compare like quantities: a coefficient with a coefficient, not a case. Clarify omitted targets or evaluation criteria only when context identifies them uniquely. Retain parameter ranges, assumptions, methods, and comparison conditions. |
-| Subject, verb, modifiers | Make the subject and verb express the intended relation. Place modifiers near their targets, resolve pronoun antecedents when unambiguous, and align parallel elements. Do not guess what an ambiguous modifier refers to. |
-| Technical terms | Keep one term for one concept. Distinguish quantities such as energy and energy per unit mass, or wavenumber and wavevector. Preserve definitions and inherited terminology; stylistic variety does not justify changing concepts. |
-| Sentence and paragraph logic | Clarify local information order, repetition, and links such as condition, contrast, and consequence within the requested scope. Introduce existing definitions before use where helpful. Do not invent missing definitions, impose a paragraph formula, or redesign sections. |
-| Grammar and notation | Check agreement, countability, articles, prepositions, parallelism, equation punctuation, and role-appropriate tense. Inherit manuscript spelling and explicit journal conventions rather than imposing one tense or English variant throughout. |
+| Comparisons and conditions | Compare like quantities: a coefficient with another coefficient or a predicted coefficient, not a case or a law. Identify the reference used for an error metric such as RMSE, and the criterion behind “better” or “optimal,” only when context determines them. Do not conflate a finite-lag reference with a derivative limit. Retain parameter ranges, assumptions, methods, and comparison conditions. |
+| Subject, verb, modifiers | Make the subject and verb express the intended relation. Unpack dense noun strings when they obscure what depends on what; keep clear noun phrases. Attribute each property to its actual subject: a mean can deviate from a reference, while individual estimates vary across repeated trials. Place modifiers near their targets, resolve pronoun antecedents when unambiguous, and align parallel elements; do not guess ambiguous relations. |
+| Technical terms | Keep one term for one concept. Distinguish estimation (process), estimator (rule or procedure), and estimate (obtained value). Choose distribution or density from the definition and equations, not by word substitution. Distinguish energy from energy per unit mass and wavenumber from wavevector. Preserve definitions and inherited terminology; stylistic variety does not justify changing concepts. |
+| Sentence and paragraph logic | Clarify local information order, repetition, and links such as condition, contrast, and consequence within the requested scope. Distinguish contrast from contradiction rather than mechanically replacing connectives. Introduce existing definitions before use where helpful. In methods, clarify inputs, targets, operation order, and stopping conditions; in figure descriptions, map line styles, colors, and markers to their meanings. Use supplied conditions and mappings; do not invent missing definitions, impose a paragraph formula, or redesign sections. |
+| Grammar and notation | Check agreement, countability, articles, prepositions, parallelism, and equation punctuation, including complete symbol definitions. Distinguish countable items such as degrees of freedom from mass nouns such as noise. Use prepositions for the intended relation, such as “consistent with” or “difference from.” Distinguish compound modifiers such as “information-flow estimator” from the quantity “information flow.” Choose tense by sentence role and inherit manuscript spelling and explicit journal conventions rather than imposing one tense or English variant throughout. |
 
 ## Preserve meaning and handle uncertainty
 
@@ -46,6 +46,12 @@ Preserve numbers, units, symbols, equations, conditions, comparison scope, assum
 Keep the strength of claims as well as their content.
 Separate proposals affecting scientific meaning or claim strength from ordinary grammar corrections, with their rationale and any needed author decision.
 Do not silently strengthen or weaken a claim, add a causal explanation, or fill a gap with plausible research content.
+
+Treat changes from an aim to a result, from “explained by” to “consistent with” (or vice versa), and from a qualitative judgment such as “negligible” to a numerical ratio as substantive proposals requiring corresponding evidence.
+Consistency alone does not warrant a causal explanation; lack of supplied causal evidence does not authorize silently weakening the author's claim either.
+Quantification needs supplied values and an identified comparison quantity and range; a qualitative adjective alone supplies none of these.
+Extension to untested dimensions or conditions needs a supporting argument even with “expected to apply,” and must remain distinct from validated results.
+Likewise, replacing “steady-state” with “equilibrium,” or “incompressible” with “solenoidal,” requires definitions and conditions that support that meaning; these are not general stylistic replacements.
 
 When meaning is not unique or supporting evidence is missing, retain the affected original wording in the revised text, identify it as unresolved, and ask the single question needed for the next decision.
 Continue other determinate revisions; do not present the whole passage as settled.
@@ -85,6 +91,15 @@ If markup would interfere with Markdown, LaTeX, Typst, code, or existing emphasi
 When safe word-level markup is not possible, show faithful original and revised text in code blocks or another syntax-preserving form, with explicit deletion/addition labels and the corresponding wording outside the protected text.
 If the display cannot render the distinction, use those labels without retrying color effects or claiming successful rendering.
 Retain unresolved original wording, explain why it remains unresolved, and ask only the next needed question while continuing determinate revisions elsewhere.
+
+## Decision examples
+
+These illustrate context-dependent choices, not mandatory rewrites of similar wording.
+
+- **Dependency:** If context states that mutual-information estimates are compared across estimation methods, revise “We discuss estimation method dependency on mutual information” to “We discuss how estimates of mutual information depend on the estimation method.” The clause identifies what depends on what; without that context, retain the ambiguous wording and ask which quantity depends on which.
+- **Error reference:** If the RMSE definition uses the derivative-limit value, “Method A has a smaller RMSE than method B” can become “Method A has a smaller RMSE relative to the derivative-limit value than method B.” If both finite-lag and derivative-limit references occur and the definition is unavailable, retain the original and ask which reference the RMSE uses.
+- **Stopping condition:** If the rule is explicitly $i_n = i_{n-1}$ for $n \geq 2$, clarify “Iteration terminates when the selected candidate repeats consecutively” as “Iteration terminates when the same candidate is selected in two consecutive iterations.” Without the rule or an equivalent definition, do not invent the number of iterations; ask how many consecutive selections trigger termination.
+- **Missing result:** If a result statement is requested but only “We conducted simulations to observe fluctuations” is supplied, preserve the aim rather than writing “Our simulations showed fluctuations.” Explain in Japanese that the latter asserts an outcome not supplied, and ask whether the simulations actually showed the fluctuations. For ordinary proofreading, retain a valid aim without requiring an outcome question. Continue any determinate language corrections elsewhere.
 
 ## Comparison examples
 
