@@ -2,8 +2,9 @@
 
 ## Comparison and handoff
 
-Use the [self-contained HTML starter](../assets/layout-mockup.html) as a diagram-specific draft, rewriting its initial scene, labels, and necessary rendering code for the current request.
-Its two generic examples compare a horizontal process with a vertical process; they are not alternative scientific hypotheses.
+Choose the draft primitives from the figure: use the [node/edge starter](../assets/layout-mockup.html) for processes and the [spectrum starter](../assets/spectrum-layout-mockup.html) for qualitative curves, axes, region bands, and annotations.
+Rewrite its initial scene, labels, and necessary rendering code for the current request; do not reduce a curve-based figure to boxes simply because the first starter uses rectangles.
+The node/edge starter's two generic examples compare a horizontal process with a vertical process; they are not alternative scientific hypotheses.
 Generate 2–3 meaningfully different compositions for a new figure and export static previews from the same states.
 Static images are the primary comparison medium because terminal chat may not render interactive content.
 Save the HTML so the user can open it in an ordinary offline browser; no chat API, network resource, profile, server, or local storage is required.
@@ -30,7 +31,40 @@ The user attaches the saved file or specifies its location; exporting does not s
 Keep the user's exported file unchanged as the accepted composition revision before cleanup.
 Do not pass the review checkpoint based on a screenshot, browser-local state, or an agent's fixture export.
 
-## Version 1 editing snapshot
+## Qualitative spectrum drafts
+
+The spectrum starter uses three compositions of the same three-dimensional turbulence concept: background bands, external callouts, and a separate scale-transfer strip.
+It is a qualitative high-Reynolds-number Kolmogorov picture, not a numerical spectrum or an assertion that all turbulent flows have that shape.
+Multiple separate spiral paths below the spectrum indicate a spread of eddy sizes in each region, decreasing toward high wavenumber. Their drawn radii and counts are illustrative, not a calibrated inverse-wavenumber scale or an energy-density encoding; mixed winding is a visual depiction, not an assertion about measured vorticity.
+When placing scale glyphs under a curve, verify their full outlines lie below the actual path and above the horizontal axis, within the appropriate region, without crossing annotations or one another.
+Keep such scale glyphs separate from the spectrum and transfer paths so users can reposition them without deforming the scientific curve.
+The inertial-range relation and the distinction between small-k energy input and large-k dissipation follow [David Tong's fluid dynamics notes, figure 35 and equation 6.16](https://www.damtp.cam.ac.uk/user/tong/fluids/fluids.pdf) (checked 2026-10-31).
+No data, Reynolds number, numerical tick spacing, fitted range, or exact region boundary is implied.
+Its `k^(−5/3)` draft label is plain editable text; typeset the mathematics in the final Typst figure.
+
+Selecting a path reveals draggable endpoints and cubic control points; dragging the path translates all its points.
+Users can also enter point coordinates, move/resize region bands, and edit labels, with Back/Forward for each completed operation.
+Curve handles and tangent guides are editing aids and are omitted from PNG previews.
+Free adjustments do not enforce a theoretical slope or physical constraints: recheck the meaning and the relation to the guide line before finalization.
+
+This is a separate figure-specific version-1 snapshot, not an extension that the node/edge starter can import.
+It retains the same figure/revision/variant/coordinate identity and initial-state checks, with three bounded collections:
+
+- `paths[]`: stable ID, fixed `type` (`cubic` or `polyline`), point count, stroke, width, dash and direction; editable `points[]` in canvas coordinates. A cubic chain has one start followed by groups of two control points and one endpoint.
+- `regions[]`: stable ID and fill; editable x/y/width/height for rectangular background or under-axis bands.
+- `labels[]`: stable ID; editable canvas x/y, text/newlines and font size.
+
+Validate against this scene's exact initial structure before adopting an export. Preserve path IDs and every control point on redraw; convert all control points as well as endpoints when transferring to CeTZ.
+The final spectrum curve must remain a path, and the transfer arrow must remain a distinct editable object.
+
+Run the dependency-free browser regression with installed Node and Chrome; the output directory holds test-only snapshots and PNGs, not user acceptance:
+
+```fish
+mkdir -p /tmp/spectrum-editor-check
+node scripts/check-spectrum-mockup.mjs (command -v google-chrome) assets/spectrum-layout-mockup.html /tmp/spectrum-editor-check
+```
+
+## Node/edge version 1 editing snapshot
 
 The starter's `INITIAL` object is also its concrete, deliberately limited example of this handoff contract.
 Coordinates are draft units with a top-left origin, x rightward and y downward; the canvas is 960 × 540 in this example.
@@ -82,6 +116,9 @@ This is a handoff exercise, not a shared rendering runtime or automatic scientif
 ## From accepted geometry to Typst
 
 Retain the unrounded file and record its figure/revision, selected variant, and export ID.
+A figure-local Typst renderer can read the retained JSON as data and draw the selected state directly; keep its primitive handlers explicit rather than building a general scientific converter.
+Preserving already usable coordinates without snapping is valid. Record a zero cleanup displacement instead of rounding merely to produce a tidy-looking coordinate list.
+Compare geometry with literal labels first, then inspect the intended math/font substitutions separately so typesetting differences do not hide layout shifts.
 Choose a physical unit and increment for the actual receiving dimensions; no universal snap grid is appropriate.
 Use a shared origin, row/column reference, common dimensions and pitch to derive related coordinates, rather than rounding each child independently.
 Preserve containment and ordering; derive endpoints again from the tidy boxes.

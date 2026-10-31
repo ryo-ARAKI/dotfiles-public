@@ -19,12 +19,16 @@ Do not infer quantitative proportions from an old schematic's geometry.
 | --- | --- |
 | Hierarchy or scale | Aligned levels, explicit correspondence or magnification links, separate scope enclosure; magnification is not time or transport. |
 | Process or iteration | A clear main reading path, branch labels, and a routed return edge outside nodes; distinguish exit from update. |
+| Qualitative spectra or profiles | Confirm the quantity, axis scale, physical regime, and theoretical annotations; draw editable curves, axes, and region bands. Geometry is not measured data, and a transfer arrow is distinct from the spectrum curve. |
 | Flows on a qualitative profile | Distinguish the profile from directed transport and transfer between locations; label each line role without implying measured axes. |
 | Overlap and decomposition | Name exclusive/shared regions and components; state that area/height is schematic unless supported by measured values. |
 | Images with annotations | Retain provenance and scientific context, crop within a real viewport, and anchor callouts to features rather than page pixels. |
 
 The four [runnable examples](typst-recipes.md#examples-and-meaning-contracts) demonstrate these relationships with generic shapes and no external research inputs.
 Past figures inform meaning and author intent; their coordinates, libraries, masking, and curves are candidates to improve rather than prescribed implementations.
+
+If the topic is not yet chosen, offer a few concrete subjects with a recommendation.
+Once a subject is chosen, make provisional compositions with explicit assumptions; settle scientific claims before drawing them, and settle receiving dimensions before final-size verification.
 
 For a new composition, show 2–3 alternatives with different grouping or reading paths, not merely different colors.
 Supply static previews as the basic comparison medium and a saved, offline HTML for direct adjustment.

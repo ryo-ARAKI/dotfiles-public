@@ -1,12 +1,13 @@
 ---
 name: creating-and-editing-typst-schematics
-description: Create, revise, or review scientific Typst schematics of hierarchy, processes, flows, sets, and image composites, including browser-editable layout drafts; numerical plots belong to creating-and-editing-typst-figures, report composition and portable packaging to their respective skills.
+description: Create, revise, or review scientific Typst schematics of hierarchy, processes, flows, sets, qualitative spectra/profiles, and image composites, including browser-editable layout drafts; numerical plots belong to creating-and-editing-typst-figures, report composition and portable packaging to their respective skills.
 ---
 
 # Create and Edit Typst Schematics
 
 Turn scientific relationships into editable Typst figures, using CeTZ or a simpler appropriate method.
 Preserve the supplied meaning and the receiving document's settings.
+Qualitative spectra and profiles belong here even when they have axes and curves; measured or computed data plots belong to the numerical figure skill.
 
 ## Scope and mode
 
@@ -26,7 +27,7 @@ Do not invent a direction, causal claim, area interpretation, missing image, or 
 | Need | Source |
 | --- | --- |
 | Choose a composition or check scientific meaning | [Diagram design](references/diagram-design.md) |
-| Proposals, direct browser editing, handoff, redraw, coordinate cleanup | [Layout mockups](references/layout-mockups.md) and [HTML starter](assets/layout-mockup.html) |
+| Proposals, direct browser editing, handoff, redraw, coordinate cleanup | [Layout mockups](references/layout-mockups.md); [node/edge starter](assets/layout-mockup.html) or [editable spectrum starter](assets/spectrum-layout-mockup.html) |
 | Drawing, current packages, anchors, curves, image composition, standalone/import boundary | [Typst recipes](references/typst-recipes.md) and its four runnable examples |
 | Numerical plots in a mixed figure | [Create and Edit Typst Figures](../creating-and-editing-typst-figures/SKILL.md) for the numerical portion |
 | Argument, contextual captions, or page composition | [Writing Typst Research Reports](../writing-typst-research-reports/SKILL.md) |
