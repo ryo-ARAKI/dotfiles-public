@@ -62,20 +62,50 @@ Group minor grammar corrections when useful; fix neither a change count nor an e
 If no changes are needed, return the requested text and say so without inventing reasons.
 Explain actual revisions, not generic advice or judgments about the author's ability or habits inferred from repeated advice.
 
-When comparison format is requested, show **original → revised → Japanese reason** for each changed passage.
-For long sections, group by sentence or paragraph while preserving the requested detail; do not silently omit changes.
 Honor explicit alternatives for format or explanation language.
 Keep unresolved wording visible in either format, with its reason and the one outstanding question.
 
-## Short example
+When comparison format is requested, choose the form for each sentence or paragraph by how easily the correspondence can be followed, not a fixed character count or change percentage.
+Mix the following forms within a request as needed, preserving every change:
+
+- **Local edits:** For word or phrase replacements, additions, or deletions that retain the sentence structure, show one combined sentence with deletions as `~~old~~` and additions as `**new**`, followed by the Japanese reason. Multiple local edits can share one sentence when easy to follow.
+- **Larger rewrites:** For reordered phrases or clauses, split or merged sentences, or a combined diff that is hard to follow, show **original → revised → Japanese reason** separately. Strike through changed spans on the original side and bold changed spans on the revised side. Treat moved wording as a deletion at its old position and an addition at its new position.
+
+Leave unchanged text unmarked; do not invent edits or emphasis for passages needing no change.
+Use the smallest readable changed unit: a whole word for an inflection or attached-punctuation change, or a phrase or clause for a structural rewrite, rather than emphasizing an unchanged sentence or paragraph.
+Connect Japanese reasons to the actual changed expressions and their purposes.
+Do not routinely repeat the full clean revised text in addition to a requested comparison.
+
+Apply display markup only after the original and revision are settled; do not revise the English to fit the display.
+For a combined diff, check that reading the deletion side or addition side reconstructs the original or revision, including punctuation and conditions.
+For separate versions, remove the display markup and check each against its corresponding text.
+Keep comparison markup out of manuscript files.
+
+If markup would interfere with Markdown, LaTeX, Typst, code, or existing emphasis, leave protected syntax intact.
+When safe word-level markup is not possible, show faithful original and revised text in code blocks or another syntax-preserving form, with explicit deletion/addition labels and the corresponding wording outside the protected text.
+If the display cannot render the distinction, use those labels without retrying color effects or claiming successful rendering.
+Retain unresolved original wording, explain why it remains unresolved, and ask only the next needed question while continuing determinate revisions elsewhere.
+
+## Comparison examples
+
+### Local edits
 
 Context uniquely identifies the reference as the coefficient measured in case B under the same conditions.
 
-Original: At 300 K, the coefficient in case A agree with case B within 2%.
-
-Revised: At 300 K, the coefficient in case A agrees with that in case B within 2%.
+At 300 K, the coefficient in case A ~~agree~~ **agrees** with **that in** case B within 2%.
 
 理由：`agree` を単数主語に合わせて `agrees` に修正しました。
 `case B` を `that in case B` とし、文脈で特定できる係数同士の比較を明示しました。
 300 K、2%、比較条件と一致の強さは維持しています。
 比較対象が文脈から特定できなければ、その箇所は原文のまま残して確認します。
+
+### Larger rewrite
+
+Original: ~~We used the measurements at 300 K to calculate~~ the ~~coefficient,~~ ~~and we did this separately for each sample~~.
+
+Revised: **For each sample, we calculated** the **coefficient** **from the measurements at 300 K**.
+
+理由：`we did this separately for each sample` を文頭の `For each sample` にまとめ、各試料について計算したことを明示しました。
+`used the measurements ... to calculate` を `calculated ... from the measurements` に組み替え、算出対象を主語・動詞の近くに置きました。
+後続節の統合に伴い、`coefficient,` のコンマを削除しました。
+測定温度300 Kと各試料を別々に扱う条件は維持しています。
