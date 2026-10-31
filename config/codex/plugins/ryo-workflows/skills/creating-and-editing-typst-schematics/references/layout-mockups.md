@@ -1,5 +1,17 @@
 # Layout mockups
 
+## Responsibility boundary
+
+| Component | Owns |
+| --- | --- |
+| Codex and this skill | Scientific meaning, composition proposals, structural changes, Typst production and receiving-size review. |
+| Self-contained browser draft | Direct geometry/text/color edits, deletion, history, reset, JSON and PNG I/O. No scientific inference or automatic Typst conversion. |
+| Versioned JSON | Figure/revision identity, exact reset states and edited variants. It is the explicit handoff, not a dependency of the final Typst figure. |
+| Figure-specific Typst source | Readable drawing settings, geometry and mathematics, with standalone and receiving-document compilation. |
+
+The two HTML starters are independent offline documents, not interchangeable renderers for a shared diagram language.
+When adapting a starter, exercise the changed controls and JSON/PNG round trip on that generated scene; repository regression fixtures cover the bundled scenes only.
+
 ## Comparison and handoff
 
 Choose the draft primitives from the figure: use the [node/edge starter](../assets/layout-mockup.html) for processes and the [spectrum starter](../assets/spectrum-layout-mockup.html) for qualitative curves, axes, region bands, and annotations.
@@ -48,13 +60,6 @@ Keep initial states exact and reject additions, duplicate/unknown IDs, rewiring,
 Store deletion as absence from `current`, retaining the full `initial` reset state; carry this absence through JSON handoff and Codex redraw instead of resurrecting removed items.
 Use the full initial object pool for validation and reset even when a regenerated HTML starts with an already reduced current state.
 
-Run the offline deletion regression for either starter:
-
-```fish
-node scripts/check-mockup-deletion.mjs (command -v google-chrome) assets/layout-mockup.html /tmp/node-deletion-check
-node scripts/check-mockup-deletion.mjs (command -v google-chrome) assets/spectrum-layout-mockup.html /tmp/spectrum-deletion-check
-```
-
 **Reset** restores only the selected variant's entire initial state, including text and colors, leaving other variants' edits intact.
 **Confirm** exports the selected variant and all current/initial variant states in one versioned JSON file.
 A successful native file write is reported after `close`; the download fallback reports a request and asks the user to check the file, since browsers do not expose download completion to the page.
@@ -66,22 +71,26 @@ Do not pass the review checkpoint based on a screenshot, browser-local state, or
 
 ## Canvas, aspect ratio, and whitespace
 
+The supplied starters use fixed 960 × 540 frames and fixed-size PNG export.
+Automatic frame fitting is a design target, not an implemented capability.
+When Codex changes the frame, update render/export/snapshot settings together and verify visible content is inside it; deletion alone does not crop whitespace.
+
 Use a fixed default outer padding of 20 draft units per side for schematics.
 Keep padding, canvas-width/height, aspect-ratio, and output-scale controls out of the browser editor.
 The user tells Codex the desired aspect ratio; Codex recomposes the mockup, updates its frame/render/export settings together, and handles the physical output size and scale.
 Use the latest exported state when recomposing, retaining its text, styles and deletions and preserving positions where compatible with the requested layout change.
 Existing element editing, deletion, history, reset and handoff behavior remains the same.
 
-For automatic frame fitting, use the visible content bounds plus the default padding and expand the shorter dimension as needed to retain the Codex-selected aspect ratio.
+### Deferred automatic frame fitting
+
+Before offering automatic frame fitting, update and verify render/export/snapshot paths together.
+Use the visible content bounds plus the default padding and expand the shorter dimension as needed to retain the Codex-selected aspect ratio.
 The default padding is a minimum; retaining the aspect ratio can add whitespace on one axis.
 Keep object coordinates, sizes, text sizes and stroke widths unchanged during fitting; do not stretch the drawing or compact gaps between objects.
 Include text, curve extents, strokes, arrowheads, group frames and region bands in the bounds; exclude the full-canvas background, selection highlights, handles and tangent guides.
 Recompute after valid field edits and deletion, and after a drag finishes so the frame stays stable during the gesture.
 Keep the last valid frame for an empty variant.
 Use the same fitted frame for the browser preview, PNG export, retained JSON and Typst handoff; preserve it through history, reset and reload.
-
-The current supplied starters still use fixed 960 × 540 frames and fixed-size PNG export.
-Automatic frame fitting described here is the agreed design target, not an implemented starter capability; do not report it as working until the render/export/snapshot paths are updated and verified together.
 
 ## Color selection
 
@@ -99,13 +108,6 @@ The spectrum starter makes existing path `stroke` and region `fill` editable and
 Accept only predefined names or the exact original value for that object/property; preserve custom initial colors without accepting arbitrary CSS from imported JSON.
 Resolve names through the embedded RGB table when rendering SVG and arrowheads: browser CSS names such as `green`, `gray`, and `purple` differ from Typst's values, and `eastern` is not a CSS color name.
 Keep both standalone HTML palettes aligned when updating the official list.
-
-Verify either starter offline with the same regression, using a separate output directory for each run:
-
-```fish
-node scripts/check-mockup-colors.mjs (command -v google-chrome) assets/layout-mockup.html /tmp/node-colors-check
-node scripts/check-mockup-colors.mjs (command -v google-chrome) assets/spectrum-layout-mockup.html /tmp/spectrum-colors-check
-```
 
 ## Qualitative spectrum drafts
 
@@ -132,13 +134,6 @@ It retains the same figure/revision/variant/coordinate identity and initial-stat
 
 Validate against this scene's exact initial structure before adopting an export. Preserve path IDs and every control point on redraw; convert all control points as well as endpoints when transferring to CeTZ.
 The final spectrum curve must remain a path, and the transfer arrow must remain a distinct editable object.
-
-Run the dependency-free browser regression with installed Node and Chrome; the output directory holds test-only snapshots and PNGs, not user acceptance:
-
-```fish
-mkdir -p /tmp/spectrum-editor-check
-node scripts/check-spectrum-mockup.mjs (command -v google-chrome) assets/spectrum-layout-mockup.html /tmp/spectrum-editor-check
-```
 
 ## Node/edge version 1 editing snapshot
 
