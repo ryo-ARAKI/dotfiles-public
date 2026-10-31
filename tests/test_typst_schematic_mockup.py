@@ -48,7 +48,7 @@ function call(method,params={},sid=session){return new Promise((resolve,reject)=
   pending.set(id,{resolve,reject,timer});browser.stdio[3].write(JSON.stringify({id,method,params,...(sid?{sessionId:sid}:{})})+'\0');
 });}
 async function js(expression){const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true,userGesture:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
-async function click(selector){const b=await js(`(()=>{const b=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
+async function click(selector){const b=await js(`(()=>{const target=document.querySelector(${JSON.stringify(selector)});target.scrollIntoView({block:'nearest'});const b=target.getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
 async function mouse(type,p,buttons=0){await call('Input.dispatchMouseEvent',{type,...p,button:buttons?'left':'none',buttons,clickCount:type==='mouseMoved'?0:1});}
 async function fill(selector,text){await click(selector);await js(`document.querySelector(${JSON.stringify(selector)}).select()`);await call('Input.insertText',{text:String(text)});}
 async function select(id){await js(`document.querySelector('#selection').value=${JSON.stringify(id)};document.querySelector('#selection').dispatchEvent(new Event('change'))`);}
@@ -69,20 +69,20 @@ try{
   // History must restore actual UI edits, not just expose toolbar buttons.
   assert.equal(await js(`!!document.querySelector('#undo') && !!document.querySelector('#redo')`),true,'undo/redo controls are missing');
   assert.equal(await js(`document.querySelector('#undo').disabled && document.querySelector('#redo').disabled`),true);
-  await select('stage-1');await fill('#x',44);await click('#apply');
+  await select('stage-1');await fill('#x',44);
   assert.equal(await js('current().elements[0].x'),44);
   await click('#undo');assert.deepEqual(await js('doc.variants'),initial.variants);
   assert.equal(await js(`document.querySelector('#undo').disabled`),true);
   await click('#redo');assert.equal(await js('current().elements[0].x'),44);
-  await click('#undo');await select('stage-1');await fill('#x',55);await click('#apply');
+  await click('#undo');await select('stage-1');await fill('#x',55);
   assert.equal(await js(`document.querySelector('#redo').disabled`),true,'new edit must clear redo');
   await click('#reset');assert.deepEqual(await js('current()'),initial.variants[0].initial);
   await click('#undo');assert.equal(await js('current().elements[0].x'),55);
   const beforeInvalid=await js('JSON.stringify(doc)');
-  await select('flow-12');await fill('#waypoints','NaN, 10');await click('#apply');
+  await select('flow-12');await fill('#waypoints','NaN, 10');
   assert.equal(await js('JSON.stringify(doc)'),beforeInvalid);
   await click('#undo');assert.deepEqual(await js('doc.variants'),initial.variants,'failed input adds no history');
-  await click('#redo');await variant('vertical');await select('label-1');await fill('#text','history B');await click('#apply');
+  await click('#redo');await variant('vertical');await select('label-1');await fill('#text','history B');
   await click('#undo');assert.equal(await js('current().labels[0].text'),initial.variants[1].initial.labels[0].text);
   await click('#undo');assert.equal(await js('doc.selected_variant_id'),'horizontal');assert.equal(await js('current().elements[0].x'),55);
   await click('#redo');assert.equal(await js('doc.selected_variant_id'),'vertical');
@@ -97,15 +97,15 @@ try{
   await mouse('mousePressed',start,1);await mouse('mouseMoved',{x:start.x+17,y:start.y+9},1);await mouse('mouseReleased',{x:start.x+17,y:start.y+9},1);
   assert.notEqual(await js('current().elements[0].x'),initial.variants[0].current.elements[0].x);
   const dragged=await js('structuredClone(current())');await click('#undo');assert.deepEqual(await js('current()'),initial.variants[0].current);await click('#redo');assert.deepEqual(await js('current()'),dragged);
-  await select('stage-1');await fill('#x',43.7);await fill('#y',88.4);await fill('#width',162.6);await fill('#height',72.8);await click('#apply');
-  await select('label-1');await fill('#text','候補 α <tag> & "引用"\nsecond line');await fill('#x',81.3);await fill('#y',36.4);await fill('#fontSize',18);await click('#apply');
-  await select('flow-12');await fill('#waypoints','340.2, 177.8\n350.3, 177.8');await click('#apply');
-  await select('edge-label');await fill('#text','選択へ\nroute');await fill('#x',351.7);await fill('#y',124.2);await click('#apply');
+  await select('stage-1');await fill('#x',43.7);await fill('#y',88.4);await fill('#width',162.6);await fill('#height',72.8);
+  await select('label-1');await fill('#text','候補 α <tag> & "引用"\nsecond line');await fill('#x',81.3);await fill('#y',36.4);await fill('#fontSize',18);
+  await select('flow-12');await fill('#waypoints','340.2, 177.8\n350.3, 177.8');
+  await select('edge-label');await fill('#text','選択へ\nroute');await fill('#x',351.7);await fill('#y',124.2);
   const beforeGroup=await js('structuredClone(current())');
   assert.deepEqual([beforeGroup.elements[0].x,beforeGroup.elements[0].y,beforeGroup.elements[0].width,beforeGroup.elements[0].height],[43.7,88.4,162.6,72.8]);
   assert.equal(beforeGroup.labels[0].text,'候補 α <tag> & \"引用\"\nsecond line');assert.equal(beforeGroup.labels[0].fontSize,18);
   assert.deepEqual(beforeGroup.connections[0].waypoints,[{x:340.2,y:177.8},{x:350.3,y:177.8}]);
-  await select('cycle');await fill('#x',52.3);await fill('#y',61.7);await fill('#width',704.8);await fill('#height',312.6);await click('#apply');
+  await select('cycle');await fill('#x',52.3);await fill('#y',61.7);await fill('#width',704.8);await fill('#height',312.6);
   const afterGroup=await js('structuredClone(current())');
   for(let i=0;i<beforeGroup.elements.length;i++){
     const a=beforeGroup.elements[i],b=afterGroup.elements[i];if(a.group_id!=='cycle')continue;
@@ -116,22 +116,22 @@ try{
   }
   assert.deepEqual(afterGroup.connections,beforeGroup.connections,'waypoints/direction preserved');
   assert.equal(afterGroup.groups[0].x,52.3);assert.equal(afterGroup.groups[0].y,61.7);
-  await click('#undo');assert.deepEqual(await js('current()'),beforeGroup);await click('#redo');assert.deepEqual(await js('current()'),afterGroup);
+  for(let i=0;i<4;i++)await click('#undo');assert.deepEqual(await js('current()'),beforeGroup);for(let i=0;i<4;i++)await click('#redo');assert.deepEqual(await js('current()'),afterGroup);
   const e=afterGroup.elements[0],g=afterGroup.groups[0];
   const rendered=await js(`document.querySelector('[data-id=\"flow-12\"] polyline').getAttribute('points').split(' ')[0].split(',').map(Number)`);
   assert.deepEqual(rendered,[g.x+e.x+e.width,g.y+e.y+e.height/2]);
   for(const a of beforeGroup.labels){const b=afterGroup.labels.find(x=>x.id===a.id);assert.equal(b.text,a.text);assert.equal(b.fontSize,a.fontSize);}
   assert.deepEqual(await js('anchor(current().connections[0].from)'),await js(`(()=>{const e=worldElement('stage-1');return {x:e.x+e.width,y:e.y+e.height/2}})()`));
-  await variant('vertical');await select('label-1');await fill('#text','Bだけの編集 <tag> & \"引用\" </script> $&\n第二行 β');await click('#apply');
+  await variant('vertical');await select('label-1');await fill('#text','Bだけの編集 <tag> & \"引用\" </script> $&\n第二行 β');
   const editedB=await js('structuredClone(current())');
   await variant('horizontal');await click('#reset');
   assert.deepEqual(await js('current()'),initial.variants[0].initial);
   await variant('vertical');assert.deepEqual(await js('current()'),editedB);
   // Re-edit A as a non-integer fixture for the tidy-coordinate demonstration.
-  await variant('horizontal');await select('cycle');await fill('#x',50.3);await fill('#y',60.2);await fill('#width',700.4);await fill('#height',310.6);await click('#apply');
-  await select('label-1');await fill('#text','候補 α\nCandidates');await click('#apply');
-  await select('edge-label');await fill('#text','選択へ\nselect');await fill('#x',279.8);await fill('#y',281.2);await click('#apply');
-  await select('flow-12');await fill('#waypoints','280.2, 195.1\n290.4, 195.1');await click('#apply');
+  await variant('horizontal');await select('cycle');await fill('#x',50.3);await fill('#y',60.2);await fill('#width',700.4);await fill('#height',310.6);
+  await select('label-1');await fill('#text','候補 α\nCandidates');
+  await select('edge-label');await fill('#text','選択へ\nselect');await fill('#x',279.8);await fill('#y',281.2);
+  await select('flow-12');await fill('#waypoints','280.2, 195.1\n290.4, 195.1');
   const expected=await js('structuredClone(doc)');
   await js('window.showSaveFilePicker=undefined');await click('#confirm');const saved=await downloaded('.json');const actual=JSON.parse(fs.readFileSync(saved,'utf8'));
   assert.deepEqual(actual.variants,expected.variants);assert.equal(actual.selected_variant_id,'horizontal');

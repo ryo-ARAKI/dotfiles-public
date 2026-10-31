@@ -18,11 +18,15 @@ Group scaling is affine for child geometry and label offsets; text size remains 
 Codex handles element/image/shape additions or deletion, equation typesetting, image replacement/cropping, group membership, connection topology, specialized drawing, and new compositions.
 Do not make small Codex-mediated placement requests the main editing path.
 
-**Back / Forward** undo and redo successful edits in chronological order across variants, including form edits, one complete drag, group resizing, variant switching, reset, and JSON loading.
+**Back / Forward** undo and redo successful edits in chronological order across variants, including one continuous edit of a form field, one complete drag, group resizing, variant switching, reset, and JSON loading.
 A new change clears redo; failed or canceled operations, selection alone, unchanged submissions, and exports do not add history.
 History stays in the current tab and is not exported; restored states need a new JSON export.
 Ctrl+Z and Ctrl+Y invoke the same Back/Forward actions outside input fields. While focus is in text/number inputs, textareas, selects, or editable content, preserve native editing shortcuts; ignore IME composition and modified Alt/Shift combinations.
 Keep these controls in generated drafts so users can experiment without losing the preceding layout.
+All editable fields update the figure on input, without an Apply button; preserve focus, caret, and line breaks instead of rebuilding the form on each keystroke.
+Treat one continuous field edit as one diagram-history entry; leaving the field ends that edit. Native input undo/redo also updates the figure.
+While IME composition is active, retain provisional input and reflect its final text at composition end.
+For incomplete or invalid numbers/point lists, retain the raw field text, mark that field, and keep its last valid geometry; other valid fields remain editable.
 
 **Reset** restores only the selected variant's entire initial state, including text and colors, leaving other variants' edits intact.
 **Confirm** exports the selected variant and all current/initial variant states in one versioned JSON file.
@@ -36,7 +40,8 @@ Do not pass the review checkpoint based on a screenshot, browser-local state, or
 ## Color selection
 
 Both starters offer the 18 [Typst predefined colors](https://typst.app/docs/reference/visualize/color/#predefined-colors), with color names and actual swatches in every menu option and the selected value; omit color codes from the menu (palette checked 2026-10-31).
-Select an object, choose its fill, stroke, or text color as applicable, then press Apply.
+Select an object and choose its fill, stroke, or text color as applicable; the choice updates the figure immediately without Apply.
+Keep incomplete input intact when applying a color; only the color changes, and each changed choice is one history entry.
 Color edits participate in the same history, per-variant reset, JSON export/import, and PNG rendering as geometry edits.
 Preserve these controls in generated drafts.
 The initial-color option restores the object's generated color, including existing custom colors; it preserves the original appearance and permits older snapshots without color overrides to load.

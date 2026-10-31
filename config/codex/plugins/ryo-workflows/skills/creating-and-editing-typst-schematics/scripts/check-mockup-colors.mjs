@@ -31,7 +31,7 @@ function call(method,params={},sid=session){return new Promise((resolve,reject)=
   pending.set(id,{resolve,reject,timer});browser.stdio[3].write(JSON.stringify({id,method,params,...(sid?{sessionId:sid}:{})})+'\0');
 });}
 async function js(expression){const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true,userGesture:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
-async function click(selector){const b=await js(`(()=>{const b=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
+async function click(selector){const b=await js(`(()=>{const target=document.querySelector(${JSON.stringify(selector)});target.scrollIntoView({block:'nearest'});const b=target.getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
 async function mouse(type,p,buttons=0){await call('Input.dispatchMouseEvent',{type,...p,button:buttons?'left':'none',buttons,clickCount:type==='mouseMoved'?0:1});}
 async function fill(selector,text){await click(selector);await js(`document.querySelector(${JSON.stringify(selector)}).select()`);await call('Input.insertText',{text:String(text)});}
 async function select(id){await js(`document.querySelector('#selection').value=${JSON.stringify(id)};document.querySelector('#selection').dispatchEvent(new Event('change'))`);}
@@ -55,6 +55,44 @@ try{
  const expected={black:'#000000',gray:'#aaaaaa',silver:'#dddddd',white:'#ffffff',navy:'#001f3f',blue:'#0074d9',aqua:'#7fdbff',teal:'#39cccc',eastern:'#239dad',purple:'#b10dc9',fuchsia:'#f012be',maroon:'#85144b',red:'#ff4136',orange:'#ff851b',yellow:'#ffdc00',olive:'#3d9970',green:'#2ecc40',lime:'#01ff70'};
  const targets=spectrum?[['spectrum','stroke','path'],['region-energy','fill','rect'],['label-title','fill','text'],['axis-x','stroke','path']]:[['stage-1','fill','rect'],['stage-1','stroke','rect'],['cycle','fill','rect'],['cycle','stroke','rect'],['label-1','fill','text'],['flow-12','stroke','polyline']];
  assert.ok(await js("!!document.querySelector('#color-fields')"),'color controls missing');
+ assert.equal(await js("!!document.querySelector('#apply')"),false,'all edits must work without an Apply button');
+ const boxId=spectrum?'region-energy':'stage-1',textId=spectrum?'label-title':'label-1';
+ await select(boxId);const original=await js('structuredClone(doc)');
+ // Each keystroke updates the figure; one continuous field edit is one history entry.
+ await fill('#x','137');await call('Input.insertText',{text:'.25'});
+ assert.equal(await js(`find('${boxId}').x`),137.25);
+ assert.equal(await js(`Number(document.querySelector('[data-id="${boxId}"] rect').getAttribute('x'))`),spectrum?137.25:187.25);
+ assert.equal(await js("document.activeElement.id"),'x');
+ await click('#undo');assert.deepEqual(await js('doc.variants'),original.variants);await click('#redo');assert.equal(await js(`find('${boxId}').x`),137.25);
+ for(const [field,value] of [['y',145.5],['width',190.5],['height',120.25]]){
+  await fill('#'+field,value);assert.equal(await js(`find('${boxId}').${field}`),value);
+ }
+ const lastValid=await js('JSON.stringify(doc)');
+ await fill('#width',0);assert.equal(await js('JSON.stringify(doc)'),lastValid);
+ assert.equal(await js("document.querySelector('#width').getAttribute('aria-invalid')"),'true');
+ await fill('#width',190.5);assert.equal(await js('JSON.stringify(doc)'),lastValid);
+ await fill('#x','');const xBefore=await js(`find('${boxId}').x`);
+ await fill('#y',170.5);assert.equal(await js(`find('${boxId}').x`),xBefore);assert.equal(await js(`find('${boxId}').y`),170.5);
+ assert.equal(await js("document.querySelector('#x').value"),'','other fields must not consume or erase incomplete input');
+ await select(textId);const labelText='編集 <tag> & text\n第二行';
+ await fill('#text',labelText);assert.equal(await js(`find('${textId}').text`),labelText);
+ assert.equal(await js("document.activeElement.id"),'text');assert.equal(await js("document.querySelectorAll('svg tag').length"),0);
+ await fill('#fontSize',24.5);assert.equal(await js(`find('${textId}').fontSize`),24.5);
+ assert.equal(await js(`document.querySelector('[data-id="${textId}"] text').getAttribute('font-size')`),'24.5');
+ // IME provisional text remains in the field until composition completes.
+ await js("document.querySelector('#text').value='日本語入力';document.querySelector('#text').dispatchEvent(new InputEvent('input',{bubbles:true,isComposing:true}))");
+ assert.equal(await js(`find('${textId}').text`),labelText);
+ await js("document.querySelector('#text').dispatchEvent(new CompositionEvent('compositionend',{bubbles:true}))");assert.equal(await js(`find('${textId}').text`),'日本語入力');
+ const pathId=spectrum?'spectrum':'flow-12',field=spectrum?'points':'waypoints';await select(pathId);
+ const points=spectrum?await js('structuredClone(find("spectrum").points)'):[{x:320.5,y:195.25},{x:350.5,y:195.25}];
+ if(spectrum)points[1].y+=12.5;
+ await fill('#'+field,points.map(p=>p.x+', '+p.y).join('\n'));
+ assert.deepEqual(await js(`find('${pathId}').${spectrum?'points':'waypoints'}`),points);
+ const validPath=await js('JSON.stringify(doc)');await fill('#'+field,'12,');assert.equal(await js('JSON.stringify(doc)'),validPath);
+ assert.equal(await js(`document.querySelector('#${field}').value`),'12,');
+ await click('#undo');await click('#redo');assert.deepEqual(await js(`find('${pathId}').${spectrum?'points':'waypoints'}`),points);
+ await open(html);
+
  for(const [id,field,tag] of targets){
   await select(id);
   assert.deepEqual(await js(`Array.from(document.querySelector('#${field}').options).filter(o=>o.value).map(o=>o.value)`),Object.keys(expected));
@@ -70,7 +108,6 @@ try{
    await js(`document.querySelector(${JSON.stringify(option)}).scrollIntoView({block:'nearest'})`);await click(option);
    assert.equal(await js(`document.querySelector('#${field}-picker').open`),false,'selection closes menu');
    assert.equal(await js(`document.querySelector('#${field}-name').textContent`),name);
-   await click('#apply');
    assert.equal(await js(`find(${JSON.stringify(id)}).${field}`),name);
    assert.equal(await js(`document.querySelector('[data-id="${id}"] ${tag}').getAttribute('${field}')`),hex,id+'/'+name);
    if(id==='flow-12'||id==='axis-x')assert.equal(await js(`(()=>{const p=document.querySelector('[data-id="${id}"] ${tag}');return document.querySelector(p.getAttribute('marker-end').slice(4,-1)+' path').getAttribute('fill')})()`),hex,'arrowhead');
@@ -78,14 +115,29 @@ try{
   await click('#undo');assert.equal(await js(`find(${JSON.stringify(id)}).${field}`),'green');
   await click('#redo');assert.equal(await js(`find(${JSON.stringify(id)}).${field}`),'lime');
   // Returning to the initial color does not add an empty override to legacy objects.
-  await js(`document.querySelector('#${field}').value='';document.querySelector('#${field}').dispatchEvent(new Event('change'))`);await click('#apply');
+  await js(`document.querySelector('#${field}').value='';document.querySelector('#${field}').dispatchEvent(new Event('change'))`);
   assert.deepEqual(await js('doc.variants'),before.variants);
  }
  await open(html);
  const fillId=spectrum?'region-energy':'stage-1',edgeId=spectrum?'axis-x':'flow-12',labelId=spectrum?'label-title':'label-1';
  for(const [id,field,name] of [[fillId,'fill','red'],[edgeId,'stroke','eastern'],[labelId,'fill','blue']]){
-  await select(id);await js(`document.querySelector('#${field}').value='${name}'`);await click('#apply');
+  await select(id);await js(`document.querySelector('#${field}').value='${name}';document.querySelector('#${field}').dispatchEvent(new Event('change'))`);
  }
+ // Incomplete numeric input stays intact; valid text is already reflected before choosing a color.
+ await select(fillId);const originalX=await js(`find('${fillId}').x`);
+ await fill('#x','');await click('#fill-picker summary');await click('#fill-options button[data-value="yellow"]');
+ assert.equal(await js(`find('${fillId}').fill`),'yellow');assert.equal(await js(`find('${fillId}').x`),originalX);
+ assert.equal(await js("document.querySelector('#x').value"),'','invalid unfinished coordinate must be preserved');
+ await click('#undo');assert.equal(await js(`find('${fillId}').fill`),'red');
+ await select(labelId);const originalText=await js(`find('${labelId}').text`);await fill('#text','pending label draft');
+ await click('#fill-picker summary');await click('#fill-options button[data-value="green"]');
+ assert.equal(await js(`find('${labelId}').text`),'pending label draft');assert.equal(await js("document.querySelector('#text').value"),'pending label draft');
+ assert.equal(await js(`find('${labelId}').fill`),'green');
+ await click('#undo');assert.equal(await js(`find('${labelId}').fill`),'blue');await click('#redo');assert.equal(await js(`find('${labelId}').fill`),'green');
+ await click('#undo');
+ const noChange=await js('JSON.stringify(doc)'),historyLength=await js('undoStack.length'),redoLength=await js('redoStack.length');
+ await click('#fill-picker summary');await click('#fill-options button[data-value="blue"]');
+ assert.equal(await js('JSON.stringify(doc)'),noChange);assert.equal(await js('undoStack.length'),historyLength);assert.equal(await js('redoStack.length'),redoLength,'same color must preserve redo');
  const edited=await js('structuredClone(doc)');
  await click('#reset');assert.deepEqual(await js('current()'),initial.variants[0].initial);await click('#undo');assert.deepEqual(await js('doc.variants'),edited.variants);
  await variant(initial.variants[1].id);assert.deepEqual(await js('current()'),initial.variants[1].initial);await click('#undo');

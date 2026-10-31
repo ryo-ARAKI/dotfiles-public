@@ -31,7 +31,7 @@ function call(method,params={},sid=session){return new Promise((resolve,reject)=
   pending.set(id,{resolve,reject,timer});browser.stdio[3].write(JSON.stringify({id,method,params,...(sid?{sessionId:sid}:{})})+'\0');
 });}
 async function js(expression){const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true,userGesture:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
-async function click(selector){const b=await js(`(()=>{const b=document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
+async function click(selector){const b=await js(`(()=>{const target=document.querySelector(${JSON.stringify(selector)});target.scrollIntoView({block:'nearest'});const b=target.getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
 async function mouse(type,p,buttons=0){await call('Input.dispatchMouseEvent',{type,...p,button:buttons?'left':'none',buttons,clickCount:type==='mouseMoved'?0:1});}
 async function fill(selector,text){await click(selector);await js(`document.querySelector(${JSON.stringify(selector)}).select()`);await call('Input.insertText',{text:String(text)});}
 async function select(id){await js(`document.querySelector('#selection').value=${JSON.stringify(id)};document.querySelector('#selection').dispatchEvent(new Event('change'))`);}
@@ -55,7 +55,7 @@ try{
   const initial=await js('structuredClone(doc)');
   // Keyboard history uses real key events; input fields retain native undo.
   const labelId=initial.variants[0].current.labels[0].id;
-  await select(labelId);await fill('#text','keyboard history edit');await click('#apply');
+  await select(labelId);await fill('#text','keyboard history edit');
   await click('h1');await shortcut('z');
   assert.deepEqual(await js('doc.variants'),initial.variants,'Ctrl+Z must undo the diagram edit');
   await shortcut('y');assert.equal(await js('find('+JSON.stringify(labelId)+').text'),'keyboard history edit','Ctrl+Y must redo');
@@ -63,9 +63,11 @@ try{
   await click('#text');await call('Input.insertText',{text:' unsubmitted'});
   const typed=await js("document.querySelector('#text').value");
   await shortcut('z');assert.notEqual(await js("document.querySelector('#text').value"),typed,'input must keep native undo');
-  assert.equal(await js('JSON.stringify(doc)'),editedDoc,'input undo must not undo the diagram');
-  await shortcut('y');assert.equal(await js('JSON.stringify(doc)'),editedDoc);
-  await click('h1');await shortcut('z',6);assert.equal(await js('JSON.stringify(doc)'),editedDoc,'Alt+Ctrl+Z is not a diagram shortcut');
+  assert.equal(await js('JSON.stringify(doc)'),editedDoc,'native input undo must update the figure');
+  await shortcut('y');assert.equal(await js('find('+JSON.stringify(labelId)+').text'),typed,'native redo must update the figure');
+  const typedDoc=await js('JSON.stringify(doc)');
+  await click('h1');await shortcut('z',6);assert.equal(await js('JSON.stringify(doc)'),typedDoc,'Alt+Ctrl+Z is not a diagram shortcut');
+  await shortcut('z');assert.equal(await js('JSON.stringify(doc)'),editedDoc);
   await shortcut('z');assert.deepEqual(await js('doc.variants'),initial.variants);
   await shortcut('z');assert.deepEqual(await js('doc.variants'),initial.variants,'empty undo history is a no-op');
   await open(html);
@@ -131,16 +133,16 @@ try{
   await click('#redo');assert.notDeepEqual(await js('find("spectrum").points'),points);
   await click('#undo');await select('spectrum');
   const newPoints=structuredClone(points);newPoints[1]={x:185,y:110};
-  await fill('#points',newPoints.map(p=>p.x+', '+p.y).join('\n'));await click('#apply');
+  await fill('#points',newPoints.map(p=>p.x+', '+p.y).join('\n'));
   assert.deepEqual(await js('find("spectrum").points'),newPoints);
   assert.equal(await js(`document.querySelector('#redo').disabled`),true);
   const beforeBad=await js('JSON.stringify(doc)');
-  await fill('#points','NaN, 5');await click('#apply');assert.equal(await js('JSON.stringify(doc)'),beforeBad);
+  await fill('#points','NaN, 5');assert.equal(await js('JSON.stringify(doc)'),beforeBad);
   await click('#undo');assert.deepEqual(await js('doc.variants'),initial.variants);
-  await select('region-energy');await fill('#width',220);await click('#apply');assert.equal(await js('find("region-energy").width'),220);
+  await select('region-energy');await fill('#width',220);assert.equal(await js('find("region-energy").width'),220);
   await click('#reset');assert.deepEqual(await js('current()'),initial.variants[0].initial);
   await click('#undo');assert.equal(await js('find("region-energy").width'),220);
-  await variant('callouts');await select('label-law');await fill('#text','k^(−5/3) <tag> & "text"');await click('#apply');
+  await variant('callouts');await select('label-law');await fill('#text','k^(−5/3) <tag> & "text"');
   assert.equal(await js(`document.querySelectorAll('svg tag').length`),0);
   const edited=await js('structuredClone(doc)');
   const loaded=path.join(out,'edited.json');fs.writeFileSync(loaded,JSON.stringify(edited));
