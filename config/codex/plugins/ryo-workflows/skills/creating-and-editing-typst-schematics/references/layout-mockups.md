@@ -33,7 +33,7 @@ Do not pass the review checkpoint based on a screenshot, browser-local state, or
 
 ## Color selection
 
-Both starters offer the 18 [Typst predefined colors](https://typst.app/docs/reference/visualize/color/#predefined-colors), with names, RGB values, and a preview swatch (checked 2026-10-31).
+Both starters offer the 18 [Typst predefined colors](https://typst.app/docs/reference/visualize/color/#predefined-colors), with color names and actual swatches in every menu option and the selected value; omit color codes from the menu (palette checked 2026-10-31).
 Select an object, choose its fill, stroke, or text color as applicable, then press Apply.
 Color edits participate in the same history, per-variant reset, JSON export/import, and PNG rendering as geometry edits.
 Preserve these controls in generated drafts.

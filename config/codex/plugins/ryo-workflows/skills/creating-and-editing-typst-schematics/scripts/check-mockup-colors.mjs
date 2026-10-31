@@ -58,10 +58,18 @@ try{
  for(const [id,field,tag] of targets){
   await select(id);
   assert.deepEqual(await js(`Array.from(document.querySelector('#${field}').options).filter(o=>o.value).map(o=>o.value)`),Object.keys(expected));
+  assert.equal(await js(`document.querySelector('#${field}-picker').textContent.includes('#')`),false,'menu must not display color codes');
+  const swatches=await js(`Array.from(document.querySelectorAll('#${field}-options button')).map(b=>({name:b.dataset.value,color:b.querySelector('.color-swatch').style.backgroundColor}))`);
+  assert.deepEqual(swatches.filter(b=>b.name).map(b=>b.name),Object.keys(expected));
+  for(const swatch of swatches.filter(b=>b.name))assert.equal(swatch.color,'rgb('+expected[swatch.name].slice(1).match(/../g).map(h=>parseInt(h,16)).join(', ')+')');
   const before=await js('structuredClone(doc)');
   // Each built-in must use Typst's RGB, including CSS names with different values.
   for(const [name,hex] of Object.entries(expected)){
-   await js(`document.querySelector('#${field}').value=${JSON.stringify(name)};document.querySelector('#${field}').dispatchEvent(new Event('change'))`);
+   await click(`#${field}-picker summary`);
+   const option=`#${field}-options button[data-value="${name}"]`;
+   await js(`document.querySelector(${JSON.stringify(option)}).scrollIntoView({block:'nearest'})`);await click(option);
+   assert.equal(await js(`document.querySelector('#${field}-picker').open`),false,'selection closes menu');
+   assert.equal(await js(`document.querySelector('#${field}-name').textContent`),name);
    await click('#apply');
    assert.equal(await js(`find(${JSON.stringify(id)}).${field}`),name);
    assert.equal(await js(`document.querySelector('[data-id="${id}"] ${tag}').getAttribute('${field}')`),hex,id+'/'+name);
@@ -96,6 +104,14 @@ try{
  const data='data:image/png;base64,'+fs.readFileSync(png).toString('base64');
  const pixel=await js(`(async()=>{const img=new Image();img.src=${JSON.stringify(data)};await img.decode();const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const ctx=c.getContext('2d');ctx.drawImage(img,0,0);const o=find('${fillId}');const p=${spectrum?'o':'worldElement(o.id)'};return Array.from(ctx.getImageData((p.x+10)*2,(p.y+10)*2,1,1).data)})()`);
  assert.deepEqual(pixel,[255,65,54,255],'exported PNG must contain Typst red');
+ await select(fillId);await click('#fill-picker summary');
+ fs.writeFileSync(path.join(out,'colors-menu.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
+ await js("document.querySelector('#fill-options button').focus()");
+ await call('Input.dispatchKeyEvent',{type:'keyDown',key:'ArrowDown'});
+ assert.equal(await js("document.activeElement.dataset.value"),'black');
+ await call('Input.dispatchKeyEvent',{type:'keyDown',key:'Escape'});
+ assert.equal(await js("document.querySelector('#fill-picker').open"),false);
+ await click('#fill-picker summary');await click('h1');assert.equal(await js("document.querySelector('#fill-picker').open"),false);
  await select(fillId);fs.writeFileSync(path.join(out,'colors-wide.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
  await call('Emulation.setDeviceMetricsOverride',{width:560,height:1100,deviceScaleFactor:1,mobile:false});assert.equal(await js('document.documentElement.scrollWidth<=innerWidth'),true);
  fs.writeFileSync(path.join(out,'colors-narrow.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
