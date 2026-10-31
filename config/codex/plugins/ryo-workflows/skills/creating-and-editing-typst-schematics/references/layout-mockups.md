@@ -6,6 +6,10 @@ Choose the draft primitives from the figure: use the [node/edge starter](../asse
 Rewrite its initial scene, labels, and necessary rendering code for the current request; do not reduce a curve-based figure to boxes simply because the first starter uses rectangles.
 When adapting starter scenes, omit demonstration figure titles and supplemental footnotes from the exported canvas unless explicitly requested.
 Keep editor headings, variant names and editing instructions outside the exported diagram; these interface labels are not figure content.
+Keep the editor's initial view focused on the figure and controls, with one short instruction and a compact save state.
+Group coordinate conventions, point-entry syntax, immediate updates, history/reset behavior, and JSON handoff instructions in a collapsed **操作方法** section outside the canvas.
+Use the live status area for operation results and errors, keeping dependent-deletion scope beside the delete button.
+After export, give the next action once: verify a requested download, then attach the JSON or provide its location to Codex; distinguish a completed native write from a requested download.
 The node/edge starter's two generic examples compare a horizontal process with a vertical process; they are not alternative scientific hypotheses.
 Generate 2–3 meaningfully different compositions for a new figure and export static previews from the same states.
 Static images are the primary comparison medium because terminal chat may not render interactive content.

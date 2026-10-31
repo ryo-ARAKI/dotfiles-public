@@ -108,7 +108,7 @@ try{
   await select('eddy-large');
   const eddyBefore=await js('structuredClone(find("eddy-large").points)');
   // Keep handles hidden so this gesture targets the spiral body rather than a control point.
-  await select('label-title');
+  await select('label-law');
   const eddyStart=await js(`(()=>{const n=document.querySelector('[data-id="eddy-large"] path'),p=n.getPointAtLength(n.getTotalLength()*.7),q=new DOMPoint(p.x,p.y).matrixTransform(n.getScreenCTM());return {x:q.x,y:q.y}})()`);
   await mouse('mousePressed',eddyStart,1);await mouse('mouseMoved',{x:eddyStart.x+12,y:eddyStart.y+8},1);await mouse('mouseReleased',{x:eddyStart.x+12,y:eddyStart.y+8},1);
   const eddyAfter=await js('find("eddy-large").points');
@@ -163,7 +163,7 @@ try{
   for(let i=0;i<100;i++){saved=fs.readdirSync(out).find(n=>n.startsWith('turbulence-spectrum-')&&n.endsWith('.json'));if(saved)break;await delay(30);}
   assert.ok(saved,'missing JSON download');assert.deepEqual(JSON.parse(fs.readFileSync(path.join(out,saved),'utf8')).variants,edited.variants);
   for(const id of ['bands','callouts','transfer']){
-    await variant(id);await select('label-title');
+    await variant(id);await select('label-law');
     await click('#png');
     const name='turbulence-spectrum-'+id+'.png';
     for(let i=0;i<100&&!fs.existsSync(path.join(out,name));i++)await delay(30);

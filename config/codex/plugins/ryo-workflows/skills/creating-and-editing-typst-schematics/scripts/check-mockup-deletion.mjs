@@ -53,7 +53,7 @@ try{
  await open(html);
  const initial=await js('structuredClone(doc)'),spectrum=initial.figure_id==='turbulence-spectrum';
  assert.ok(await js("!!document.querySelector('#delete')"),'delete control missing');
- const cases=spectrum?['spectrum','region-energy','label-title','axis-x']:['label-1','flow-12','stage-2','cycle'];
+ const cases=spectrum?['spectrum','region-energy','label-law','axis-x']:['label-1','flow-12','stage-2','cycle'];
  for(const id of cases){
   await open(html);await select(id);await click('#delete');
   const after=await js('structuredClone(doc)'),scene=after.variants[0].current;
