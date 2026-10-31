@@ -30,6 +30,10 @@ For CeTZ, use rightward X and upward Y, normally with the axes' intersection or 
 Use a manageable physical or normalized scale and derive related positions from common boundaries, centers or spacing.
 Separate schematic drawing coordinates from measured k, energy, time or other scientific values.
 Preserve the accepted positions; neat source does not justify arbitrary coordinate rounding, curve fitting or layout shifts.
+Keep the Codex-selected aspect ratio and the mockup's fixed default outer padding; preserve any extra whitespace needed for that ratio.
+Codex chooses physical output dimensions and scale for the receiving context; the mockup does not expose these as user controls.
+When producing a fitted standalone figure, include the agreed outer padding in the figure body and use zero additional page margin by default to avoid adding it twice.
+An imported figure still inherits the receiving document's page margins; these are separate from the figure's own padding.
 
 Keep the normal source self-contained apart from declared packages and genuinely necessary assets such as supplied images or scientific data.
 A coordinate list exported by the mockup is not, by itself, a reason to require a separate runtime JSON file.

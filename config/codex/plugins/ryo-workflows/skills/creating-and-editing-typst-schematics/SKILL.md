@@ -23,6 +23,8 @@ Ask only result-changing missing information, one question at a time, and contin
 Do not invent a direction, causal claim, area interpretation, missing image, or mathematical definition.
 Omit in-figure titles and supplemental prose by default, including generic notes that the figure is schematic or not quantitative; include them only when explicitly requested.
 Keep the axis labels, region names, equations, legends and relation labels needed to read the diagram.
+Use fixed default outer padding for schematics; do not ask users to tune padding, canvas dimensions, or scale in the mockup.
+Users communicate the desired aspect ratio to Codex, which recomposes the draft and handles final output dimensions; preserve the agreed ratio when fitting the frame.
 
 ## Read for the operation
 
