@@ -65,6 +65,30 @@ try{
   await call('Emulation.setDeviceMetricsOverride',{width:1280,height:960,deviceScaleFactor:1,mobile:false});
   await open(html);
   const initial=await js('structuredClone(doc)');
+
+  // History must restore actual UI edits, not just expose toolbar buttons.
+  assert.equal(await js(`!!document.querySelector('#undo') && !!document.querySelector('#redo')`),true,'undo/redo controls are missing');
+  assert.equal(await js(`document.querySelector('#undo').disabled && document.querySelector('#redo').disabled`),true);
+  await select('stage-1');await fill('#x',44);await click('#apply');
+  assert.equal(await js('current().elements[0].x'),44);
+  await click('#undo');assert.deepEqual(await js('doc.variants'),initial.variants);
+  assert.equal(await js(`document.querySelector('#undo').disabled`),true);
+  await click('#redo');assert.equal(await js('current().elements[0].x'),44);
+  await click('#undo');await select('stage-1');await fill('#x',55);await click('#apply');
+  assert.equal(await js(`document.querySelector('#redo').disabled`),true,'new edit must clear redo');
+  await click('#reset');assert.deepEqual(await js('current()'),initial.variants[0].initial);
+  await click('#undo');assert.equal(await js('current().elements[0].x'),55);
+  const beforeInvalid=await js('JSON.stringify(doc)');
+  await select('flow-12');await fill('#waypoints','NaN, 10');await click('#apply');
+  assert.equal(await js('JSON.stringify(doc)'),beforeInvalid);
+  await click('#undo');assert.deepEqual(await js('doc.variants'),initial.variants,'failed input adds no history');
+  await click('#redo');await variant('vertical');await select('label-1');await fill('#text','history B');await click('#apply');
+  await click('#undo');assert.equal(await js('current().labels[0].text'),initial.variants[1].initial.labels[0].text);
+  await click('#undo');assert.equal(await js('doc.selected_variant_id'),'horizontal');assert.equal(await js('current().elements[0].x'),55);
+  await click('#redo');assert.equal(await js('doc.selected_variant_id'),'vertical');
+  // Start original integration flow on a fresh document/history.
+  await open(html);
+
   await click('#png');fs.copyFileSync(await downloaded('.png'),path.join(out,'proposal-a.png'));
   await variant('vertical');await click('#png');fs.copyFileSync(await downloaded('.png'),path.join(out,'proposal-b.png'));await variant('horizontal');
   assert.notDeepEqual(fs.readFileSync(path.join(out,'proposal-a.png')),fs.readFileSync(path.join(out,'proposal-b.png')));
@@ -72,6 +96,7 @@ try{
   const start=await js(`(()=>{const b=document.querySelector('[data-id="stage-1"] rect').getBoundingClientRect();return {x:b.x+12,y:b.y+12}})()`);
   await mouse('mousePressed',start,1);await mouse('mouseMoved',{x:start.x+17,y:start.y+9},1);await mouse('mouseReleased',{x:start.x+17,y:start.y+9},1);
   assert.notEqual(await js('current().elements[0].x'),initial.variants[0].current.elements[0].x);
+  const dragged=await js('structuredClone(current())');await click('#undo');assert.deepEqual(await js('current()'),initial.variants[0].current);await click('#redo');assert.deepEqual(await js('current()'),dragged);
   await select('stage-1');await fill('#x',43.7);await fill('#y',88.4);await fill('#width',162.6);await fill('#height',72.8);await click('#apply');
   await select('label-1');await fill('#text','候補 α <tag> & "引用"\nsecond line');await fill('#x',81.3);await fill('#y',36.4);await fill('#fontSize',18);await click('#apply');
   await select('flow-12');await fill('#waypoints','340.2, 177.8\n350.3, 177.8');await click('#apply');
@@ -91,6 +116,7 @@ try{
   }
   assert.deepEqual(afterGroup.connections,beforeGroup.connections,'waypoints/direction preserved');
   assert.equal(afterGroup.groups[0].x,52.3);assert.equal(afterGroup.groups[0].y,61.7);
+  await click('#undo');assert.deepEqual(await js('current()'),beforeGroup);await click('#redo');assert.deepEqual(await js('current()'),afterGroup);
   const e=afterGroup.elements[0],g=afterGroup.groups[0];
   const rendered=await js(`document.querySelector('[data-id=\"flow-12\"] polyline').getAttribute('points').split(' ')[0].split(',').map(Number)`);
   assert.deepEqual(rendered,[g.x+e.x+e.width,g.y+e.y+e.height/2]);
@@ -112,6 +138,7 @@ try{
   assert.equal(actual.variants[0].current.labels[0].text,'候補 α\nCandidates');
   assert.equal(actual.variants[0].current.labels.find(l=>l.id==='edge-label').text,'選択へ\nselect');
   await open(html);await load(saved);assert.deepEqual(await js('doc.variants'),actual.variants);
+  await click('#undo');assert.deepEqual(await js('doc.variants'),initial.variants);await click('#redo');assert.deepEqual(await js('doc.variants'),actual.variants);assert.equal(await js('!!doc.snapshot'),false);
   assert.equal(await js('doc.selected_variant_id'),actual.selected_variant_id);
   await variant('vertical');
   assert.equal(await js(`document.querySelectorAll('svg tag').length`),0,'labels are text, not markup');
@@ -130,6 +157,7 @@ try{
   for(const [name,content] of invalid){const f=path.join(out,'invalid-'+name+'.json');fs.writeFileSync(f,content);await load(f);assert.equal(await js('JSON.stringify(doc)'),valid,name+' must preserve edits');assert.match(await js(`document.querySelector('#status').textContent`),/読込失敗/);}
   await js(`window.showSaveFilePicker=async()=>{throw new Error('test write failure')}`);await click('#confirm');
   assert.match(await js(`document.querySelector('#status').textContent`),/保存失敗/);assert.equal(await js('JSON.stringify(doc)'),valid);
+  await click('#undo');assert.equal(await js('doc.selected_variant_id'),'vertical','invalid imports and save failures add no history');await click('#redo');
   await click('#png');fs.copyFileSync(await downloaded('.png'),path.join(out,'accepted-fixture.png'));
   fs.writeFileSync(path.join(out,'browser-wide.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png'})).data,'base64'));
   await call('Emulation.setDeviceMetricsOverride',{width:560,height:1000,deviceScaleFactor:1,mobile:false});
@@ -145,6 +173,7 @@ try{
   const redrawn=await js('JSON.stringify(doc)');await load(saved);assert.equal(await js('JSON.stringify(doc)'),redrawn);assert.match(await js(`document.querySelector('#status').textContent`),/読込失敗/);
   console.log(JSON.stringify({browser:await call('Browser.getVersion',{},null),download:saved,checks:'UI edit/drag, anchors, group affine resize, two-variant reset, file roundtrip, invalid input atomicity, save failure, PNG, narrow viewport, ID-preserving redraw'}));
 } finally {browser.kill();}
+
 '''
 
 

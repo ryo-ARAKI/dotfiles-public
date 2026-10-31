@@ -15,6 +15,12 @@ Group scaling is affine for child geometry and label offsets; text size remains 
 Codex handles element/image/shape additions or deletion, equation typesetting, image replacement/cropping, group membership, connection topology, specialized drawing, and new compositions.
 Do not make small Codex-mediated placement requests the main editing path.
 
+**Back / Forward** undo and redo successful edits in chronological order across variants, including form edits, one complete drag, group resizing, variant switching, reset, and JSON loading.
+A new change clears redo; failed or canceled operations, selection alone, unchanged submissions, and exports do not add history.
+History stays in the current tab and is not exported; restored states need a new JSON export.
+Ctrl+Z and Ctrl+Y invoke the same Back/Forward actions outside input fields. While focus is in text/number inputs, textareas, selects, or editable content, preserve native editing shortcuts; ignore IME composition and modified Alt/Shift combinations.
+Keep these controls in generated drafts so users can experiment without losing the preceding layout.
+
 **Reset** restores only the selected variant's entire initial state, including text, leaving other variants' edits intact.
 **Confirm** exports the selected variant and all current/initial variant states in one versioned JSON file.
 A successful native file write is reported after `close`; the download fallback reports a request and asks the user to check the file, since browsers do not expose download completion to the page.
