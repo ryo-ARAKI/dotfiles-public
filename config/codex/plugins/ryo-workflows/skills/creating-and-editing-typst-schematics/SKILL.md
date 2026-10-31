@@ -39,7 +39,7 @@ Read only the relevant references; reading does not activate another workflow.
 
 For new compositions, the user's browser edits are the layout input.
 The user exports one versioned JSON file and attaches it or supplies its location; do not rely on chat-only controls or automatic transmission.
-Keep the final unrounded snapshot, preserve untouched IDs on redraw, and derive tidy Typst coordinates while preserving alignment, spacing, dimensions, containment, text, and connections.
+Keep the final unrounded snapshot, preserve untouched IDs on redraw, and derive tidy Typst coordinates while preserving alignment, spacing, dimensions, containment, text, colors, and connections.
 Show any composition-changing cleanup beside the accepted draft and wait for the affected adjustment.
 Fixture exports during skill testing are test evidence, never evidence of a person's agreement.
 

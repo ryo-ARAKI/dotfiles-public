@@ -10,7 +10,7 @@ Static images are the primary comparison medium because terminal chat may not re
 Save the HTML so the user can open it in an ordinary offline browser; no chat API, network resource, profile, server, or local storage is required.
 Do not expand the starter into an arbitrary scientific JSON language or a general drawing application.
 
-The user directly edits positions, widths/heights, whole-group position/size, label text/newlines/position/basic size, and existing connection waypoints and labels.
+The user directly edits positions, widths/heights, whole-group position/size, label text/newlines/position/basic size, and existing connection waypoints and labels, plus fill/stroke/text colors.
 They can drag shapes, labels, and selected connection points, or select an object and enter values in the form.
 Group scaling is affine for child geometry and label offsets; text size remains separately editable.
 Codex handles element/image/shape additions or deletion, equation typesetting, image replacement/cropping, group membership, connection topology, specialized drawing, and new compositions.
@@ -22,7 +22,7 @@ History stays in the current tab and is not exported; restored states need a new
 Ctrl+Z and Ctrl+Y invoke the same Back/Forward actions outside input fields. While focus is in text/number inputs, textareas, selects, or editable content, preserve native editing shortcuts; ignore IME composition and modified Alt/Shift combinations.
 Keep these controls in generated drafts so users can experiment without losing the preceding layout.
 
-**Reset** restores only the selected variant's entire initial state, including text, leaving other variants' edits intact.
+**Reset** restores only the selected variant's entire initial state, including text and colors, leaving other variants' edits intact.
 **Confirm** exports the selected variant and all current/initial variant states in one versioned JSON file.
 A successful native file write is reported after `close`; the download fallback reports a request and asks the user to check the file, since browsers do not expose download completion to the page.
 A canceled/failed write leaves the state intact and is never reported as completion.
@@ -30,6 +30,29 @@ Any later edit is unconfirmed and needs another export.
 The user attaches the saved file or specifies its location; exporting does not send it to Codex or finish Typst production.
 Keep the user's exported file unchanged as the accepted composition revision before cleanup.
 Do not pass the review checkpoint based on a screenshot, browser-local state, or an agent's fixture export.
+
+## Color selection
+
+Both starters offer the 18 [Typst predefined colors](https://typst.app/docs/reference/visualize/color/#predefined-colors), with names, RGB values, and a preview swatch (checked 2026-10-31).
+Select an object, choose its fill, stroke, or text color as applicable, then press Apply.
+Color edits participate in the same history, per-variant reset, JSON export/import, and PNG rendering as geometry edits.
+Preserve these controls in generated drafts.
+The initial-color option restores the object's generated color, including existing custom colors; it preserves the original appearance and permits older snapshots without color overrides to load.
+The initial/reset states and figure/revision identity checks remain exact.
+
+Store selected colors as Typst names in the object's `fill` or `stroke` field; label text color uses `fill`.
+The node/edge starter adds optional `fill`/`stroke` on elements and groups, `stroke` on connections, and `fill` on labels.
+The spectrum starter makes existing path `stroke` and region `fill` editable and adds optional label `fill`.
+Accept only predefined names or the exact original value for that object/property; preserve custom initial colors without accepting arbitrary CSS from imported JSON.
+Resolve names through the embedded RGB table when rendering SVG and arrowheads: browser CSS names such as `green`, `gray`, and `purple` differ from Typst's values, and `eastern` is not a CSS color name.
+Keep both standalone HTML palettes aligned when updating the official list.
+
+Verify either starter offline with the same regression, using a separate output directory for each run:
+
+```fish
+node scripts/check-mockup-colors.mjs (command -v google-chrome) assets/layout-mockup.html /tmp/node-colors-check
+node scripts/check-mockup-colors.mjs (command -v google-chrome) assets/spectrum-layout-mockup.html /tmp/spectrum-colors-check
+```
 
 ## Qualitative spectrum drafts
 
@@ -50,9 +73,9 @@ Free adjustments do not enforce a theoretical slope or physical constraints: rec
 This is a separate figure-specific version-1 snapshot, not an extension that the node/edge starter can import.
 It retains the same figure/revision/variant/coordinate identity and initial-state checks, with three bounded collections:
 
-- `paths[]`: stable ID, fixed `type` (`cubic` or `polyline`), point count, stroke, width, dash and direction; editable `points[]` in canvas coordinates. A cubic chain has one start followed by groups of two control points and one endpoint.
-- `regions[]`: stable ID and fill; editable x/y/width/height for rectangular background or under-axis bands.
-- `labels[]`: stable ID; editable canvas x/y, text/newlines and font size.
+- `paths[]`: stable ID, fixed `type` (`cubic` or `polyline`), point count, width, dash and direction; editable `stroke` and `points[]` in canvas coordinates. A cubic chain has one start followed by groups of two control points and one endpoint.
+- `regions[]`: stable ID; editable fill and x/y/width/height for rectangular background or under-axis bands.
+- `labels[]`: stable ID; editable canvas x/y, text/newlines, font size, and text fill.
 
 Validate against this scene's exact initial structure before adopting an export. Preserve path IDs and every control point on redraw; convert all control points as well as endpoints when transferring to CeTZ.
 The final spectrum curve must remain a path, and the transfer arrow must remain a distinct editable object.
@@ -101,7 +124,7 @@ Preserve the original snapshot separately.
 For an authorized structural change, generate a new revision and update the HTML's initial/current objects deliberately:
 
 1. Match retained elements, labels, groups, and connections by stable ID.
-   Copy their current geometry, dimensions, text, font sizes, label positions, and waypoints verbatim unless that object/property is the requested change.
+   Copy their current geometry, dimensions, text, font sizes, colors, label positions, and waypoints verbatim unless that object/property is the requested change.
 2. Retain the previous reset state for unchanged objects, so merely redrawing does not discard the original reset contract.
    Add intentional new objects to both initial/current states; define new IDs for replacements.
    Update relationship declarations for intentional structural changes.
@@ -124,6 +147,7 @@ Use a shared origin, row/column reference, common dimensions and pitch to derive
 Preserve containment and ordering; derive endpoints again from the tidy boxes.
 CeTZ uses y upward, so explicitly convert with `y_cetz = canvas_height - y_down` after unit conversion.
 For a rectangle convert BOTH corners; do not accidentally reflect horizontally or apply the group offset twice.
+Preserve exported fill/stroke/text colors and resolve predefined names with the matching Typst color constants; carry any original custom colors as explicit RGB values.
 Copy text and line breaks literally, with appropriate Typst escaping or content construction; never evaluate JSON as Typst code.
 
 The [iteration example](../assets/examples/iterative-selection.typ) demonstrates the starter's horizontal fixture at 96 × 54 tidy units:
