@@ -53,10 +53,10 @@ try{
  await open(html);
  const initial=await js('structuredClone(doc)'),spectrum=initial.figure_id==='turbulence-spectrum';
  const expected={black:'#000000',gray:'#aaaaaa',silver:'#dddddd',white:'#ffffff',navy:'#001f3f',blue:'#0074d9',aqua:'#7fdbff',teal:'#39cccc',eastern:'#239dad',purple:'#b10dc9',fuchsia:'#f012be',maroon:'#85144b',red:'#ff4136',orange:'#ff851b',yellow:'#ffdc00',olive:'#3d9970',green:'#2ecc40',lime:'#01ff70'};
- const targets=spectrum?[['spectrum','stroke','path'],['region-energy','fill','rect'],['label-title','fill','text'],['axis-x','stroke','path']]:[['stage-1','fill','rect'],['stage-1','stroke','rect'],['cycle','fill','rect'],['cycle','stroke','rect'],['label-1','fill','text'],['flow-12','stroke','polyline']];
+ const targets=spectrum?[['spectrum','stroke','path'],['region-energy','fill','rect'],['label-law','fill','text'],['axis-x','stroke','path']]:[['stage-1','fill','rect'],['stage-1','stroke','rect'],['cycle','fill','rect'],['cycle','stroke','rect'],['label-1','fill','text'],['flow-12','stroke','polyline']];
  assert.ok(await js("!!document.querySelector('#color-fields')"),'color controls missing');
  assert.equal(await js("!!document.querySelector('#apply')"),false,'all edits must work without an Apply button');
- const boxId=spectrum?'region-energy':'stage-1',textId=spectrum?'label-title':'label-1';
+ const boxId=spectrum?'region-energy':'stage-1',textId=spectrum?'label-law':'label-1';
 
  // Round only the presentation; editing one point must preserve all other precise components.
  const precise=structuredClone(initial),scene=precise.variants[0].current;
@@ -143,7 +143,7 @@ try{
   assert.deepEqual(await js('doc.variants'),before.variants);
  }
  await open(html);
- const fillId=spectrum?'region-energy':'stage-1',edgeId=spectrum?'axis-x':'flow-12',labelId=spectrum?'label-title':'label-1';
+ const fillId=spectrum?'region-energy':'stage-1',edgeId=spectrum?'axis-x':'flow-12',labelId=spectrum?'label-law':'label-1';
  for(const [id,field,name] of [[fillId,'fill','red'],[edgeId,'stroke','eastern'],[labelId,'fill','blue']]){
   await select(id);await js(`document.querySelector('#${field}').value='${name}';document.querySelector('#${field}').dispatchEvent(new Event('change'))`);
  }
