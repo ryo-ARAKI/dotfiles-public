@@ -150,7 +150,7 @@ try{
     ['revision',d=>d.base_revision='wrong'],
     ['points',d=>d.variants[0].current.paths[0].points.pop()],
     ['type',d=>d.variants[0].current.paths[0].type='unknown'],
-    ['color',d=>d.variants[0].current.paths[0].stroke='red'],
+    ['color',d=>d.variants[0].current.paths[0].stroke='rebeccapurple'],
     ['axis',d=>d.variants[0].current.paths.find(p=>p.id==='axis-x').directed=false],
     ['id',d=>d.variants[0].current.labels[1].id=d.variants[0].current.labels[0].id],
     ['initial',d=>d.variants[0].initial.labels[0].text='tampered'],
