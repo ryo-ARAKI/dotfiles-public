@@ -56,6 +56,8 @@ Route loop edges outside the main reading path and keep labels tied to the inten
 An undirected correspondence gets no arrowhead; line style and explicit text distinguish different flows.
 Use CeTZ's [official manual](https://cetz-package.github.io/docs/) for current API details, remembering that y increases upward.
 Use a few interpretable control points for curves and inspect the actual terminal tangent and arrowhead direction.
+For a saved multi-segment cubic path, merge the matching Bezier segments into one stroked path to preserve joins and dash continuity.
+Preserve the draft's filled/open arrowhead form and its size relative to stroke width; a library's default arrow mark need not match an SVG marker.
 Keep quantitative curves in the numerical figure workflow.
 
 Draw region backgrounds first, then connections and shapes, then associated labels as appropriate for the intended occlusion.
