@@ -1,56 +1,10 @@
-// Usage: node check-mockup-colors.mjs CHROME HTML OUTPUT_DIRECTORY
-// Chrome uses an isolated temporary profile and offline network emulation.
-
-import {spawn} from 'node:child_process';
+// Repository regression; HTML and its snapshots are the only draft inputs.
 import fs from 'node:fs';
 import path from 'node:path';
 import assert from 'node:assert/strict';
-import {pathToFileURL} from 'node:url';
+import {withBrowser} from './schematic_browser.mjs';
 const [chrome, html, out] = process.argv.slice(2);
-if(!chrome||!html||!out)throw Error('Usage: node check-mockup-colors.mjs CHROME HTML OUTPUT_DIRECTORY');
-fs.mkdirSync(out,{recursive:true});
-const delay = ms => new Promise(r => setTimeout(r, ms));
-const browser = spawn(chrome, ['--headless=new','--no-sandbox','--disable-gpu',
-  '--no-first-run','--no-default-browser-check','--remote-debugging-pipe',
-  '--user-data-dir='+path.join(out,'profile'),'about:blank'],
-  {stdio:['ignore','ignore','pipe','pipe','pipe']});
-let seq=0, buffer='', session, pending=new Map(), errors=[];
-browser.stderr.on('data', b=>errors.push(b.toString()));
-browser.stdio[3].on('error',()=>{});browser.stdio[4].on('error',()=>{});
-browser.on('exit',(code)=>{for(const {reject,timer} of pending.values()){clearTimeout(timer);reject(Error('Chrome exited '+code+' '+errors.slice(-3).join('')));}pending.clear();});
-browser.stdio[4].on('data', b=>{
-  buffer+=b;
-  let i;
-  while((i=buffer.indexOf('\0'))>=0){
-    const m=JSON.parse(buffer.slice(0,i)); buffer=buffer.slice(i+1);
-    if(pending.has(m.id)) {const {resolve,reject,timer}=pending.get(m.id);clearTimeout(timer);pending.delete(m.id);m.error?reject(Error(JSON.stringify(m.error))):resolve(m.result);}
-  }
-});
-function call(method,params={},sid=session){return new Promise((resolve,reject)=>{
-  const id=++seq, timer=setTimeout(()=>reject(Error('CDP timeout '+method+' '+errors.slice(-2))),12000);
-  pending.set(id,{resolve,reject,timer});browser.stdio[3].write(JSON.stringify({id,method,params,...(sid?{sessionId:sid}:{})})+'\0');
-});}
-async function js(expression){const r=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true,userGesture:true});if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));return r.result.value;}
-async function click(selector){const b=await js(`(()=>{const target=document.querySelector(${JSON.stringify(selector)});target.scrollIntoView({block:'nearest'});const b=target.getBoundingClientRect();return {x:b.x+b.width/2,y:b.y+b.height/2}})()`);await mouse('mousePressed',b,1);await mouse('mouseReleased',b,1);}
-async function mouse(type,p,buttons=0){await call('Input.dispatchMouseEvent',{type,...p,button:buttons?'left':'none',buttons,clickCount:type==='mouseMoved'?0:1});}
-async function fill(selector,text){await click(selector);await js(`document.querySelector(${JSON.stringify(selector)}).select()`);await call('Input.insertText',{text:String(text)});}
-async function select(id){await js(`document.querySelector('#selection').value=${JSON.stringify(id)};document.querySelector('#selection').dispatchEvent(new Event('change'))`);}
-async function variant(id){await js(`document.querySelector('#variant').value=${JSON.stringify(id)};document.querySelector('#variant').dispatchEvent(new Event('change'))`);}
-async function open(file){await call('Page.navigate',{url:pathToFileURL(file).href});for(let i=0;i<100;i++){if(await js(`document.readyState==='complete' && !!document.querySelector('#selection option')`))return;await delay(30);}throw Error('page not ready');}
-async function load(file){const d=await call('DOM.getDocument');const q=await call('DOM.querySelector',{nodeId:d.root.nodeId,selector:'#load'});await js(`document.querySelector('#status').textContent='loading'`);await call('DOM.setFileInputFiles',{nodeId:q.nodeId,files:[file]});for(let i=0;i<100;i++){if(await js(`document.querySelector('#status').textContent!=='loading'`))return;await delay(20);}throw Error('file read timeout');}
-async function shortcut(letter,modifiers=2){
-  const code=letter.toUpperCase().charCodeAt(0);
-  await call('Input.dispatchKeyEvent',{type:'rawKeyDown',key:letter,code:'Key'+letter.toUpperCase(),windowsVirtualKeyCode:code,modifiers});
-  await call('Input.dispatchKeyEvent',{type:'keyUp',key:letter,code:'Key'+letter.toUpperCase(),windowsVirtualKeyCode:code,modifiers});
-}
-try{
- const t=await call('Target.createTarget',{url:'about:blank'},null);
- session=(await call('Target.attachToTarget',{targetId:t.targetId,flatten:true},null)).sessionId;
- await call('Page.enable');await call('Runtime.enable');await call('Network.enable');
- await call('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});
- await call('Browser.setDownloadBehavior',{behavior:'allow',downloadPath:out},null);
- await call('Emulation.setDeviceMetricsOverride',{width:1280,height:1100,deviceScaleFactor:1,mobile:false});
- await open(html);
+await withBrowser({chrome, html, out}, async ({call, js, click, fill, select, variant, open, load, delay}) => {
  const initial=await js('structuredClone(doc)'),spectrum=initial.figure_id==='turbulence-spectrum';
  const expected={black:'#000000',gray:'#aaaaaa',silver:'#dddddd',white:'#ffffff',navy:'#001f3f',blue:'#0074d9',aqua:'#7fdbff',teal:'#39cccc',eastern:'#239dad',purple:'#b10dc9',fuchsia:'#f012be',maroon:'#85144b',red:'#ff4136',orange:'#ff851b',yellow:'#ffdc00',olive:'#3d9970',green:'#2ecc40',lime:'#01ff70'};
  const targets=spectrum?[['spectrum','stroke','path'],['region-energy','fill','rect'],['label-law','fill','text'],['axis-x','stroke','path']]:[['stage-1','fill','rect'],['stage-1','stroke','rect'],['cycle','fill','rect'],['cycle','stroke','rect'],['label-1','fill','text'],['flow-12','stroke','polyline']];
@@ -192,4 +146,4 @@ try{
  await call('Emulation.setDeviceMetricsOverride',{width:560,height:1100,deviceScaleFactor:1,mobile:false});assert.equal(await js('document.documentElement.scrollWidth<=innerWidth'),true);
  fs.writeFileSync(path.join(out,'colors-narrow.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
  console.log(JSON.stringify({result:'PASS',figure:initial.figure_id,checks:'18 official names/RGB, all object styles, arrowheads, history/reset/variants, legacy JSON, invalid colors, offline JSON/PNG pixels, narrow layout',out}));
-}finally{browser.kill();}
+});

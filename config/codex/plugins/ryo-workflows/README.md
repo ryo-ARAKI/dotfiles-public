@@ -34,6 +34,7 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 | Travel `scripts/build_ics.py` | Reviewed events JSON to separate/combined ICS files; Python 3.10+ standard library only. |
 | Repository `manifest/base.tsv` and installer | Copy each payload with mode `0644` in local context; registration is a separate boundary. |
 | Repository `tests/test_ryo_workflows_plugin.py` | Check the complete manifest payload, actual copying, skill discovery paths, and local reference targets/anchors. |
+| Repository `tests/test_typst_schematic_mockup.py` and `tests/schematic_*.mjs` | Run both offline editors through one test-only Chrome pipe helper; check editing, history, precision, colors, deletion and JSON/PNG handoff. No browser-test code is deployed with the skill. |
 
 ```mermaid
 flowchart LR
@@ -129,4 +130,9 @@ From the repository root, run `python3 -m unittest discover -s tests -v`.
 For focused checks, select `test_ryo_workflows_plugin.py`, `test_arxiv_diff_pdf_verifier.py`, or `test_extrip_to_ics.py` with `python3 -m unittest discover -s tests -p '<test-file>' -v`.
 Run the available skill-creator `quick_validate.py` on each changed skill as well.
 The distribution test uses a temporary destination and the actual installer copy function; it does not claim live Codex installation or automatic selection.
+For schematic checks, run `python3 -m unittest discover -s tests -p 'test_typst_schematic_mockup.py' -v` with installed Node 22+ and Chrome/Chromium.
+The ordinary suite includes the node/edge handoff, spectrum editing, and both starters' color/precision and deletion checks; missing browser tools cause explicit skips.
+`SCHEMATIC_PLUGIN_ROOT` selects a temporary manifest copy, and `SCHEMATIC_EVIDENCE_DIR` retains downloads/screenshots in fresh case directories.
+These fixed-scene regressions protect the bundled starters; adapting a draft still requires checking its changed controls and handoff.
+The four Typst example/receiving-context checks remain in `tests/test_typst_schematic_examples.py`.
 For verifier changes, also compile a small complete TeX document and run the helper with its final `.log` and PDF in a fresh verification directory, then inspect the rendered sample pages.
