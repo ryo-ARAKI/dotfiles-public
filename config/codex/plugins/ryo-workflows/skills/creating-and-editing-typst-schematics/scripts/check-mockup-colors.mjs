@@ -57,6 +57,30 @@ try{
  assert.ok(await js("!!document.querySelector('#color-fields')"),'color controls missing');
  assert.equal(await js("!!document.querySelector('#apply')"),false,'all edits must work without an Apply button');
  const boxId=spectrum?'region-energy':'stage-1',textId=spectrum?'label-title':'label-1';
+
+ // Round only the presentation; editing one point must preserve all other precise components.
+ const precise=structuredClone(initial),scene=precise.variants[0].current;
+ const preciseBox=(spectrum?scene.regions:scene.elements).find(o=>o.id===boxId);
+ Object.assign(preciseBox,{x:137.123456789,y:-0.0000001,width:190.987654321,height:120.333333333});
+ const precisePath=(spectrum?scene.paths:scene.connections).find(o=>o.id===(spectrum?'spectrum':'flow-12'));
+ if(!spectrum)precisePath.waypoints=[{x:321.123456789,y:195.987654321},{x:350.111111111,y:195.987654321}];
+ const pointKey=spectrum?'points':'waypoints',pointField=spectrum?'points':'waypoints';
+ precisePath[pointKey][0]={x:321.123456789,y:195.987654321};
+ const precisionFile=path.join(out,'precise-input.json');fs.writeFileSync(precisionFile,JSON.stringify(precise));await load(precisionFile);
+ await select(boxId);
+ for(const [field,value] of [['x','137.12'],['y','0'],['width','190.99'],['height','120.33']])assert.equal(await js(`document.querySelector('#${field}').value`),value,'compact numeric display');
+ assert.deepEqual(await js('doc.variants'),precise.variants,'display must not round saved state');
+ await fill('#x','141.123456789');assert.equal(await js(`find('${boxId}').x`),141.123456789,'retain typed precision');
+ await click('h1');assert.equal(await js("document.querySelector('#x').value"),'141.12','format after editing');
+ assert.equal(await js(`find('${boxId}').width`),preciseBox.width,'other values retain precision');
+ await select(spectrum?'spectrum':'flow-12');
+ const compact=await js(`document.querySelector('#${pointField}').value`);assert.equal(compact.split('\n')[0],'321.12, 195.99');
+ await fill('#'+pointField,compact.replace('321.12, 195.99','325.5, 195.99'));
+ const preciseExpected=structuredClone(precisePath[pointKey]);preciseExpected[0].x=325.5;
+ assert.deepEqual(await js(`find('${precisePath.id}').${pointKey}`),preciseExpected,'unmodified points/components must retain precision');
+ await click('#undo');assert.deepEqual(await js(`find('${precisePath.id}').${pointKey}`),precisePath[pointKey]);
+ fs.writeFileSync(path.join(out,'coordinate-precision.png'),Buffer.from((await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true})).data,'base64'));
+ await open(html);
  await select(boxId);const original=await js('structuredClone(doc)');
  // Each keystroke updates the figure; one continuous field edit is one history entry.
  await fill('#x','137');await call('Input.insertText',{text:'.25'});

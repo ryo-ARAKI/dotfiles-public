@@ -27,6 +27,8 @@ All editable fields update the figure on input, without an Apply button; preserv
 Treat one continuous field edit as one diagram-history entry; leaving the field ends that edit. Native input undo/redo also updates the figure.
 While IME composition is active, retain provisional input and reflect its final text at composition end.
 For incomplete or invalid numbers/point lists, retain the raw field text, mark that field, and keep its last valid geometry; other valid fields remain editable.
+Display numeric fields and point lists with at most two decimal places and no trailing zeros when populated or after leaving the field; retain the full scene/export precision and the raw input while typing.
+When a point list is edited, retain original precision for components whose displayed value is unchanged.
 
 **Reset** restores only the selected variant's entire initial state, including text and colors, leaving other variants' edits intact.
 **Confirm** exports the selected variant and all current/initial variant states in one versioned JSON file.
