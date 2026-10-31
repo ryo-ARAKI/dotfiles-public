@@ -15,7 +15,8 @@ A skill supplies domain knowledge; it does not grant additional permissions or t
 
 - `dotfiles-deploy`: managed-source generation, layered planning, and authorized deployment.
 - `creating-arxiv-diff-pdfs`: complete PDFs from official arXiv source versions, preserving raw latexdiff output and checking first/middle/last pages.
-- `creating-and-editing-typst-figures`: creation, revision, or read-only scientific review of figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
+- `creating-and-editing-typst-figures`: creation, revision, or read-only scientific review of numerical figures in reports, standalone sources, or existing bundles, with input preservation and scoped numerical/rendering checks.
+- `creating-and-editing-typst-schematics`: hierarchy, process, flow, set, and image-composite diagrams; static proposals and a self-contained browser editor, versioned layout handoff, tidy Typst coordinates, and receiving-size review.
 - `pack-research-results`: selection and transfer preparation of saved calculation results, receipt validation, and integration with existing inputs; retains individual values, original metadata, provenance, and relocation checks, and supports instructions-only requests.
 - `export-editable-typst-figures`: portable, editable source/data/helper bundles with extraction history, dependency, relocation, and recipient-integration checks.
 - `writing-typst-research-reports`: new reports, revisions, and read-only reviews connecting research questions, scientific evidence, prose, tables, and report composition while inheriting document formatting.
@@ -54,6 +55,10 @@ English proofreading owns language revision within the requested manuscript scop
 It returns the full revised scope and important Japanese reasons by default, or original/revised/reason comparisons when requested.
 It does not translate Japanese-only notes, draft new sections, or design document structure.
 English-only proofreading of a Typst manuscript does not require report composition or PDF/layout validation; full report production retains those responsibilities with the report skill.
+Schematic work checks required entities, relationships, directions, containment, and qualitative/quantitative encodings.
+Its [HTML starter](skills/creating-and-editing-typst-schematics/assets/layout-mockup.html) supports direct user edits and one-file JSON handoff without chat-only APIs.
+Its [four standalone/importable examples](skills/creating-and-editing-typst-schematics/references/typst-recipes.md#examples-and-meaning-contracts) use generic content and a checked current CeTZ release.
+For mixed figures, numerical portions use the numerical figure contract and relationship/layout portions use the schematic contract.
 Figure work uses the existing plotting source and authoritative data/condition/series definitions, without requiring a portable bundle.
 Read-only scientific figure review returns evidence-backed findings about displayed values, points, intervals, series, and legends; it leaves sources and delivered artifacts unchanged.
 Report arguments, contextual captions, and page composition stay with the report skill; extraction and portability stay with the export skill.

@@ -24,6 +24,9 @@ For existing figures used as-is, include and explain them using their current ou
 Validate the body, caption, and receiving size without starting extraction, redistribution, or relocation checks.
 
 When a figure needs creation, addition, or revision, pass the question and display requirements above to [Create and Edit Typst Figures](../../creating-and-editing-typst-figures/SKILL.md).
+For hierarchy, process, flow, set, or image-composite schematics, pass the required elements, relationships/directions, qualitative or measured meaning, and receiving conditions to [Create and Edit Typst Schematics](../../creating-and-editing-typst-schematics/SKILL.md).
+It owns composition drafts and their browser-edit/export checkpoint; report arguments, contextual captions, and page composition remain here.
+For mixed figures, use numerical checks for measured portions and schematic checks for relationships and layout.
 Use the existing manuscript and plotting code; a portable bundle is not a prerequisite.
 Receive the verified affected outputs, condition/point coverage evidence, identities, limitations, and caption ingredients referenceable through existing quantity, condition, and series definitions, then check their integration into the report.
 Use [Presentation and Layout](../../creating-and-editing-typst-figures/references/presentation-and-layout.md) for drawing and exports, including connection choices in [Appearance and Series](../../creating-and-editing-typst-figures/references/presentation-and-layout.md#appearance-and-series).

@@ -1,6 +1,6 @@
 ---
 name: export-editable-typst-figures
-description: Use when packaging editable Typst figures for another location or maintaining a portable bundle's dependencies, provenance, relocation, or recipient integration; figure creation and visual revision belong to creating-and-editing-typst-figures.
+description: Use when packaging editable Typst figures for another location or maintaining a portable bundle's dependencies, provenance, relocation, or recipient integration; numerical figure creation belongs to creating-and-editing-typst-figures and schematic creation to creating-and-editing-typst-schematics.
 ---
 
 # Distribute Editable Typst Figures
@@ -8,6 +8,7 @@ description: Use when packaging editable Typst figures for another location or m
 Create or maintain a bundle that recipients can edit and compile without access to the original report repository.
 For extraction or packaging alone, reproduce the authoritative appearance.
 Ordinary figure creation or visual revision belongs to [Create and Edit Typst Figures](../creating-and-editing-typst-figures/SKILL.md), including work inside an existing bundle.
+For relationship diagrams, use [Create and Edit Typst Schematics](../creating-and-editing-typst-schematics/SKILL.md); extraction, provenance, and portability remain here.
 Reading that skill's technical references does not require its unrelated procedures or a new extraction.
 
 ## Bundle Contract
