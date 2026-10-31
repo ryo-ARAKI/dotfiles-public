@@ -28,7 +28,7 @@ Keep the axis labels, region names, equations, legends and relation labels neede
 
 | Need | Source |
 | --- | --- |
-| Choose a composition or check scientific meaning | [Diagram design](references/diagram-design.md) |
+| Choose a composition, shape language, visual emphasis, colors and spacing, or check scientific meaning | [Diagram design](references/diagram-design.md) |
 | Proposals, direct browser editing, handoff, redraw, coordinate cleanup | [Layout mockups](references/layout-mockups.md); [node/edge starter](assets/layout-mockup.html) or [editable spectrum starter](assets/spectrum-layout-mockup.html) |
 | Generating source for a person to edit | [Editable Typst source](references/editable-typst-source.md) |
 | Drawing, current packages, anchors, curves, image composition, standalone/import boundary | [Typst recipes](references/typst-recipes.md) and its four runnable examples |
