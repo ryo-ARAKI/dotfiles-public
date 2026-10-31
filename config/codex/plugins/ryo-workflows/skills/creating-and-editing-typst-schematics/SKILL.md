@@ -28,6 +28,7 @@ Do not invent a direction, causal claim, area interpretation, missing image, or 
 | --- | --- |
 | Choose a composition or check scientific meaning | [Diagram design](references/diagram-design.md) |
 | Proposals, direct browser editing, handoff, redraw, coordinate cleanup | [Layout mockups](references/layout-mockups.md); [node/edge starter](assets/layout-mockup.html) or [editable spectrum starter](assets/spectrum-layout-mockup.html) |
+| Generating source for a person to edit | [Editable Typst source](references/editable-typst-source.md) |
 | Drawing, current packages, anchors, curves, image composition, standalone/import boundary | [Typst recipes](references/typst-recipes.md) and its four runnable examples |
 | Numerical plots in a mixed figure | [Create and Edit Typst Figures](../creating-and-editing-typst-figures/SKILL.md) for the numerical portion |
 | Argument, contextual captions, or page composition | [Writing Typst Research Reports](../writing-typst-research-reports/SKILL.md) |
@@ -46,6 +47,8 @@ Fixture exports during skill testing are test evidence, never evidence of a pers
 Verify required elements and relationships against the contract, then compile standalone and affected receiving contexts.
 Inspect PDF page count/dimensions, extracted labels, and rendered pages at the actual publication size; compare the final figure with the accepted draft at the same aspect ratio.
 Keep figure text, mathematics, and strokes editable rather than delivering only a rasterized diagram.
+Make the ordinary Typst deliverable readable and directly editable: group settings, use semantic names and region-wise placements, expose repeated shapes as small parameterized helpers, and write math directly.
+Retain the accepted JSON as provenance; normal figure compilation should not require that coordinate snapshot. Use [Editable Typst source](references/editable-typst-source.md) when generating or restructuring the source.
 Use the existing document's typography; figure bodies must not alter document-wide page, text, numbering, bibliography, or slide progression.
 
 Stage outputs separately and preserve previous successful artifacts until the affected set passes.

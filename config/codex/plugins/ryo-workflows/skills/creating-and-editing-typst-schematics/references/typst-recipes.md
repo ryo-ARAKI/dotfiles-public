@@ -49,6 +49,8 @@ pdftotext /tmp/multiscale.pdf -
 pdftoppm -scale-to 1400 -png -singlefile /tmp/multiscale.pdf /tmp/multiscale
 ```
 
+For a new generated source or a hand-editability revision, use [Editable Typst source](editable-typst-source.md) for settings, helpers, coordinates and the source-only compilation check.
+
 ## Anchors, curves, layers, and crops
 
 Name rectangles and use border anchors such as `"stage-1.east"`; resizing should not leave endpoints at stale manual coordinates.

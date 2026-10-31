@@ -139,7 +139,8 @@ This is a handoff exercise, not a shared rendering runtime or automatic scientif
 ## From accepted geometry to Typst
 
 Retain the unrounded file and record its figure/revision, selected variant, and export ID.
-A figure-local Typst renderer can read the retained JSON as data and draw the selected state directly; keep its primitive handlers explicit rather than building a general scientific converter.
+Use [Editable Typst source](editable-typst-source.md) for the normal handoff: keep the accepted JSON as provenance and express the selected composition as readable, self-contained Typst.
+A figure-local JSON renderer can support intermediate geometry comparison or an explicitly requested data-driven deliverable; it is not the default hand-editable source.
 Preserving already usable coordinates without snapping is valid. Record a zero cleanup displacement instead of rounding merely to produce a tidy-looking coordinate list.
 Compare geometry with literal labels first, then inspect the intended math/font substitutions separately so typesetting differences do not hide layout shifts.
 Choose a physical unit and increment for the actual receiving dimensions; no universal snap grid is appropriate.
