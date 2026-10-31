@@ -4,6 +4,8 @@
 
 Choose the draft primitives from the figure: use the [node/edge starter](../assets/layout-mockup.html) for processes and the [spectrum starter](../assets/spectrum-layout-mockup.html) for qualitative curves, axes, region bands, and annotations.
 Rewrite its initial scene, labels, and necessary rendering code for the current request; do not reduce a curve-based figure to boxes simply because the first starter uses rectangles.
+When adapting starter scenes, omit demonstration figure titles and supplemental footnotes from the exported canvas unless explicitly requested.
+Keep editor headings, variant names and editing instructions outside the exported diagram; these interface labels are not figure content.
 The node/edge starter's two generic examples compare a horizontal process with a vertical process; they are not alternative scientific hypotheses.
 Generate 2–3 meaningfully different compositions for a new figure and export static previews from the same states.
 Static images are the primary comparison medium because terminal chat may not render interactive content.

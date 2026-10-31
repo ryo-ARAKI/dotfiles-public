@@ -13,6 +13,10 @@ When direction is unknown, leave that relation unresolved and ask one question a
 When an essential asset or definition is missing, retain a clearly identified draft placeholder only for a requested concept review; do not adopt it into a final figure.
 Do not infer quantitative proportions from an old schematic's geometry.
 
+Use figure text for scientific labels: axes, regions, quantities, equations, legend meanings and relationships.
+Omit figure-wide titles such as 「3次元乱流のエネルギースペクトル」 and supplemental notes such as 「模式図：曲線の高さ・領域幅・境界位置は定量値を表さない」 unless the user explicitly requests them.
+Keep the qualitative/quantitative distinction in the meaning contract or provenance notes; it does not require an extra sentence on the drawing.
+
 ## Choose by relationship
 
 | Relationship | Useful composition and checks |
@@ -21,7 +25,7 @@ Do not infer quantitative proportions from an old schematic's geometry.
 | Process or iteration | A clear main reading path, branch labels, and a routed return edge outside nodes; distinguish exit from update. |
 | Qualitative spectra or profiles | Confirm the quantity, axis scale, physical regime, and theoretical annotations; draw editable curves, axes, and region bands. Geometry is not measured data, and a transfer arrow is distinct from the spectrum curve. |
 | Flows on a qualitative profile | Distinguish the profile from directed transport and transfer between locations; label each line role without implying measured axes. |
-| Overlap and decomposition | Name exclusive/shared regions and components; state that area/height is schematic unless supported by measured values. |
+| Overlap and decomposition | Name exclusive/shared regions and components; record schematic area/height interpretation in the meaning contract unless supported by measured values. |
 | Images with annotations | Retain provenance and scientific context, crop within a real viewport, and anchor callouts to features rather than page pixels. |
 
 The four [runnable examples](typst-recipes.md#examples-and-meaning-contracts) demonstrate these relationships with generic shapes and no external research inputs.
