@@ -15,10 +15,10 @@ Do not expand the starter into an arbitrary scientific JSON language or a genera
 The user directly edits positions, widths/heights, whole-group position/size, label text/newlines/position/basic size, and existing connection waypoints and labels, plus fill/stroke/text colors.
 They can drag shapes, labels, and selected connection points, or select an object and enter values in the form.
 Group scaling is affine for child geometry and label offsets; text size remains separately editable.
-Codex handles element/image/shape additions or deletion, equation typesetting, image replacement/cropping, group membership, connection topology, specialized drawing, and new compositions.
+Codex handles element/image/shape additions, equation typesetting, image replacement/cropping, group membership, connection topology, specialized drawing, and new compositions.
 Do not make small Codex-mediated placement requests the main editing path.
 
-**Back / Forward** undo and redo successful edits in chronological order across variants, including one continuous edit of a form field, one complete drag, group resizing, variant switching, reset, and JSON loading.
+**Back / Forward** undo and redo successful edits in chronological order across variants, including one continuous edit of a form field, one complete drag, group resizing, deletion, variant switching, reset, and JSON loading.
 A new change clears redo; failed or canceled operations, selection alone, unchanged submissions, and exports do not add history.
 History stays in the current tab and is not exported; restored states need a new JSON export.
 Ctrl+Z and Ctrl+Y invoke the same Back/Forward actions outside input fields. While focus is in text/number inputs, textareas, selects, or editable content, preserve native editing shortcuts; ignore IME composition and modified Alt/Shift combinations.
@@ -29,6 +29,27 @@ While IME composition is active, retain provisional input and reflect its final 
 For incomplete or invalid numbers/point lists, retain the raw field text, mark that field, and keep its last valid geometry; other valid fields remain editable.
 Display numeric fields and point lists with at most two decimal places and no trailing zeros when populated or after leaving the field; retain the full scene/export precision and the raw input while typing.
 When a point list is edited, retain original precision for components whose displayed value is unchanged.
+
+**Delete selected** removes the selected item from the current variant, including its entry in the object menu.
+In the node/edge starter, deleting a group also removes its child elements, their owned labels, group-owned labels, and incident connections; deleting an element removes its owned labels and incident connections.
+Drop a constraint declaration if any of its referenced elements or group is deleted.
+Free labels, including connection labels with no owner, remain independent items that can be deleted separately.
+Spectrum paths, regions, and labels are independent items and are deleted individually.
+The UI describes dependent deletions before the button is pressed; one deletion and its dependents form one history entry.
+An empty variant is valid: disable object editing/deletion while retaining undo, reset, variant switching, and JSON/PNG export.
+Reset restores the original full initial state, including deleted items.
+
+Current-state collections may be subsets of the original initial collections; validate known unique IDs, retained ownership/endpoints/direction, and exactly the constraints whose references survive.
+Keep initial states exact and reject additions, duplicate/unknown IDs, rewiring, and dangling references.
+Store deletion as absence from `current`, retaining the full `initial` reset state; carry this absence through JSON handoff and Codex redraw instead of resurrecting removed items.
+Use the full initial object pool for validation and reset even when a regenerated HTML starts with an already reduced current state.
+
+Run the offline deletion regression for either starter:
+
+```fish
+node scripts/check-mockup-deletion.mjs (command -v google-chrome) assets/layout-mockup.html /tmp/node-deletion-check
+node scripts/check-mockup-deletion.mjs (command -v google-chrome) assets/spectrum-layout-mockup.html /tmp/spectrum-deletion-check
+```
 
 **Reset** restores only the selected variant's entire initial state, including text and colors, leaving other variants' edits intact.
 **Confirm** exports the selected variant and all current/initial variant states in one versioned JSON file.
@@ -119,7 +140,7 @@ Waypoints and free labels retain their canvas positions during element or group 
 Group movement adds the group offset exactly once; group resizing scales child local geometry and local label offsets about the group's top-left corner.
 It does not change membership, relation endpoints/direction, or basic text size.
 
-Validate before adopting: supported version, exact figure/revision and coordinate system, unique IDs (including variants), finite bounded coordinates, positive dimensions and text sizes, existing owners/groups/anchors, unchanged topology and initial reset states, and retained constraints.
+Validate before adopting: supported version, exact figure/revision and coordinate system, unique IDs (including variants), finite bounded coordinates, positive dimensions and text sizes, existing owners/groups/anchors, unchanged relationships among retained items, exact initial reset states, and constraints whose references survive.
 The starter rejects snapshots for other scenes or structural revisions atomically and keeps existing edits on malformed JSON or failed validation.
 Treat text as text (`textContent`), never HTML, executable JavaScript, or automatically interpolated Typst source.
 When embedding a snapshot into a regenerated HTML, serialize it as data and escape `<` as `\u003c` so a literal `</script>` label cannot end the script element.
@@ -137,7 +158,7 @@ For an authorized structural change, generate a new revision and update the HTML
 2. Retain the previous reset state for unchanged objects, so merely redrawing does not discard the original reset contract.
    Add intentional new objects to both initial/current states; define new IDs for replacements.
    Update relationship declarations for intentional structural changes.
-3. Reconcile deletions, owners, and endpoint references explicitly.
+3. Preserve browser-deleted IDs as absent from current states while retaining their initial reset entries; reconcile owners and endpoint references explicitly.
    Never transfer an old element's edits silently onto a different replacement.
 4. Bump `base_revision` and inspect the old/new states for every unaffected ID.
    Old-revision imports must still be rejected by the new HTML; migration is this explicit Codex operation, not permissive browser loading.
