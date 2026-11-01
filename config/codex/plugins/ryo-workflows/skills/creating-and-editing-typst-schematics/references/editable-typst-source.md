@@ -1,6 +1,6 @@
 # Typst source for hand editing
 
-Use the accepted mockup as the layout input and deliver a figure-specific Typst source that a person can adjust directly.
+Use the explicitly adopted JSON selected variant’s current state as the layout input and deliver a figure-specific Typst source that a person can adjust directly.
 Retain the original JSON unchanged as provenance; the ordinary delivered figure should compile without it.
 A JSON-backed renderer is useful for intermediate comparison or an explicitly requested data-driven workflow.
 
@@ -26,7 +26,7 @@ Preserve exported fill/stroke/text colors while giving the palette useful names.
 
 ## Coordinates and dependencies
 
-For CeTZ, use rightward X and upward Y, normally with the axes' intersection or another meaningful shared anchor as the origin.
+For CeTZ, convert Schemock’s top-left, y-down coordinates using y_up = frame_height - y_down, applying group offsets once and converting both rectangle corners; choose a meaningful shared anchor.
 Use a manageable physical or normalized scale and derive related positions from common boundaries, centers or spacing.
 Separate schematic drawing coordinates from measured k, energy, time or other scientific values.
 Preserve the accepted positions; neat source does not justify arbitrary coordinate rounding, curve fitting or layout shifts.
@@ -42,7 +42,7 @@ Keep page/font defaults confined to standalone output; an imported figure inheri
 ## Verify the handoff
 
 Compile the source alone in a temporary directory without the composition JSON.
-Compare the rendered figure with the accepted layout and previous successful output, recording any numerical reconstruction tolerance and intended typesetting differences.
+Compare the rendered figure with the accepted layout and previous successful output, recording the coordinate conversion, physical dimensions, any cleanup displacement, numerical reconstruction tolerance and intended typesetting differences.
 Exercise a representative manual edit, such as moving/resizing one repeated object or changing its winding; check that the intended object changes and unrelated objects stay intact.
 Compile affected receiving contexts and check dimensions, surrounding text and page counts.
 Report the locations for ordinary edits and any necessary external assets.

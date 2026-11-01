@@ -10,7 +10,7 @@ Qualitative curves belong here; measured or computed data plots use the numerica
 
 ## Scope and mode
 
-- **New figure:** establish meaning and receiving conditions; offer 2–3 distinct compositions as static previews and self-contained editable HTML, then wait for the user's exported composition before final Typst production.
+- **New figure:** establish meaning and receiving conditions; offer 2–3 distinct compositions as static PNG previews and Schemock format-v2 JSON, then wait for the user's exported composition before final Typst production.
 - **Revision:** use the latest source, output, and user edits to identify the requested delta and any source/output mismatch.
   Local corrections need no new composition proposals or browser round trip.
 - **Read-only review:** inspect source, scientific meaning and rendered output; return evidence and gaps without changing delivered files.
@@ -27,7 +27,7 @@ Use fixed default outer padding; Codex handles aspect-ratio requests, recomposit
 | Need | Source |
 | --- | --- |
 | Choose a composition, shape language, visual emphasis, colors and spacing, or check scientific meaning | [Diagram design](references/diagram-design.md) |
-| Proposals, browser editing, snapshot validation, redraw, coordinate cleanup | [Layout mockups](references/layout-mockups.md); [node/edge starter](assets/layout-mockup.html) or [spectrum starter](assets/spectrum-layout-mockup.html) |
+| Proposals, browser editing, snapshot validation, redraw, coordinate cleanup | [Layout mockups](references/layout-mockups.md) and the fixed Schemock release |
 | Generating source for a person to edit | [Editable Typst source](references/editable-typst-source.md) |
 | Drawing, package choice, anchors, curves, images, standalone/import boundary | [Typst recipes](references/typst-recipes.md) and its four runnable examples |
 | Numerical plots in a mixed figure | [Create and Edit Typst Figures](../creating-and-editing-typst-figures/SKILL.md) for the numerical portion |
@@ -38,8 +38,8 @@ Read only the relevant references; reading does not activate another workflow.
 
 ## Completion
 
-The flow is scientific brief → composition proposals → direct browser edits → user's versioned JSON → hand-editable Typst → receiving-size verification.
-For a new composition, retain the supplied unrounded snapshot unchanged and validate its figure/revision, initial states and retained IDs/relationships before adoption.
+The flow is scientific brief → composition JSON/PNG proposals → direct browser edits ⇄ agent updates → explicitly adopted JSON → hand-editable Typst → receiving-size verification.
+For each exchange, retain the latest supplied JSON unchanged and validate its figure/revision, all variants and initial states, retained IDs/relationships, deletions and full precision before applying the requested delta.
 Exporting does not transmit the file to Codex; the user attaches it or supplies its location.
 Fixture exports prove test behavior, never a person's agreement.
 Preserve text, colors, deletions and unaffected geometry on redraw; show composition-changing cleanup beside the accepted draft and wait for the affected adjustment.

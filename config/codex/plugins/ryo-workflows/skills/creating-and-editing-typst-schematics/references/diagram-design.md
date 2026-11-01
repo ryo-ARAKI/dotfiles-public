@@ -35,7 +35,7 @@ If the topic is not yet chosen, offer a few concrete subjects with a recommendat
 Once a subject is chosen, make provisional compositions with explicit assumptions; settle scientific claims before drawing them, and settle receiving dimensions before final-size verification.
 
 For a new composition, show 2–3 alternatives with different grouping or reading paths, not merely different colors.
-Supply static previews as the basic comparison medium and a saved, offline HTML for direct adjustment.
+Supply static previews as the basic comparison medium and versioned JSON for direct adjustment in the fixed offline Schemock app.
 Use [Layout mockups](layout-mockups.md) for the editing/review checkpoint.
 
 ## Visual form from the author's reference schematics
