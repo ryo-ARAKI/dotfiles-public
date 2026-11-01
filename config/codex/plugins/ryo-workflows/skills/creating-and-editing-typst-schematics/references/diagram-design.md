@@ -41,7 +41,7 @@ Use [Layout mockups](layout-mockups.md) for the editing/review checkpoint.
 ## Visual form from the author's reference schematics
 
 These defaults abstract design choices in the author's reference figures reviewed for this skill.
-Use them when proposing a new figure; a supplied style, the receiving document, and an accepted composition take precedence.
+Use them both for new proposals and for publication-oriented refinement after composition adoption; a supplied style, the receiving document, scientific meaning and explicit fixed constraints take precedence.
 For revisions, apply them within the requested change rather than restyling unrelated objects.
 The references vary in typography, palette, and density; their exact colors, coordinates, prose blocks, and drawing techniques are not a fixed house style.
 
@@ -70,7 +70,7 @@ Vary size, orientation, winding, or position only when it helps show scale, dire
 Keep repeated objects recognizable and avoid adding fine texture or decorative irregularity that disappears at publication size.
 Treat object count, packing, and size as schematic unless the contract gives them quantitative meaning.
 Use smooth, economical curve sections for continuous profiles and flow paths; inspect their joins and terminal tangents.
-An intentional physical transition may need a corner; curve smoothing must not change the supplied meaning or accepted shape.
+An intentional physical transition may need a corner; curve smoothing must not change scientific meaning or an explicitly fixed shape.
 
 ### Establish visual emphasis with line roles and color
 

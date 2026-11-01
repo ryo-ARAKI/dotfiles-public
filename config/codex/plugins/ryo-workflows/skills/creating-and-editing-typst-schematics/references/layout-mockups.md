@@ -35,9 +35,9 @@ Repeat direct edits and agent updates as needed. The [roundtrip examples](../ass
 ## Adoption and production
 
 Before final production obtain explicit human adoption and identify the figure, revision, selected variant and snapshot ID or file hash. Intermediate JSON and exports do not constitute adoption.
-Use the adopted variant's `current`, preserving deleted objects as absent, labels/newlines, colors, geometry and all curve controls.
-Build editable Typst manually, with no application or JSON dependency at compile time; record coordinate conversion, physical dimensions and intentional typography or cleanup differences.
-Show composition-changing cleanup and obtain the affected adjustment before proceeding.
+Use the adopted variant's `current` as the starting point, preserving deleted objects as absent, required labels and scientific relationships, grouping, reading path and explicit fixed constraints. Its coordinates, shapes, colors, line breaks and curve controls are design inputs rather than automatically fixed final geometry; this applies to manual edits too. Preserve a shape, proportion, color or path feature when it carries scientific meaning or the user explicitly fixed it. Do not infer that every difference between snapshots is a fixed constraint.
+Plan the visual hierarchy, alignment, spacing, label placement and publication-size treatment, then build editable Typst manually with no application or JSON dependency at compile time. Refine geometry and encoding where meaning permits; record substantive visible differences and their reasons, as well as physical dimensions and any coordinate conversion used.
+Show proposed changes to the reading path, grouping, panel structure or scientifically meaningful encoding beside the adopted draft and obtain agreement before applying them. If intent or scientific meaning is unclear, ask rather than guessing. Ordinary typography, spacing, line treatment and meaning-preserving cleanup do not require a separate checkpoint.
 Compile standalone and in receiving contexts; inspect page count, physical dimensions, extracted labels and rendered pages at publication size while preserving the receiving document settings.
 See [editable Typst source](editable-typst-source.md) and [Typst recipes](typst-recipes.md).
 

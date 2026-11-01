@@ -20,7 +20,7 @@ Use existing specifications or notes to identify the question, required elements
 Ask only result-changing missing information, one question at a time, and continue independent parts.
 Do not invent a direction, causal claim, area interpretation, missing image, or mathematical definition.
 Omit in-figure titles and supplemental prose unless requested; retain axis/region/relation labels, equations and legends needed to read the diagram.
-Use fixed default outer padding; Codex handles aspect-ratio requests, recomposition and output dimensions without adding browser controls for them.
+Use fixed default outer padding for mockups; Codex handles aspect-ratio requests, recomposition and output dimensions without adding browser controls for them. Final production may adjust padding for the receiving layout.
 
 ## Read for the operation
 
@@ -38,14 +38,14 @@ Read only the relevant references; reading does not activate another workflow.
 
 ## Completion
 
-The flow is scientific brief → composition JSON/PNG proposals → direct browser edits ⇄ agent updates → explicitly adopted JSON → hand-editable Typst → receiving-size verification.
+The flow is scientific brief → composition JSON/PNG proposals → direct browser edits ⇄ agent updates → explicitly adopted JSON → publication-oriented visual design → hand-editable Typst → receiving-size verification.
 For each exchange, retain the latest supplied JSON unchanged and validate its figure/revision, all variants and initial states, retained IDs/relationships, deletions and full precision before applying the requested delta.
 Exporting does not transmit the file to Codex; the user attaches it or supplies its location.
 Fixture exports prove test behavior, never a person's agreement.
-Preserve text, colors, deletions and unaffected geometry on redraw; show composition-changing cleanup beside the accepted draft and wait for the affected adjustment.
+During JSON exchanges preserve unrelated edits and geometry. For final Typst production, preserve scientific meaning, deleted elements as absent, explicit constraints, and the adopted composition's grouping and reading path; refine positions, shapes and colors, including manually edited ones, for publication quality. Show proposed changes to the reading path, grouping, panel structure, or scientifically meaningful encoding beside the adopted draft and obtain agreement before applying them; ask when intent cannot be determined.
 
 Verify required elements/relationships, standalone compilation, and affected receiving contexts.
-Inspect PDF page count/dimensions, extracted labels and rendered pages at publication size; compare with the accepted draft at the agreed aspect ratio.
+Inspect PDF page count/dimensions, extracted labels and rendered pages at publication size; compare meaning and composition with the adopted draft and assess visual hierarchy and legibility at the intended size.
 Deliver editable text, mathematics and strokes, grouped settings, semantic names, region-wise placements and small helpers for repeated shapes.
 Keep the accepted JSON as provenance; ordinary compilation needs no coordinate snapshot.
 Use the receiving document's typography without changing its page/text settings, numbering, bibliography or slide progression.
