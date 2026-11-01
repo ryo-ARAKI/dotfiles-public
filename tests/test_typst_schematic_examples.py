@@ -122,5 +122,71 @@ class SchematicExampleTests(unittest.TestCase):
                 self.assertTrue(all((18<h<30) if slide else (9<h<15) for h in heights), heights)
 
 
+    def test_roundtrip_sources_without_json_and_receiving_settings(self):
+        with tempfile.TemporaryDirectory(prefix='schemock-final-source-', dir='/tmp') as tmp:
+            target = Path(os.environ.get('SCHEMOCK_ROUNDTRIP_EVIDENCE_DIR', tmp))
+            target.mkdir(parents=True, exist_ok=True)
+            packages = Path(tmp) / 'packages'
+            for (name, version), source in PACKAGE_SOURCES.items():
+                shutil.copytree(source, packages/'preview'/name/version)
+            labels = {'node-edge': ['候補', 'Input', '選択', 'Select', '精査済', 'Refine', '処理の方向'],
+                      'spectrum': ['定性形状', 'Profile', '位置', '強度', '移送', 'Transfer']}
+            for name, expected in labels.items():
+                shutil.copy2(EXAMPLES/'roundtrip'/f'{name}.typ', target/f'{name}.typ')
+                run('typst', 'compile', str(target/f'{name}.typ'), str(target/f'{name}.pdf'), package_root=packages)
+                info = run('pdfinfo', str(target/f'{name}.pdf'), package_root=packages)
+                self.assertRegex(info, r'Pages:\s+1\b')
+                dims = re.search(r'Page size:\s+([\d.]+) x ([\d.]+)', info)
+                for got, mm in zip(map(float,dims.groups()), [120,72]):
+                    self.assertAlmostEqual(got, mm*72/25.4, delta=.02)
+                text = run('pdftotext', str(target/f'{name}.pdf'), '-', package_root=packages)
+                for label in expected: self.assertIn(label, text)
+                self.assertNotIn('未使用',text)
+                self.assertFalse(list(target.glob('*.json')), 'final compile must not rely on snapshots')
+            # A person can change one semantic placement without moving other labels.
+            original=(target/'node-edge.typ').read_text()
+            edited=original.replace('let refine-x = group-x + 470','let refine-x = group-x + 480')
+            self.assertNotEqual(original,edited)
+            (target/'node-edge-manual-edit.typ').write_text(edited)
+            run('typst','compile',str(target/'node-edge-manual-edit.typ'),str(target/'node-edge-manual-edit.pdf'),package_root=packages)
+            import xml.etree.ElementTree as ET
+            def positions(name):
+                xml=run('pdftotext','-bbox',str(target/(name+'.pdf')),'-',package_root=packages)
+                return {word.text:(float(word.attrib['xMin'])+float(word.attrib['xMax']))/2
+                        for word in ET.fromstring(xml).iter() if word.tag.endswith('}word') and word.text in ['Input','Select','Refine']}
+            before,after=positions('node-edge'),positions('node-edge-manual-edit')
+            self.assertAlmostEqual(after['Refine']-before['Refine'],1.5*72/25.4,delta=.02)
+            for name in ['Input','Select']: self.assertAlmostEqual(before[name],after[name],delta=.001)
+            for slide in [False,True]:
+                setup = 'width:320mm,height:180mm,margin:10mm' if slide else 'paper:"a4",margin:20mm'
+                size = 20 if slide else 10
+                source = f'''#set page({setup})
+#set text(font:("Noto Sans","Noto Sans CJK JP"),size:{size}pt)
+#import "node-edge.typ" as n
+#import "spectrum.typ" as s
+#let sentinel() = context {{
+ assert(text.size == {size}pt)
+ assert(text.font == ("noto sans","noto sans cjk jp"))
+ assert(page.width == {"320mm" if slide else "210mm"})
+ assert(page.height == {"180mm" if slide else "297mm"})
+ [HOST SENTINEL]
+}}
+#sentinel()
+#grid(columns:{"(1fr,1fr)" if slide else "1"},gutter:6mm,n.schematic(),s.schematic())
+#sentinel()
+'''
+                name = 'roundtrip-slide-host' if slide else 'roundtrip-a4-host'
+                (target/f'{name}.typ').write_text(source)
+                run('typst','compile',str(target/f'{name}.typ'),str(target/f'{name}.pdf'),package_root=packages)
+                info=run('pdfinfo',str(target/f'{name}.pdf'),package_root=packages)
+                self.assertRegex(info,r'Pages:\s+1\b')
+                dims=re.search(r'Page size:\s+([\d.]+) x ([\d.]+)',info)
+                for got,mm in zip(map(float,dims.groups()),(320,180) if slide else (210,297)):
+                    self.assertAlmostEqual(got,mm*72/25.4,delta=.02)
+                text=run('pdftotext',str(target/f'{name}.pdf'),'-',package_root=packages)
+                self.assertEqual(text.count('HOST SENTINEL'),2)
+                for label in sum(labels.values(),[]): self.assertIn(label,text)
+
+
 if __name__ == '__main__':
     unittest.main()
