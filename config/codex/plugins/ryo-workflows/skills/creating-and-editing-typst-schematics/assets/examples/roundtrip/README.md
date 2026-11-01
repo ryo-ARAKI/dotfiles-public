@@ -13,4 +13,4 @@ The initial exercise provides two reading paths or region emphases, then direct 
 An intermediate snapshot or fixture handoff is not final human adoption; production requires an explicit adopted JSON identity.
 
 Source/reset and all intermediate JSON stages are documented in the [Schemock agent workflow](https://github.com/ryo-ARAKI/schemock/blob/v0.1.0/docs/agent-workflow.md).
-The fixed Release must be available and verified before the downstream skill switches to it.
+Use the fixed v0.1.0 Release and verify its checksums as described in [Layout mockups](../../../references/layout-mockups.md).

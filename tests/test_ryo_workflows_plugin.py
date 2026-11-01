@@ -77,6 +77,10 @@ class PluginDistributionTests(unittest.TestCase):
             self.assertEqual(discovered, expected)
 
             assert_markdown_links(self, deployed.rglob("*.md"), deployed)
+            schematic = skills / "creating-and-editing-typst-schematics"
+            self.assertFalse(list(schematic.rglob("*.html")), "the app is independently distributed")
+            for name in ("node-edge.json", "spectrum.json", "node-edge.typ", "spectrum.typ"):
+                self.assertTrue((schematic / "assets/examples/roundtrip" / name).is_file(), name)
 
 
 if __name__ == "__main__":
