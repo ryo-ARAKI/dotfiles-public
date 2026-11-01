@@ -302,9 +302,9 @@ class InstallCliTests(unittest.TestCase):
             self.assertNotEqual((homes["local"] / ".codex/config.toml").read_text(encoding="utf-8"), local_config_before)
             for context, standard, deep in (("local", local, local_deep), ("remote", remote, remote_deep)):
                 with self.subTest(context=context):
-                    self.assertEqual(standard["model"], "gpt-6.1-sol")
-                    self.assertEqual(standard["model_reasoning_effort"], "xhigh")
-                    self.assertEqual(standard["plan_mode_reasoning_effort"], "max")
+                    self.assertEqual(standard["model"], "gpt-6.1-terra")
+                    self.assertEqual(standard["model_reasoning_effort"], "medium")
+                    self.assertEqual(standard["plan_mode_reasoning_effort"], "medium")
                     self.assertEqual(deep["model"], "gpt-6.1-sol")
                     self.assertEqual(deep["model_reasoning_effort"], "max")
                     self.assertEqual(deep["plan_mode_reasoning_effort"], "max")

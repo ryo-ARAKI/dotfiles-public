@@ -82,7 +82,7 @@ note.
 Read [Model selection and launch checks](references/model-selection.md) before
 recommending the next session's profile, model, efforts, or launch command.
 Use its roles, selection criteria, deployed-config checks, launch examples,
-old-profile handling, and reviewer prerequisites.
+and reviewer prerequisites.
 If the reference is missing or unreadable, identify the path and resolve that
 prerequisite before constructing the recommendation; do not infer its details.
 

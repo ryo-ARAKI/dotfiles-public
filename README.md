@@ -208,8 +208,8 @@ The local profile must set `approvals_reviewer = "user"`.
 Raw `--oss` launches continue to inherit the base automatic reviewer;
 removing legacy profile selection does not change that approval setting.
 
-Model/profile roles, effort selection, launch examples, deployed-profile checks,
-and old `deep` handling are maintained in
+Model/profile roles, effort selection, launch examples, and deployed-profile
+checks are maintained in
 [Model selection and launch checks](config/codex/references/model-selection.md).
 Use that reference when making a recommendation or constructing a launch command.
 The [handoff template](config/codex/codex-handoff-prompt.md) records the resulting

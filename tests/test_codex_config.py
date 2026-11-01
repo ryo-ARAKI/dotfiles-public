@@ -46,9 +46,9 @@ class CodexConfigTests(unittest.TestCase):
         subagent = tomllib.loads((config_root / "subagent.config.toml").read_text(encoding="utf-8"))
         reviewer = tomllib.loads((config_root / "reviewer.config.toml").read_text(encoding="utf-8"))
 
-        self.assertEqual(standard["model"], "gpt-6.1-sol")
-        self.assertEqual(standard["model_reasoning_effort"], "xhigh")
-        self.assertEqual(standard["plan_mode_reasoning_effort"], "max")
+        self.assertEqual(standard["model"], "gpt-6.1-terra")
+        self.assertEqual(standard["model_reasoning_effort"], "medium")
+        self.assertEqual(standard["plan_mode_reasoning_effort"], "medium")
         self.assertEqual(standard["service_tier"], "default")
         self.assertEqual(standard["agents"]["default_subagent_model"], "gpt-6-luna")
         self.assertEqual(standard["agents"]["default_subagent_reasoning_effort"], "medium")

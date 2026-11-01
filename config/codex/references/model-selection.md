@@ -16,9 +16,8 @@ Managed settings use the standard service tier (`service_tier = "default"`).
 
 | Selection | Model | Normal / planning effort | Remaining work |
 | --- | --- | --- | --- |
-| `quick` | `gpt-6.1-terra` | medium / medium | Everyday writing, visual inspection, computer use, and fixes with a known approach |
-| `default` with explicit high overrides | `gpt-6.1-sol` | high / high | Local fix with a known cause and approach; routine reviews still keep `reviewer` |
-| `default` (no `--profile`) | `gpt-6.1-sol` | xhigh / max | Ordinary investigation, implementation, and verification requiring existing specifications |
+| `default` (no `--profile`) or `quick` | `gpt-6.1-terra` | medium / medium | Everyday investigation, writing, visual inspection, computer use, and implementation or fixes with a known approach; check the result |
+| Explicit Sol overrides | `gpt-6.1-sol` | medium to xhigh, selected for the remaining judgment | Complex investigation or implementation, interpreting specifications, reconciling sources, or preserving technical meaning; routine reviews still keep `reviewer` |
 | `deep` | `gpt-6.1-sol` | max / max | Difficult judgment, competing hypotheses, design tradeoffs, or numerical validity; reviews keep `reviewer` with max overrides |
 | `subagent` profile | `gpt-6-luna` | medium / medium | Bounded delegated work within granted authority |
 | Spawned defaults | `gpt-6-luna` | medium normal; planning effort must be checked in the launch environment | Defaults specify the spawned model and normal effort, not a separate planning value |
@@ -26,15 +25,25 @@ Managed settings use the standard service tier (`service_tier = "default"`).
 | Explicit Sol ultra selection, after support checks | Verify the available Sol model ID | Verify both effective efforts | Meaningful independent parts make parallel work useful |
 | Astra, with task-specific approval | Verify the available Astra model ID | Record both effective efforts | Compare against a concrete Sol max limitation for a stated purpose |
 
+Terra medium is a local starting point chosen for everyday latency, not a
+claim of measured superiority. Consider Sol when interpreting competing
+specifications or comparing alternatives, investigation repeats without
+narrowing hypotheses, changes could affect surrounding contracts or scientific
+meaning, or an important conclusion is difficult to verify. When the difficulty
+is apparent at the outset, select Sol immediately rather than waiting for Terra
+to fail. Select effort by error impact, remaining judgment, verifiability, and
+rework cost; medium may suffice for clear, verifiable work, while high or
+xhigh suits harder tradeoffs. Do not assume that selecting a default model
+automatically switches it during a task; explain when and why a switch is
+needed.
+
 Recommend max from the start when difficult judgment is already apparent; an
 xhigh failure is not a prerequisite. Gather missing evidence first. Permission,
-network, or runner failures alone do not justify higher effort. Large amounts
-of routine editing alone do not justify max or ultra; start with max for one
-tightly coupled hard problem. A planning phase alone does not justify a max
-recommendation; distinguish that recommendation from the profile's configured
-planning effort. The xhigh default reflects usage and user preference, not
-measured optimality; quality differences and usage-limit multipliers between
-efforts are unverified.
+network, or runner failures alone do not justify a different model or higher
+effort. Large amounts of routine editing alone do not justify max or ultra;
+start with max for one tightly coupled hard problem. A planning phase alone
+does not justify max. Quality differences, latency, and usage-limit multipliers
+between models and efforts remain unverified for the user's actual tasks.
 
 For ultra, explain the proposed independent parts and benefit, check the
 installed client's availability and selection method, and keep model selection
@@ -70,8 +79,8 @@ max. Do not substitute `deep` for the reviewer profile.
    separately in the handoff. Record the deployed config root, paths, effective
    values, required overrides, and unresolved checks in `launch_config_check`.
 3. If deployed values differ or are unknown, use explicit model and both effort
-   overrides as needed. An old deployed `deep` may still select Astra; never
-   recommend that bare profile based only on the current managed source.
+   overrides as needed. Do not infer the deployed profile's values from the
+   managed source.
 4. For reviews, verify read-only reviewer permissions and instructions first.
    If missing or unverified, report that prerequisite and wait for configuration
    verification instead of substituting `deep`.
@@ -85,9 +94,9 @@ named profile exists and, for review, remains read-only. `default` means no
 `--profile` argument; `-C` may select the intended cwd when needed.
 
 ```fish
-# Local correction with both efforts explicit.
+# Complex investigation with both efforts explicit; use xhigh when warranted.
 codex -m gpt-6.1-sol -c 'model_reasoning_effort="high"' -c 'plan_mode_reasoning_effort="high"'
-# Deep investigation, including with an old Astra deep profile.
+# Deep investigation with both efforts explicit.
 codex --profile deep -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
 # Difficult review retains verified reviewer permissions.
 codex --profile reviewer -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'

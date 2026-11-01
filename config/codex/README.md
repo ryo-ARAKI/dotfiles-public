@@ -80,8 +80,6 @@ selected config/codex/references/*.md
 A legacy private `AGENTS.common.md` remains a complete override; public policy
 is not forced into it. Installing the references does not automatically migrate
 that old body. Local extra guidance is still appended only in local context.
-No model/permission settings, runtime retention, generated-file writer, or
-backup mechanism changes with this document layout.
 
 For initial installation and reference changes, follow the
 [two-stage update procedure](../../README.md#update-working-agreements-and-their-references)
@@ -113,23 +111,6 @@ rollback. Inspect target files, summaries, and available backups when recovering
 - Before a write, content and mode must still match the snapshot. The previous file is backed up before a temporary sibling is atomically replaced; existing permissions are retained.
 - The guarantees are per file, not a multi-file transaction. A later failure lists previously applied/pending files and backups so recovery is explicit.
 - Reapplying identical sources and target state makes no changes. Missing retained entries are not implicit deletion requests.
-
-## Evidence and improvement decisions (2026-10-18)
-
-The local deployed base contained 34 project trust entries, 13 plugin entries, one MCP server, and four hook state records.
-The actual private checkout supplies common/local config fragments, local AGENTS guidance, and a local deep-profile override.
-Fish history contains 193 direct Codex launches, including seven quick and eight deep launches; history is partial and zero matches do not establish an unused workflow.
-These observations justify retention, source layering, and named profiles; they do not justify assumptions about all remote hosts.
-
-| Priority | Finding | Decision |
-| --- | --- | --- |
-| Delete | Base config wrapped an existing runtime plan; profile planning was a forwarding wrapper; AGENTS had another plan type/writer; one text-read helper had no remaining callers. | Remove these internal duplicates. Use one `CodexFilePlan` and writer. |
-| Delete | `--only` maintained a second catalogue of profile names, excluded broad TOML selectors, and omitted the local config fragment. | Remove the catalogue; match source/target paths directly, with fragment names taken from their owner modules. |
-| Simplify | Base config, profiles, and AGENTS had separate confirmation/application/error paths; AGENTS bypassed confirmation, stale-plan rejection, restrictive-mode retention, and atomic replacement. | Process an ordered list of plans through the existing safe writer and one CLI loop. |
-| Preserve | Raw copying/symlinking would remove the runtime merge boundary; profiles, manifests, and local-only fragments serve separate consumers. | Keep these mechanisms and the current config values, permissions, rules, and launch commands. |
-| Preserve | Old private common overrides are absent locally, but remote absence is unverified; the forwarding fish function is already deployed. | Preserve compatibility; local absence alone does not authorize retiring a cross-host workflow. |
-| Optimize | The baseline suite takes about four seconds; no installer bottleneck or measured optimal model/compaction thresholds was demonstrated. | Reduce maintenance paths first; add no cache, dependencies, or speculative tuning. Current tuning remains user policy, not a measured optimum. |
-| Automate | Selection omissions and inconsistent AGENTS safety escaped the existing suite. | Add regression coverage for selection, confirmation/all, stale plans, modes, failed replacement, and reapplication; reuse existing runtime/layer tests. |
 
 ## Editing and verification
 
