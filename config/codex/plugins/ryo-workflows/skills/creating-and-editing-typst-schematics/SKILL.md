@@ -38,11 +38,11 @@ Read only the relevant references; reading does not activate another workflow.
 
 ## Completion
 
-The flow is scientific brief → composition JSON/PNG proposals → direct browser edits ⇄ agent updates → explicitly adopted JSON → publication-oriented visual design → hand-editable Typst → receiving-size verification.
+The flow is scientific brief → composition JSON/PNG proposals → direct browser edits ⇄ agent updates → explicitly adopted JSON → interactive agreement on publication refinements → hand-editable Typst → receiving-size verification.
 For each exchange, retain the latest supplied JSON unchanged and validate its figure/revision, all variants and initial states, retained IDs/relationships, deletions and full precision before applying the requested delta.
 Exporting does not transmit the file to Codex; the user attaches it or supplies its location.
 Fixture exports prove test behavior, never a person's agreement.
-During JSON exchanges preserve unrelated edits and geometry. For final Typst production, preserve scientific meaning, deleted elements as absent, explicit constraints, and the adopted composition's grouping and reading path; refine positions, shapes and colors, including manually edited ones, for publication quality. Show proposed changes to the reading path, grouping, panel structure, or scientifically meaningful encoding beside the adopted draft and obtain agreement before applying them; ask when intent cannot be determined.
+During JSON exchanges preserve unrelated edits and geometry. Before final Typst production, propose concrete publication refinements with their reasons and agree them interactively with the user; see [Layout mockups](references/layout-mockups.md#adoption-and-production). Preserve scientific meaning, deleted elements as absent, explicit constraints, and the adopted composition's grouping and reading path; refine positions, shapes and colors, including manually edited ones, according to the agreed refinements. Show changes to the reading path, grouping, panel structure, or scientifically meaningful encoding beside the adopted draft and obtain agreement before applying them; ask when intent cannot be determined.
 
 Verify required elements/relationships, standalone compilation, and affected receiving contexts.
 Inspect PDF page count/dimensions, extracted labels and rendered pages at publication size; compare meaning and composition with the adopted draft and assess visual hierarchy and legibility at the intended size.
