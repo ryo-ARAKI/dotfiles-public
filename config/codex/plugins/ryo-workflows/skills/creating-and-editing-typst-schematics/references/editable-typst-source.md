@@ -1,7 +1,7 @@
 # Typst source for hand editing
 
-Use the explicitly adopted JSON selected variant’s current state as the starting composition and deliver a publication-quality, figure-specific Typst source that a person can adjust directly. Preserve the scientific contract, composition and explicit fixed constraints while refining the visual design as described in [Layout mockups](layout-mockups.md#adoption-and-production).
-Retain the original JSON unchanged as provenance; the ordinary delivered figure should compile without it.
+For a new figure, use the explicitly adopted composition, including the selected JSON variant's current state when Schemock is used, as the starting point. Preserve the scientific contract, composition and explicit fixed constraints while refining the visual design as described in [Layout mockups](layout-mockups.md#adoption-and-production). For a revision, start with the latest source and preserve unrelated content and geometry while applying the requested delta.
+Deliver publication-quality, figure-specific Typst that a person can adjust directly. Retain any adopted draft and original JSON unchanged as provenance; the ordinary delivered figure should compile without a coordinate snapshot.
 A JSON-backed renderer is useful for intermediate comparison or an explicitly requested data-driven workflow.
 
 ## Arrange the editing surface
@@ -28,8 +28,8 @@ Give the palette useful names. Preserve explicitly fixed colors and scientifical
 When using Schemock coordinates in CeTZ, convert its top-left, y-down coordinates using y_up = frame_height - y_down, applying group offsets once and converting both rectangle corners; choose a meaningful shared anchor.
 Use a manageable physical or normalized scale and derive related positions from common boundaries, centers or spacing.
 Separate schematic drawing coordinates from measured k, energy, time or other scientific values.
-Refine positions, curves and spacing for legibility and coherence, including manually adjusted positions, without changing the scientific contract, adopted composition or explicitly fixed geometry. Avoid arbitrary rounding or fitting that damages meaningful features.
-Use the agreed receiving aspect ratio and sufficient outer padding; adjust draft padding when publication-size layout requires it without changing the adopted composition.
+For new figures, refine positions, curves and spacing for legibility and coherence according to the agreed refinements, without changing the scientific contract, adopted composition or explicitly fixed geometry. For revisions, limit such changes to the requested delta. Avoid arbitrary rounding or fitting that damages meaningful features.
+Use the agreed receiving aspect ratio and sufficient outer padding; adjust draft padding when publication-size layout requires it without changing the agreed composition.
 Codex chooses physical output dimensions and scale for the receiving context; the mockup does not expose these as user controls.
 When producing a fitted standalone figure, include the agreed outer padding in the figure body and use zero additional page margin by default to avoid adding it twice.
 An imported figure still inherits the receiving document's page margins; these are separate from the figure's own padding.
@@ -40,8 +40,8 @@ Keep page/font defaults confined to standalone output; an imported figure inheri
 
 ## Verify the handoff
 
-Compile the source alone in a temporary directory without the composition JSON.
-Compare required meaning and composition with the adopted layout and previous successful output; separately assess visual hierarchy, labels, arrows, contrast and grayscale distinctions at the intended size. Record physical dimensions, substantive visible changes and their reasons, any coordinate conversion, and reconstruction tolerance where exact geometry is required.
+Compile the source in a temporary directory with its declared packages and necessary assets, without a coordinate snapshot unless the user requested a data-driven workflow.
+Compare required meaning and composition with any adopted layout and previous successful output; separately assess visual hierarchy, labels, arrows, contrast and grayscale distinctions at the intended size. Record physical dimensions, substantive visible changes and their reasons, any coordinate conversion, and reconstruction tolerance where exact geometry is required.
 Exercise a representative manual edit, such as moving/resizing one repeated object or changing its winding; check that the intended object changes and unrelated objects stay intact.
 Compile affected receiving contexts and check dimensions, surrounding text and page counts.
 Report the locations for ordinary edits and any necessary external assets.

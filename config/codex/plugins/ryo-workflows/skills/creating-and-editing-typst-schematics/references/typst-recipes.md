@@ -2,14 +2,13 @@
 
 ## Current packages and selection
 
-At every implementation/drawing operation, check the official distribution for the stable latest versions of directly adopted libraries, then record the checked date and pinned versions.
-A local cache or this dated record is not evidence of the latest release at a future use.
+When selecting a library for new work or replacing a dependency, check the official distribution for stable versions and record the checked date and chosen pins. A local cache or this dated record is not evidence of the latest release at a future use. For a local revision, retain the existing pins unless an upgrade is requested or necessary; if the official check is unavailable, use available project pins where possible and report the gap.
 The official pages checked **2026-10-31** list [CeTZ 0.5.3](https://typst.app/universe/package/cetz/), [Fletcher 0.5.8](https://typst.app/universe/package/fletcher/), and [Physica 0.9.8](https://typst.app/universe/package/physica/).
 The examples directly depend only on CeTZ 0.5.3 (compiler requirement 0.15.0); they were compiled with Typst 0.15.1.
 CeTZ 0.5.3's own `src/deps.typ` uses the internal formatting helper oxifmt 1.0.0; it is a transitive dependency, not an independently selected drawing library.
 Fletcher 0.5.8 uses CeTZ 0.3.4 internally; using the latest Fletcher does not make its transitive CeTZ the latest CeTZ.
 Do not edit vendor code or silently downgrade direct dependencies to unify versions.
-Test content-boundary composition if combining libraries, or prefer a working current-version method with fewer dependencies.
+Test content-boundary composition if combining libraries, or prefer a working method with fewer dependencies.
 Environment/package/font installation and updates require the applicable authority.
 
 | Method | Choose when / tradeoff |

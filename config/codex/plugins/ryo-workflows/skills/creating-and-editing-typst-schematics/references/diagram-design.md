@@ -14,7 +14,7 @@ When an essential asset or definition is missing, retain a clearly identified dr
 Do not infer quantitative proportions from an old schematic's geometry.
 
 Use figure text for scientific labels: axes, regions, quantities, equations, legend meanings and relationships.
-Omit figure-wide titles such as 「3次元乱流のエネルギースペクトル」 and supplemental notes such as 「模式図：曲線の高さ・領域幅・境界位置は定量値を表さない」 unless the user explicitly requests them.
+For new proposals, omit figure-wide titles such as 「3次元乱流のエネルギースペクトル」 and supplemental notes such as 「模式図：曲線の高さ・領域幅・境界位置は定量値を表さない」 unless the user explicitly requests them. Preserve such text in an adopted mockup unless the user agrees to remove it or move it outside the figure.
 Keep the qualitative/quantitative distinction in the meaning contract or provenance notes; it does not require an extra sentence on the drawing.
 
 ## Choose by relationship
@@ -35,7 +35,7 @@ If the topic is not yet chosen, offer a few concrete subjects with a recommendat
 Once a subject is chosen, make provisional compositions with explicit assumptions; settle scientific claims before drawing them, and settle receiving dimensions before final-size verification.
 
 For a new composition, show 2–3 alternatives with different grouping or reading paths, not merely different colors.
-Supply static previews as the basic comparison medium and versioned JSON for direct adjustment in the fixed offline Schemock app.
+Supply static previews as the basic comparison medium and, when Schemock can represent the content, versioned JSON for direct adjustment in the fixed offline app.
 Use [Layout mockups](layout-mockups.md) for the editing/review checkpoint.
 
 ## Visual form from the author's reference schematics
@@ -108,7 +108,7 @@ Place a small physical sketch near the part of a profile it explains, with enoug
 For equation-based processes, highlight the relevant terms and connect those terms across rows; keep formulas legible instead of turning each entire equation into a generic node.
 Reuse component colors across insets and equations only when the meanings match.
 When the main structure loses prominence or an inset becomes unreadable, reduce secondary detail or propose separate panels before reducing all text and strokes.
-Extract these compositional choices from dense historical overview figures while retaining the current default to omit figure-wide titles and supplemental prose.
+Extract these compositional choices from dense historical overview figures while applying the title and supplemental-text guidance above.
 
 ## Receiving-size review
 
