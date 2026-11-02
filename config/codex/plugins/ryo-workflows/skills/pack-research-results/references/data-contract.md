@@ -19,7 +19,7 @@ If the requested scope cannot be supported, report the missing values or depende
 ## Values, Conditions, and Provenance
 
 Include saved individual IC/member, matching, replicate, sample-size, and directional estimates wherever applicable, summaries for comparison, and the spectra, energies, or diagnostics needed by the requested operations.
-Retain the original TOML/JSON sidecars and relevant input metadata rather than replacing them with a lossy summary.
+For sender bundles, retain original TOML/JSON sidecars and relevant input metadata rather than replacing them with a lossy summary. For adopted receiver inputs, preserve the necessary meanings and provenance in existing records; retain sidecars when those records cannot adequately carry them.
 Record applicable conditions from authoritative metadata; distinguish unknown from not applicable:
 
 - Parameters, IC/member identities and counts, actual pair/sample counts, physical times and saved indices, requested and realized lag/time pairs.
@@ -63,15 +63,15 @@ The current inventory describes only the inputs promised for the current scope:
 | History | Original delivery manifests, producer verification, and old failed-version references are historical evidence with their original identities. Copy only relevant history, or retain exact references and retention status. |
 | Management records | Declare which inventory, verification outputs, or receipt records are outside the payload hash set and why. Avoid circular/self hashes. Account for unexpected files rather than ignoring them silently. |
 
-Keep the current inventory separate from the complete original delivery manifest and its validation history.
+Keep the current inventory conceptually separate from the complete original delivery manifest and its validation history; the existing recipient inventory may hold the current subset without creating a new file.
 Never rewrite the original manifest or its hash to fit a subset.
 A subset verifier must not require omitted historical payloads; a full-delivery verifier may still be used on the preserved full delivery.
 Provide a package README or existing equivalent with purpose, column meanings/units, selectors, dependencies, verification commands, principal saved results, reproduction limits, and unresolved items.
 
 ## Verify the Declared Scope
 
-Use an existing verifier that covers the declared scope; otherwise provide a small package-specific check, preferably standard-library Python for CSV/JSON.
-It must resolve package inputs relatively, work after relocation without source-host access for promised local operations, and exit nonzero on a contract violation.
+Use existing checks that cover the declared scope; otherwise add a suitably small check only where needed. Receiver checks may extend existing validation instead of introducing a package-specific verifier.
+Automated checks must resolve inputs relatively, work after relocation without source-host access for promised local operations, and exit nonzero on a contract violation.
 Verify:
 
 1. Required files, sizes, SHA-256, CSV data-row counts, and the declared inventory boundary.

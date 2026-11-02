@@ -14,7 +14,7 @@ For transfer preparation, select the data bundle needed for the requested operat
 | --- | --- | --- |
 | **Instructions only** | Inspect available local loaders and requirements; return a copyable request with target, individual values, selection/retention rules, conditions, verification, and done-when. Mark remote facts for the recipient to discover. Do not connect, package, or transfer just to draft instructions. | [Data contract](references/data-contract.md); also the receiver procedure below when drafting receipt/integration instructions. |
 | **Sender packaging** | From authoritative saved results and recipient requirements, select, assemble, verify, and seal a new transfer bundle. Preserve source originals and prior packages. | [Data contract](references/data-contract.md), including selection, extraction, current inventory, and sealing. |
-| **Receive and integrate** | From a received archive/directory, available sender hash, placement policy, and accepted inputs, validate in a candidate area and adopt only successful inputs/references. | [Data contract](references/data-contract.md) for the shared contract and [receiver procedure](references/receive-and-integrate.md) for receipt, reuse, conflict detection, and recoverable adoption. |
+| **Receive and integrate** | From a received archive/directory, available sender hash, placement policy, and accepted inputs, validate the delivery in a candidate area, then adopt and verify only the inputs needed for the requested scope. | [Data contract](references/data-contract.md) for the shared contract and [receiver procedure](references/receive-and-integrate.md) for receipt, reuse, conflict detection, and recoverable adoption. |
 
 Start only the requested operations within current authority.
 Packaging/integration does not grant permission for transfer, remote access, deletion, untracking/history changes, other Git writes, deployment, environment installation, or new scientific computation.
@@ -28,7 +28,7 @@ The default scope is saved-value reading, arithmetic regrouping, validation, and
 The data contract owns the detailed scientific checks, precision, original sidecars, signed sums, uncertainty definitions, row/partition identities, extraction mappings, and reproduction limits.
 Do not collapse individual estimates to averages or silently unify conditions and estimator versions.
 
-Keep the current adopted-input inventory separate from original delivery manifests and verification history.
+Describe the current adopted-input inventory in the existing inventory or equivalent, distinct from original delivery manifests and verification history.
 Distinguish historical producer validation, checks executed now, and external facts not checked.
 Successful packaging or a completed derived analysis does not make a partial source dataset complete.
 Validate promised local operations after relocation; omitted upstream originals and independent re-extraction remain separate verification limits.
@@ -37,7 +37,7 @@ Validate promised local operations after relocation; omitted upstream originals 
 
 - **Instructions only:** return the copyable request and its scope/done-when, distinguishing observed local facts from remote discovery tasks. Instructions are the deliverable; no packaging or transfer is implied.
 - **Sender packaging:** return the final archive absolute path, size/SHA-256, delivered coverage, selection/omission record, verification commands/results including fresh extraction, and external dependencies or unresolved items.
-- **Receive and integrate:** return the receipt record, original storage location, adopted inputs and reused sources, current inventory, read/selection/arithmetic checks, conflicts or missing inputs, and external limits. Failed candidates remain unadopted with previous inputs and user edits preserved.
+- **Receive and integrate:** return receipt evidence and the original location or retention status, adopted inputs and reused sources, current inventory, read/selection/arithmetic checks, conflicts or missing inputs, and external limits. Failed candidates remain unadopted with previous inputs and user edits preserved.
 
 Report preparation, actual transfer, receipt verification, and integration separately, along with planned, delivered, and adopted coverage.
 Figure production, report writing, and portable editable figure packaging remain subsequent tasks with their own requested scope.

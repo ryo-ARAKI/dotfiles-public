@@ -6,24 +6,26 @@ This procedure accepts a full historical package or a selected data bundle; it d
 ## Inspect and Record Receipt
 
 Use the received archive/directory, any independently supplied sender hash, existing accepted inputs, and the recipient's placement policy.
-Preserve the received original unchanged and use a new candidate area for validation and integration.
+Leave the received original unchanged and use a new candidate area for validation and integration; follow the user’s storage instructions rather than automatically creating another archival copy.
 Before extraction, inspect all archive member names and types: require a single root and reject absolute paths, parent traversal/root escapes, duplicate normalized destinations, dangerous symbolic/hard links, and special files.
 For directory receipts, likewise check resolved paths and links before using them; do not follow references outside the declared receipt except explicitly inventoried reusable inputs.
 Keep extraction inside the new area and do not overwrite existing files.
 
-Record receipt time, source, original storage location, archive size/SHA-256 (or directory inventory), sender-hash comparison, commands actually run and their results, and external checks not performed.
+Record receipt time, source, original location and retention status, archive size/SHA-256 (or directory inventory), sender-hash comparison, commands actually run and their results, and external checks not performed. Integrate these records into existing documentation or inventory when adequate; add a separate receipt record only when needed.
 If the sender hash is absent, record **not supplied**; the receiver's computed hash is an identity, not proof of agreement with the sender.
 An absent sender hash permits internal validation with that limit disclosed; a supplied but mismatched hash rejects the candidate.
 
-For a full historical delivery, preserve its structure, original manifest bytes, and producer verification records, and run applicable original checks in the candidate copy.
-If only part is needed, derive a separate current inventory and validate that subset under its own contract.
+For a full historical delivery, retain its structure, original manifest bytes, and producer verification records in the candidate during receipt validation, and run applicable original checks there.
+Record the adopted subset in the existing current inventory or an equivalent distinct record and validate it under its own contract; do not modify the original manifest to describe it.
 Do not require every historical file in a current subset or alter the historical verifier/manifest to manufacture success.
 Identify failures belonging only to retained old versions separately; a failure affecting the version proposed for adoption blocks that adoption.
 
 ## Build and Check the Integration Candidate
 
-Use existing placement, schemas, loaders, selectors, and provenance formats before inventing new arrangements.
-Follow the established original-storage policy; a Git-ignored area inside a worktree still needs a handoff before that worktree is removed and is not automatically permanent storage.
+Select the minimum inputs needed to regenerate the report and perform its required checks, explaining each input's role. For example, summaries and individual values may both be needed to verify a mean and SD; the number of tables depends on the task. Do not automatically add batch tables, snapshots, duplicate subsets, logs, or history to Git.
+Reuse existing data placement, naming, schemas, loaders, selectors, inventory, and explanations. Do not create an analysis-ID or receipt-date directory, separate README or receipt JSON, custom loader or verifier, or code-level hash dictionary when existing mechanisms suffice. Retain necessary sidecars when existing records cannot express their content.
+Keep adopted source tables' values and bytes intact; map columns at read time when needed. Avoid unnecessary transformation, merging, and duplication. Consolidate conditions, averaging and SD definitions, analysis ID, hashes, provenance, and verification limits into the existing explanation or inventory.
+Follow the user’s original-storage policy; do not automatically retain old inputs or another copy of the delivery. Check dependencies of shared inputs before replacing references, including other conditions; a Git-ignored area inside a worktree still needs a handoff before that worktree is removed and is not automatically permanent storage.
 Integration alone does not authorize deleting files, untracking duplicates, changing history, or relocating originals outside the approved scope.
 
 Compare incoming and accepted inputs by identity, scientific conditions, keys, values, and lineage:
@@ -40,14 +42,14 @@ Prefer source lists/selectors over a combined CSV when they satisfy the loader.
 If a combined table is necessary, treat it as derived and retain per-row/partition producer/input identity and source-row mappings under the data contract.
 Do not copy the same CSV for each figure or analysis when shared references suffice.
 
-With only candidate inputs and explicitly verified reusable dependencies available, run the existing loader or a small input-read check, required selections and arithmetic regrouping, and agreement checks on the existing shared portion.
+Separately from full-delivery receipt checks, verify the adopted subset with only candidate inputs and explicitly verified reusable dependencies available. Run the existing loader or a small input-read check, required selections and arithmetic regrouping, and agreement checks on the existing shared portion. Check promised hashes, row counts, keys, conditions, means and SD where applicable; identify recalculations requiring omitted originals as limits.
 Verify the current inventory, required metadata, keys, and scientific conditions under the common contract.
 Adoption requires all checks necessary for the promised scope to pass; historical producer success does not replace fresh candidate checks.
 
 ## Adopt Without Losing Prior State
 
 Before updating accepted references, record their previous content/hash and the intended replacements.
-Prefer a single atomic selector/reference switch to a validated version; keep received originals and the previous accepted version available.
+Prefer an atomic selector/reference switch where appropriate. Do not automatically create archives of the received original or previous accepted version; follow the user’s retention instructions and preserve existing files unless separately authorized to remove them.
 For unavoidable multiple-file updates, keep a journal of only this operation's writes and a restoration path for each.
 Recheck expected prior content before each replacement to detect concurrent user edits.
 On failure, restore only writes still matching this operation's replacement; leave intervening user edits intact and report unresolved restoration conflicts.
@@ -57,12 +59,13 @@ Validate the resulting adopted references/read contract; if that fails, restore 
 ## Failure and Completion Evidence
 
 Reject adoption for payload hash mismatch, required missing files, invalid keys/conditions, conflicting values, unsafe paths, or failed required checks.
-Keep the received original, rejected candidate evidence, existing accepted inputs, and user edits.
+Leave the received original and existing accepted inputs and user edits unchanged; record rejected candidate evidence in the existing records where suitable.
 Distinguish a runner failure before command start or unavailable dependency environment from a data failure; report unexecuted checks and do not install an environment without authorization.
 An upstream original needed only for omitted reruns may remain externally unverified if all promised local operations pass; an external dependency needed for those operations leaves them incomplete.
 Old historical failures, repaired accepted versions, and current candidate failures must have separate identities and outcomes.
 
-Return the receipt record, original storage location, adopted inputs and reusable source identities, current inventory, executed checks/results, conflicts/missing inputs, and external limits.
+Before staging, inspect the final diff and each new file’s role, and stage only necessary files when staging is authorized.
+
+Return the receipt evidence, original location or retention status, adopted inputs and reusable source identities, current inventory, executed checks/results, conflicts/missing inputs, and external limits.
 Report prepared, actually transferred, receipt-verified, and integrated as separate states, with planned/delivered/adopted coverage and partial dataset status.
-Completion ends at the adopted input/reference/read contract and necessary arithmetic verification.
-Regenerating figures or manuscripts requires that additional task to have been requested.
+For replacements, inspect dependencies through readers, generated data, relevant figure PDFs, and report text and captions. State the requested scope and any downstream updates still needed. Figure production and manuscript editing require explicit task scope; complete only the portions authorized.
