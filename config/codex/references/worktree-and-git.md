@@ -29,6 +29,13 @@ If the repository-local destination is unavailable, report the blocker before
 choosing another location. Leave existing worktrees in place unless relocation
 or removal is explicitly authorized.
 
+Before creating a new worktree for a large repository, get explicit user
+approval. Judge size by the expected checkout contents, including large tracked
+assets. If it is unclear whether the checkout is large, ask before creating it.
+Explain why a new worktree is needed and provide a rough checkout size estimate
+when available. Reusing an appropriate existing worktree does not require this
+creation approval.
+
 Before creating the worktree, verify `.worktrees/` is ignored in the primary
 checkout. If needed, append `/.worktrees/` to the repository-local exclude file
 resolved by `git rev-parse --git-path info/exclude`, preserving existing entries.
