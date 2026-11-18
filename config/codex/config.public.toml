@@ -4,7 +4,7 @@
 # Do not edit config.toml directly; regenerate it through ./install.
 
 # Shared model defaults.
-model = "gpt-6.1-terra"
+model = "gpt-6.2-sol"
 model_reasoning_effort = "medium"
 plan_mode_reasoning_effort = "medium"
 service_tier = "default"

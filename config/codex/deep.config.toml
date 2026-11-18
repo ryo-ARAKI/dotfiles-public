@@ -1,5 +1,5 @@
 # Loaded by `codex --profile deep`.
-model = "gpt-6.1-sol"
+model = "gpt-6.2-sol"
 service_tier = "default"
 model_reasoning_effort = "max"
 plan_mode_reasoning_effort = "max"

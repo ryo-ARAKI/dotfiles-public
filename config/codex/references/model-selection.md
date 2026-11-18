@@ -12,30 +12,29 @@ Keep profile, actual model ID, normal reasoning effort, and planning effort
 separate. Explicit user choices take precedence. Otherwise choose from the
 unresolved judgment and the benefit of parallel work, rather than inheriting
 the previous phase's effort or using work volume alone.
-Managed settings use the standard service tier (`service_tier = "default"`).
+Managed settings use Standard speed (`service_tier = "default"`). Consider
+Fast or Ultrafast when reduced latency is worth the additional usage.
+Check the selected model, plan, and client for availability and rates.
 
 | Selection | Model | Normal / planning effort | Remaining work |
 | --- | --- | --- | --- |
-| `default` (no `--profile`) or `quick` | `gpt-6.1-terra` | medium / medium | Everyday investigation, writing, visual inspection, computer use, and implementation or fixes with a known approach; check the result |
-| Explicit Sol overrides | `gpt-6.1-sol` | medium to xhigh, selected for the remaining judgment | Complex investigation or implementation, interpreting specifications, reconciling sources, or preserving technical meaning; routine reviews still keep `reviewer` |
-| `deep` | `gpt-6.1-sol` | max / max | Difficult judgment, competing hypotheses, design tradeoffs, or numerical validity; reviews keep `reviewer` with max overrides |
+| `default` (no `--profile`) | `gpt-6.2-sol` | medium / medium | Everyday investigation, writing, visual inspection, computer use, implementation, and verification |
+| `quick` | `gpt-6.1-terra` | medium / medium | Short checks, routine edits, and work with readily verifiable results |
+| Explicit Sol overrides | `gpt-6.2-sol` | high or xhigh, selected for each mode | Complex investigation or implementation, interpreting specifications, reconciling sources, or preserving technical meaning |
+| `deep` | `gpt-6.2-sol` | max / max | Difficult judgment, competing hypotheses, design tradeoffs, or numerical validity; reviews keep `reviewer` with max overrides |
 | `subagent` profile | `gpt-6-luna` | medium / medium | Bounded delegated work within granted authority |
 | Spawned defaults | `gpt-6-luna` | medium normal; planning effort must be checked in the launch environment | Defaults specify the spawned model and normal effort, not a separate planning value |
-| `reviewer` role/profile | `gpt-6.1-sol` | high / high; max / max overrides for difficult reviews | Independent read-only review of requirements, diffs, and evidence |
-| Explicit Sol ultra selection, after support checks | Verify the available Sol model ID | Verify both effective efforts | Meaningful independent parts make parallel work useful |
-| Astra, with task-specific approval | Verify the available Astra model ID | Record both effective efforts | Compare against a concrete Sol max limitation for a stated purpose |
+| `reviewer` role/profile | `gpt-6.2-sol` | high / high; max / max overrides for difficult reviews | Independent read-only review of requirements, diffs, and evidence |
+| Explicit Sol ultra selection, after support checks | `gpt-6.2-sol` | Verify both effective efforts | Independent parts benefit from parallel work and automatic delegation is approved |
+| Astra, with task-specific approval | `gpt-6.2-astra` | Record both effective efforts | Evaluate an expected improvement over Sol max against a specified deliverable |
 
-Terra medium is a local starting point chosen for everyday latency, not a
-claim of measured superiority. Consider Sol when interpreting competing
-specifications or comparing alternatives, investigation repeats without
-narrowing hypotheses, changes could affect surrounding contracts or scientific
-meaning, or an important conclusion is difficult to verify. When the difficulty
-is apparent at the outset, select Sol immediately rather than waiting for Terra
-to fail. Select effort by error impact, remaining judgment, verifiability, and
-rework cost; medium may suffice for clear, verifiable work, while high or
-xhigh suits harder tradeoffs. Do not assume that selecting a default model
-automatically switches it during a task; explain when and why a switch is
-needed.
+Sol medium is the starting point for everyday work. Use Terra medium for
+short, readily verifiable tasks where latency or usage matters. Select normal
+and planning effort by error impact, remaining judgment, verifiability, and
+rework cost. Consider high or xhigh when interpreting competing specifications,
+when investigation repeats without narrowing hypotheses, or when changes could
+affect surrounding contracts or scientific meaning. State the reason for any
+recommended model or effort switch during a task.
 
 Recommend max from the start when difficult judgment is already apparent; an
 xhigh failure is not a prerequisite. Gather missing evidence first. Permission,
@@ -45,17 +44,18 @@ start with max for one tightly coupled hard problem. A planning phase alone
 does not justify max. Quality differences, latency, and usage-limit multipliers
 between models and efforts remain unverified for the user's actual tasks.
 
-For ultra, explain the proposed independent parts and benefit, check the
-installed client's availability and selection method, and keep model selection
-separate from delegation authority. Do not assume CLI, API, and UI support are
-identical. Sol max with sequential work is an alternative when parallel work
-cannot help or is not authorized. If max or ultra is unavailable, report that
-and an available alternative without switching to Astra or implying the
-requested setting succeeded.
+Ultra reasoning can automatically delegate work. Select it only with explicit
+authorization for that delegation on the task. Explain the independent parts
+and expected benefit, and verify support and selection in the installed client.
+Use Sol max when the difficult work is tightly coupled or delegation is outside
+the approved scope. If max or ultra is unavailable, report the available Sol
+options. Ultrafast is a service tier that changes generation speed and usage.
 
-Astra is normally avoided because of its larger usage-limit cost. Explain the
-specific Sol max limitation and comparison purpose before seeking explicit
-approval for that task; a profile name does not establish approval.
+Astra requires task-specific approval because of its larger usage cost. Before
+seeking approval, state the concrete limitation expected with Sol max, the
+improvement expected from Astra, and the deliverable or outcome to compare.
+Use the applicable Work or Codex usage guidance for subscription usage and
+credits. API token prices apply to API billing.
 
 Reviewers inspect requirements, diffs, and evidence themselves and report
 findings without editing, committing, or pushing. Keep the `reviewer` role or
@@ -95,14 +95,15 @@ named profile exists and, for review, remains read-only. `default` means no
 
 ```fish
 # Complex investigation with both efforts explicit; use xhigh when warranted.
-codex -m gpt-6.1-sol -c 'model_reasoning_effort="high"' -c 'plan_mode_reasoning_effort="high"'
+codex -m gpt-6.2-sol -c 'model_reasoning_effort="high"' -c 'plan_mode_reasoning_effort="high"'
 # Deep investigation with both efforts explicit.
-codex --profile deep -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
+codex --profile deep -m gpt-6.2-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
 # Difficult review retains verified reviewer permissions.
-codex --profile reviewer -m gpt-6.1-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
+codex --profile reviewer -m gpt-6.2-sol -c 'model_reasoning_effort="max"' -c 'plan_mode_reasoning_effort="max"'
 ```
 
-Public guidance: [Models](https://learn.chatgpt.com/docs/models) and
-[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents).
+Public guidance includes [Models](https://learn.chatgpt.com/docs/models),
+[Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), and
+[Fast and Ultrafast](https://learn.chatgpt.com/docs/agent-configuration/speed).
 Check current official guidance when resolving public product behavior;
 these links do not establish availability in a particular client or account.
